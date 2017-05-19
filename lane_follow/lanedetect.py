@@ -5,22 +5,26 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Read image in grayscale
+# Read image in color
 #IMREAD_GRAYSCALE
 #IMREAD_COLOR
 #IMREAD_UNCHANGED
-img = cv2.imread('images/2017-05-19_120235.jpg', cv2.IMREAD_GRAYSCALE)
+img = cv2.imread('images/2017-05-19_120235.jpg', cv2.IMREAD_COLOR)
 
-# Extract ROI
-roi = img[0:2592, 972:1944]
+# Extract ROI and resize
+roi = img[972:1944, 0:2592]
+roi = cv2.resize(roi, (800, 300))
 
-# Show image using cv
-# cv2.imshow('image', img)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
+# Filter noise
+blur = cv2.GaussianBlur(roi,(15,15),0)
 
-# Plot image using matplotlib
-plt.imshow(img, cmap = 'gray', interpolation = 'bicubic')
-plt.plot([1296, 1296], [0, 1944], 'c', linewidth = 1.5)
-plt.axis([0, 2592, 1944, 972])
-plt.show()
+# Canny edge detection
+edges = cv2.Canny(blur, 50, 100)
+
+
+
+cv2.line(roi, (1296, 0), (1296, 1944), (255, 0, 0), thickness = 2)
+cv2.imshow('image', roi)
+cv2.imshow('canny', edges)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
