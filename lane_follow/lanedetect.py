@@ -18,6 +18,7 @@ roi = cv2.cvtColor(roi, cv2.COLOR_BGR2GRAY)
 img = cv2.resize(img, (800, 600))
 roi = cv2.resize(roi, (800, 300))
 
+
 # Line Detection
 blur = cv2.GaussianBlur(roi,(5,5),0)
 edges = cv2.Canny(blur, threshold1=100, threshold2=200)
