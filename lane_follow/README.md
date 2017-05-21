@@ -9,10 +9,11 @@ Test images are contained within the `\images` directory.
 
 ## Links
 ### Lane Following
-[OpenCV car lanes](https://medium.com/@vijay120/detecting-car-lane-lines-using-computer-vision-d23b2dafdf4c)
-[Curved and straight lanes](https://drive.google.com/file/d/0B3rXba6M6OXhdlJMNVEtenhTNHc/view)
+[OpenCV car lanes](https://medium.com/@vijay120/detecting-car-lane-lines-using-computer-vision-d23b2dafdf4c)  
+[Curved and straight lanes](https://drive.google.com/file/d/0B3rXba6M6OXhdlJMNVEtenhTNHc/view)  
+[Applying to videos](https://github.com/vijay120/Autonomous-Vehicles/blob/master/pset1/Car-Lane-Detection/P1.ipynb)  
 
 ### Open CV
-[Feature Detection Documentation](http://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html?highlight=canny)
-[Auto Canny](http://www.pyimagesearch.com/2015/04/06/zero-parameter-automatic-canny-edge-detection-with-python-and-opencv/)
-[Erosion and Dilation](https://pythonprogramming.net/morphological-transformation-python-opencv-tutorial/)
+[Feature Detection Documentation](http://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html?highlight=canny)  
+[Auto Canny](http://www.pyimagesearch.com/2015/04/06/zero-parameter-automatic-canny-edge-detection-with-python-and-opencv/)  
+[Erosion and Dilation](https://pythonprogramming.net/morphological-transformation-python-opencv-tutorial/)  
