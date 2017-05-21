@@ -6,7 +6,7 @@ Experimental robotics major project
 ```
 ssh pi@172.20.10.2
 ```
-## Image Server
+## Installing OpenCV on Raspberry Pi
 
-[54.153.238.139/exp/](54.153.238.139/exp/)
+http://mitchtech.net/raspberry-pi-opencv/
 
