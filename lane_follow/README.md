@@ -1,9 +1,9 @@
 # Lane Following Module
 The lane following module implements lane detection using the Python OpenCV API. This module also sends motor control commands based on the position of the robot within the lanes.
 
-`lanedetect.py` contains OpenCV code for lane detection using Python2.7 on a PC.
+`lane_follow.py` contains OpenCV code for lane detection using Python2.7 on a PC.
 
-`pilanedetect.py` is the implementation for Raspberry Pi 3.
+`pi_lane_follow.py` is the implementation for Raspberry Pi 3.
 
 Test images are contained within the `\images` directory.
 

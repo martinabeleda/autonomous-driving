@@ -15,8 +15,7 @@ def lane_detect(img):
     on the original image.
     """
 
-    # Resize and convert to grayscale
-    img = cv2.resize(img, (800, 600))
+    # Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     # Gaussian Blur
@@ -55,9 +54,9 @@ def lane_detect(img):
                           minLineLength, maxLineGap)
 
     # Display hough lines
-    draw_lines(img, lines)
+    (angle, displacement) = draw_lines(img, lines)
 
     # Display center line
     cv2.line(img, (400, 0), (400, 600), (255, 0, 0), thickness=2)
 
-    return img
+    return img, lines, angle, displacement

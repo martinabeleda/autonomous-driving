@@ -1,4 +1,5 @@
 import cv2
+import math
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -7,8 +8,6 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
     This function connects the two `lines` with `color` and `thickness`.
     It ignores `lines` that are close to 0 gradient.
     """
-
-    imshape = img.shape
 
     # these variables represent the y-axis coordinates to which the line will be extrapolated to
     ymin_global = img.shape[0]
@@ -57,3 +56,19 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
 
         cv2.line(img, (upper_left_x, ymin_global), (lower_left_x, ymax_global), color, thickness)
         cv2.line(img, (upper_right_x, ymin_global), (lower_right_x, ymax_global), color, thickness)
+
+        # Calculate the position and angle of the robot in relation to the lanes
+        top_x = int(np.mean((upper_left_x, upper_right_x)))
+        bottom_x = int(np.mean((lower_left_x, lower_right_x)))
+
+        cv2.line(img, (top_x, ymin_global), (bottom_x, ymax_global), [0, 255, 0], thickness)
+
+    # Only one line has been detected
+    #else
+        # Call curve following algorithm
+
+    # Calculate angle and displacement of robot in relation to centre line
+    angle = math.degrees(math.atan((top_x - bottom_x)/(ymax_global - ymin_global)))
+    displacement = bottom_x - img.shape[1]/2
+
+    return angle, displacement
