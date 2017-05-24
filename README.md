@@ -1,5 +1,11 @@
 # PiCar
-Experimental robotics major project
+Experimental robotics major project - multi-robot autonomous car network
+
+## Cloning
+
+```
+git clone https://github.com/martinabeleda/PiCar.git
+```
 
 ## PiCar setup
 
