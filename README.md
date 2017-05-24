@@ -22,6 +22,12 @@ pi@raspberrypi:~ $ ssh pi@192.168.43.94
 pi@192.168.43.94's password: picar
 ```
 
+Toms Pi:
+```
+pi@raspberrypi:~ $ ssh pi@192.168.43.118
+pi@192.168.43.94's password: picar
+```
+
 Click [here](http://mitchtech.net/raspberry-pi-opencv/) for instructions to install OpenCV on the Pi. 
 
 ## Remote Desktop
