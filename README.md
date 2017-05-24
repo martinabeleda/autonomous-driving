@@ -43,7 +43,7 @@ Remote desktop software for your computer:
   Linux: `sudo apt-get install rdesktop`  
   Mac: search "remote destop" in App store  
   
-For linux, run `rdesktop 192.168.43.94` or`rdesktop 192.168.43.118` in terminal.  
+For linux, run `rdesktop -g 90% 192.168.43.94` or`rdesktop -g 90% 192.168.43.118` in terminal.  
   
 Login with the following credentials:  
 
