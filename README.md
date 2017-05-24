@@ -26,20 +26,20 @@ Click [here](http://mitchtech.net/raspberry-pi-opencv/) for instructions to inst
 
 ## Remote Desktop
 
-Click [here](https://www.element14.com/community/docs/DOC-78170/l/connecting-to-a-remote-desktop-on-the-raspberry-pi) to see instructions for connecting the Pi to remote destop on your computer.
+Click [here](https://www.element14.com/community/docs/DOC-78170/l/connecting-to-a-remote-desktop-on-the-raspberry-pi) to see instructions for connecting the Pi to remote destop on your computer.  
 
-To install remote desktop software on the Pi:
+To install remote desktop software on the Pi:  
 ```
 sudo apt-get install xrdp
 ```
-Remote desktop software for your computer:
+Remote desktop software for your computer:   
 
-  Linux: `sudo apt-get install rdesktop`
-  Mac: search "remote destop" in App store
+  Linux: `sudo apt-get install rdesktop`  
+  Mac: search "remote destop" in App store  
   
-For linux, run `rdesktop 192.168.43.94` in terminal.
+For linux, run `rdesktop 192.168.43.94` in terminal.  
   
-Login with the following credentials:
+Login with the following credentials:  
 
 ```
 Module: sesman-Xvnc
