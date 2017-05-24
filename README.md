@@ -25,7 +25,7 @@ pi@192.168.43.94's password: picar
 Tom's Pi:
 ```
 pi@raspberrypi:~ $ ssh pi@192.168.43.118
-pi@192.168.43.94's password: picar
+pi@192.168.43.118's password: picar
 ```
 
 Click [here](http://mitchtech.net/raspberry-pi-opencv/) for instructions to install OpenCV on the Pi. 
@@ -43,7 +43,7 @@ Remote desktop software for your computer:
   Linux: `sudo apt-get install rdesktop`  
   Mac: search "remote destop" in App store  
   
-For linux, run `rdesktop 192.168.43.94` `rdesktop 192.168.43.118` in terminal.  
+For linux, run `rdesktop 192.168.43.94` or`rdesktop 192.168.43.118` in terminal.  
   
 Login with the following credentials:  
 
