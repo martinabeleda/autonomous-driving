@@ -13,16 +13,16 @@ The Pi is configured to startup in Command Line Interface (CLI) mode and automat
 
 The password for the default user has been set to `picar`.
 
-First, I set up hotspot on my phone and connect both the Pi and my laptop to it. 
+First, I set up hotspot on my phone and connect both the Pi and my laptop to it. SSH instructions:
 
-To ssh into the pi:
+Marty's pi:
 
 ```
 pi@raspberrypi:~ $ ssh pi@192.168.43.94
 pi@192.168.43.94's password: picar
 ```
 
-Toms Pi:
+Tom's Pi:
 ```
 pi@raspberrypi:~ $ ssh pi@192.168.43.118
 pi@192.168.43.94's password: picar
@@ -43,7 +43,7 @@ Remote desktop software for your computer:
   Linux: `sudo apt-get install rdesktop`  
   Mac: search "remote destop" in App store  
   
-For linux, run `rdesktop 192.168.43.94` in terminal.  
+For linux, run `rdesktop 192.168.43.94` `rdesktop 192.168.43.118` in terminal.  
   
 Login with the following credentials:  
 
