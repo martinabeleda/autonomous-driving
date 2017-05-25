@@ -13,7 +13,7 @@ The Pi is configured to startup in Command Line Interface (CLI) mode and automat
 
 The password for the default user has been set to `picar`.
 
-First, I set up hotspot on my phone and connect both the Pi and my laptop to it. SSH instructions:
+First, I set up hotspot on my phone and connect both the Pi and my laptop to it. Note that the IP address may change when the Pi is connected to different wifi. SSH instructions:
 
 Marty's pi:
 
@@ -52,6 +52,4 @@ Module: sesman-Xvnc
 username: pi
 password: picar
 ```
-  
-## OpenCV video for Pi
-http://www.pyimagesearch.com/2015/03/30/accessing-the-raspberry-pi-camera-with-opencv-and-python/
+ 
