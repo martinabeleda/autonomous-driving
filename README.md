@@ -13,33 +13,39 @@ The Pi is configured to startup in Command Line Interface (CLI) mode and automat
 
 The password for the default user has been set to `picar`.
 
-First, I set up hotspot on my phone and connect both the Pi and my laptop to it. 
+First, I set up hotspot on my phone and connect both the Pi and my laptop to it. SSH instructions:
 
-To ssh into the pi:
+Marty's pi:
 
 ```
 pi@raspberrypi:~ $ ssh pi@192.168.43.94
 pi@192.168.43.94's password: picar
 ```
 
+Tom's Pi:
+```
+pi@raspberrypi:~ $ ssh pi@192.168.43.118
+pi@192.168.43.118's password: picar
+```
+
 Click [here](http://mitchtech.net/raspberry-pi-opencv/) for instructions to install OpenCV on the Pi. 
 
 ## Remote Desktop
 
-Click [here](https://www.element14.com/community/docs/DOC-78170/l/connecting-to-a-remote-desktop-on-the-raspberry-pi) to see instructions for connecting the Pi to remote destop on your computer.
+Click [here](https://www.element14.com/community/docs/DOC-78170/l/connecting-to-a-remote-desktop-on-the-raspberry-pi) to see instructions for connecting the Pi to remote destop on your computer.  
 
-To install remote desktop software on the Pi:
+To install remote desktop software on the Pi:  
 ```
 sudo apt-get install xrdp
 ```
-Remote desktop software for your computer:
+Remote desktop software for your computer:   
 
-  Linux: `sudo apt-get install rdesktop`
-  Mac: search "remote destop" in App store
+  Linux: `sudo apt-get install rdesktop`  
+  Mac: search "remote destop" in App store  
   
-For linux, run `rdesktop 192.168.43.94` in terminal.
+For linux, run `rdesktop -g 90% 192.168.43.94` or`rdesktop -g 90% 192.168.43.118` in terminal.  
   
-Login with the following credentials:
+Login with the following credentials:  
 
 ```
 Module: sesman-Xvnc
@@ -47,4 +53,5 @@ username: pi
 password: picar
 ```
   
-  
+## OpenCV video for Pi
+http://www.pyimagesearch.com/2015/03/30/accessing-the-raspberry-pi-camera-with-opencv-and-python/
