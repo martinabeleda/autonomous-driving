@@ -17,3 +17,4 @@ Test images are contained within the `\images` directory.
 [Feature Detection Documentation](http://docs.opencv.org/2.4/modules/imgproc/doc/feature_detection.html?highlight=canny)  
 [Auto Canny](http://www.pyimagesearch.com/2015/04/06/zero-parameter-automatic-canny-edge-detection-with-python-and-opencv/)  
 [Erosion and Dilation](https://pythonprogramming.net/morphological-transformation-python-opencv-tutorial/)  
+[Open CV Video on Pi](http://www.pyimagesearch.com/2015/03/30/accessing-the-raspberry-pi-camera-with-opencv-and-python/)
