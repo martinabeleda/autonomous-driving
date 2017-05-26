@@ -8,6 +8,8 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+from lane_detect import lane_detect
+
 #Create a memory stream so photos doesn't need to be saved in a file
 stream = io.BytesIO()
 
@@ -18,18 +20,18 @@ with picamera.PiCamera() as camera:
     camera.capture(stream, format='jpeg')
 
 #Convert the picture into a numpy array
-buff = numpy.fromstring(stream.getvalue(), dtype=numpy.uint8)
+buff = np.fromstring(stream.getvalue(), dtype=np.uint8)
 
 #Now creates an OpenCV image
 img = cv2.imdecode(buff, 1)
 
 # Detect lanes and draw on `img`
-(detected, lines, angle, displacement) = lane_detect(img)
+#(detected, lines, angle, displacement) = lane_detect(img)
 
-print angle
-print displacement
+#print angle
+#print displacement
 
 # Display
 # cv2.imshow('region', roi)
-cv2.imshow('image', detected)
-cv2.imshow('masked w/ lines', lines)
+cv2.imshow('image', img)
+#cv2.imshow('masked w/ lines', lines)
