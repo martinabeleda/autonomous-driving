@@ -8,6 +8,8 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+from lane_detect import lane_detect
+
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
 rawCapture = PiRGBArray(camera)
@@ -24,11 +26,12 @@ cv2.imshow("Image", image)
 cv2.waitKey(0)
 
 # Detect lanes and draw on `img`
-(detected, lines, angle, displacement) = lane_detect(img)
+#(detected, lines, angle, displacement) = lane_detect(img)
 
-print angle
-print displacement
+#print angle
+#print displacement
 
 # Display
-cv2.imshow('image', detected)
-cv2.imshow('masked w/ lines', lines)
+# cv2.imshow('region', roi)
+#cv2.imshow('image', img)
+#cv2.imshow('masked w/ lines', lines)

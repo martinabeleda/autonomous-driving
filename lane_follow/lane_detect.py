@@ -53,7 +53,8 @@ def lane_detect(img):
     lines = cv2.HoughLinesP(closing, rho, theta, threshold,
                           minLineLength, maxLineGap)
 
-    masked = cv2.cvtColor(closing, cv2.COLOR_CV_GRAY2RGB)
+    #masked = cv2.cvtColor(closing, cv2.COLOR_CV_GRAY2RGB)
+    masked = closing
 
     for line in lines:
         for x1,y1,x2,y2 in line:
