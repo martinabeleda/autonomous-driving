@@ -21,15 +21,17 @@ time.sleep(0.1)
 camera.capture(rawCapture, format="bgr")
 image = rawCapture.array
 
+(detected, lines, angle, displace,emt) - lane_detect(image)
+
 # display the image on screen and wait for a keypress
-cv2.imshow("Image", image)
+cv2.imshow("Image", detected)
 cv2.waitKey(0)
 
 # Detect lanes and draw on `img`
 #(detected, lines, angle, displacement) = lane_detect(img)
 
-#print angle
-#print displacement
+print angle
+print displacement
 
 # Display
 # cv2.imshow('region', roi)
