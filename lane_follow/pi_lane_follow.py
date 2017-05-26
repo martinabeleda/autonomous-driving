@@ -12,28 +12,34 @@ from lane_detect import lane_detect
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
-rawCapture = PiRGBArray(camera)
+camera.resolution = (800, 600)
+camera.framerate = 32
+rawCapture = PiRGBArray(camera, size=(800, 600))
+camera.vflip = True
+camera.hflip = True
 
 # allow the camera to warmup
 time.sleep(0.1)
 
-# grab an image from the camera
-camera.capture(rawCapture, format="bgr")
-image = rawCapture.array
+# capture frames from the camera
+for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+	# grab the raw NumPy array representing the image, then initialize the timestamp
+	# and occupied/unoccupied text
+	image = frame.array
 
-(detected, lines, angle, displace,emt) - lane_detect(image)
+        (detected, lines, angle, displacement) = lane_detect(image)
+        
+	# show the frame
+	cv2.imshow("Frame", detected)
+	key = cv2.waitKey(1) & 0xFF
 
-# display the image on screen and wait for a keypress
-cv2.imshow("Image", detected)
-cv2.waitKey(0)
+        print angle
+        print displacement
+        
+	# clear the stream in preparation for the next frame
+	rawCapture.truncate(0)
 
-# Detect lanes and draw on `img`
-#(detected, lines, angle, displacement) = lane_detect(img)
-
-print angle
-print displacement
-
-# Display
-# cv2.imshow('region', roi)
-#cv2.imshow('image', img)
-#cv2.imshow('masked w/ lines', lines)
+	# if the `q` key was pressed, break from the loop
+	if key == ord("q"):
+		break
+    
