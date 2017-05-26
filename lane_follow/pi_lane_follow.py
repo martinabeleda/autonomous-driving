@@ -1,27 +1,27 @@
 # Lane detection using OpenCV on Raspberry Pi
 # Author: Martin Abeleda
 # Date: 19/05/2017
-import io
-import picamera
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 import time
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-#Create a memory stream so photos doesn't need to be saved in a file
-stream = io.BytesIO()
+# initialize the camera and grab a reference to the raw camera capture
+camera = PiCamera()
+rawCapture = PiRGBArray(camera)
 
-#Get the picture (low resolution, so it should be quite fast)
-#Here you can also specify other parameters (e.g.:rotate the image)
-with picamera.PiCamera() as camera:
-    camera.resolution = (800, 600)
-    camera.capture(stream, format='jpeg')
+# allow the camera to warmup
+time.sleep(0.1)
 
-#Convert the picture into a numpy array
-buff = numpy.fromstring(stream.getvalue(), dtype=numpy.uint8)
+# grab an image from the camera
+camera.capture(rawCapture, format="bgr")
+image = rawCapture.array
 
-#Now creates an OpenCV image
-img = cv2.imdecode(buff, 1)
+# display the image on screen and wait for a keypress
+cv2.imshow("Image", image)
+cv2.waitKey(0)
 
 # Detect lanes and draw on `img`
 (detected, lines, angle, displacement) = lane_detect(img)
