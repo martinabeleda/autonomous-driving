@@ -27,19 +27,19 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	# and occupied/unoccupied text
 	image = frame.array
 
-        (detected, lines, angle, displacement) = lane_detect(image)
-        
+        (detected, masked, angle, displacement) = lane_detect(image)
+
 	# show the frame
 	cv2.imshow("Frame", detected)
+    cv2.imshow("Masked", masked)
 	key = cv2.waitKey(1) & 0xFF
 
         print angle
         print displacement
-        
+
 	# clear the stream in preparation for the next frame
 	rawCapture.truncate(0)
 
 	# if the `q` key was pressed, break from the loop
 	if key == ord("q"):
 		break
-    
