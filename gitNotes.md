@@ -4,7 +4,7 @@
 
 	Download and install [Git](https://git-scm.com/downloads)
 
-	Run a terminal (eg. iterm for Mac or git bash for Windows) after Git is installed and then continue
+	Run a terminal (eg. Terminal for Mac & Linux, git bash for Windows) after Git is installed and then continue. These instructions will cover the usage of git on command line. 
 
 1. Navigate
 
@@ -32,29 +32,29 @@
 
 	You can make changes to this copy and they remain "local" until they are "pushed/synced" to the remote repository (pushed using git bash terminal or synced using the git gui)
 
-	In order to clone you need the URL of the main repo (given below)
+	In order to clone you need the URL of the main repo
 
 	Clone the repo with the command:
 
 	```
-	git clone https://github.com/jpwebb/FLORA-KFP.git
+	git clone https://github.com/user/repository_name
 	```
 
-	If you get any errors at this stage it means you haven't been added as a collaborator to the repo yet - send Jason your Github account name and he will add you to the repo as a collaborator
+	If you get any errors at this stage it means you haven't been added as a collaborator to the repo yet.
 
 4. Go into the local repo (the clone you just made)
 
 	Enter the following command:
 
 	```
-	cd FLORA-KFP
+	cd <repository_name
 	```
 
 5. Branching
 
 	Go to [Atlassian's Git Branches Tutorial](https://www.atlassian.com/git/tutorials/using-branches/) and checkout their tutorial on how to branch before you continue (for your own benefit)
 
-	A branch is an independent line of development; we will use them to test and write our modules in parallel before merging them back into the master
+	A branch is an independent line of development; we will use them to test and write our modules in parallel before merging them back into the master. It means that multiple people can work on the repository without making changes that clash. 
 
 	To list all of the branches in the repo, enter:
 
@@ -62,11 +62,8 @@
 	git branch
 	```
 
-	We'll use a naming convention to ensure we know who created the branch
-
 	Try and keep the branch name clear and simple so we know what it's for without it being a novel
 
-	Eg. "martin/rf" is the branch Marty has created to work on the RF module
 
 	To create a new branch called <branch name>, enter:	
 
@@ -106,7 +103,7 @@
 	To stage all your changes, enter:
 
 	```
-	git add *
+	git add -A
 	```
 
 	To commit these changes, enter:
