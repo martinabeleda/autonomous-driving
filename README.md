@@ -1,5 +1,19 @@
 # PiCar
-Experimental robotics major project - multi-robot autonomous car network
+Lane following and traffic sign reading differential drive robot. Developed for MTRX5700 Experimental Robotics Major Project 2017 by:
+
+* Martin Abeleda
+* Tom Rapson
+* Kristina Mahoney
+* Riley Green
+
+## Dependencies
+
+* Raspberry Pi 3 with raspbian
+  * Picamera
+  * L293D H-bridge
+  * Adafruit Mini Robot Rover Chassis Kit
+* Open CV
+* Python 2.7
 
 ## Cloning
 
@@ -34,14 +48,10 @@ Click [here](http://mitchtech.net/raspberry-pi-opencv/) for instructions to inst
 
 Click [here](https://www.element14.com/community/docs/DOC-78170/l/connecting-to-a-remote-desktop-on-the-raspberry-pi) to see instructions for connecting the Pi to remote destop on your computer.  
 
-To install remote desktop software on the Pi:  
-```
-sudo apt-get install xrdp
-```
 Remote desktop software for your computer:   
 
   Linux: `sudo apt-get install rdesktop`  
-  Mac: search "remote destop" in App store  
+  Mac: search "remote desktop" in App store  
   
 For linux, run `rdesktop -g 90% 192.168.43.94` or`rdesktop -g 90% 192.168.43.118` in terminal.  
   
