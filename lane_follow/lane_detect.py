@@ -55,10 +55,13 @@ def lane_detect(img):
 
     masked = region_of_interest(img, pts)
 
-    for line in lines:
-        for x1,y1,x2,y2 in line:
-            cv2.line(masked, (x1, y1), (x2, y2), [0, 0, 255], thickness=2)
-
+    try:
+        for line in lines:
+            for x1,y1,x2,y2 in line:
+                cv2.line(masked, (x1, y1), (x2, y2), [0, 0, 255], thickness=2)
+    except:
+        pass
+    
     # Display hough lines
     (angle, displacement) = draw_lines(img, lines)
 

@@ -23,19 +23,22 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
     all_right_y = []
     all_right_x = []
 
-    for line in lines:
-        for x1,y1,x2,y2 in line:
-            gradient, intercept = np.polyfit((x1,x2), (y1,y2), 1)
-            ymin_global = min(min(y1, y2), ymin_global)
+    try:
+        for line in lines:
+            for x1,y1,x2,y2 in line:
+                gradient, intercept = np.polyfit((x1,x2), (y1,y2), 1)
+                ymin_global = min(min(y1, y2), ymin_global)
 
-            if (gradient > 0 + thresh):
-                all_left_grad += [gradient]
-                all_left_y += [y1, y2]
-                all_left_x += [x1, x2]
-            elif (gradient < 0 - thresh):
-                all_right_grad += [gradient]
-                all_right_y += [y1, y2]
-                all_right_x += [x1, x2]
+                if (gradient > 0 + thresh):
+                    all_left_grad += [gradient]
+                    all_left_y += [y1, y2]
+                    all_left_x += [x1, x2]
+                elif (gradient < 0 - thresh):
+                    all_right_grad += [gradient]
+                    all_right_y += [y1, y2]
+                    all_right_x += [x1, x2]
+    except:
+        pass
 
     left_mean_grad = np.mean(all_left_grad)
     left_y_mean = np.mean(all_left_y)
@@ -63,12 +66,11 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
 
         cv2.line(img, (top_x, ymin_global), (bottom_x, ymax_global), [0, 255, 0], thickness)
 
-    # Only one line has been detected
-    #else
-        # Call curve following algorithm
-
-    # Calculate angle and displacement of robot in relation to centre line
-    angle = math.degrees(math.atan((top_x - bottom_x)/(ymax_global - ymin_global)))
-    displacement = bottom_x - img.shape[1]/2
-
+        # Calculate angle and displacement of robot in relation to centre line
+        angle = math.degrees(math.atan((top_x - bottom_x)/(ymax_global - ymin_global)))
+        displacement = bottom_x - img.shape[1]/2
+    else:
+        angle = 0
+        displacement = 0
+        
     return angle, displacement
