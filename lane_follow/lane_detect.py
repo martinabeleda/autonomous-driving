@@ -41,7 +41,6 @@ def lane_detect(img):
 
     # Remove false negatives
     kernel = np.ones((5, 5), np.uint8)
-    #dilation = cv2.dilate(roi,kernel,iterations = 1)
     closing = cv2.morphologyEx(roi, cv2.MORPH_CLOSE, kernel)
 
     # Hough Lines
@@ -61,7 +60,7 @@ def lane_detect(img):
                 cv2.line(masked, (x1, y1), (x2, y2), [0, 0, 255], thickness=2)
     except:
         pass
-    
+
     # Display hough lines
     (angle, displacement) = draw_lines(img, lines)
 

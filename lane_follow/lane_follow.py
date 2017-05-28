@@ -33,6 +33,6 @@ print displacement
 # Display
 # cv2.imshow('region', roi)
 cv2.imshow('image', detected)
-cv2.imshow('masked w/ lines', masked)
+#cv2.imshow('masked w/ lines', masked)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
