@@ -21,6 +21,7 @@ def motor_setup(self)
 	GPIO.setup(Motor34EN, GPIO.OUT)
 
 def forwards(self, distance)
+	speed = 1
 	print "Forwards"
 	GPIO.output(Motor1A, GPIO.HIGH)
 	GPIO.output(Motor2A, GPIO.LOW)
