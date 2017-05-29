@@ -19,6 +19,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	# and occupied/unoccupied text
 	image = frame.array
 
+	# ----------- INSERT IMAGE PROCESSING CODE -----------
+
 	# show the frame
 	cv2.imshow("Frame", image)
 	key = cv2.waitKey(1) & 0xFF
