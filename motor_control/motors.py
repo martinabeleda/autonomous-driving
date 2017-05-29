@@ -11,7 +11,7 @@ Motor3A = 11
 Motor4A = 13
 Motor34EN = 15
 
-def motor_setup(self):
+def motor_setup():
 	print "Setup Motor GPIO"
 	GPIO.setup(Motor1A, GPIO.OUT)
 	GPIO.setup(Motor2A, GPIO.OUT)
@@ -20,8 +20,8 @@ def motor_setup(self):
 	GPIO.setup(Motor4A, GPIO.OUT)
 	GPIO.setup(Motor34EN, GPIO.OUT)
 
-def forwards(self, distance):
-	speed = 1
+def forwards(distance):
+	speed = 154 # mm/s
 	print "Forwards"
 	GPIO.output(Motor1A, GPIO.HIGH)
 	GPIO.output(Motor2A, GPIO.LOW)
@@ -32,8 +32,9 @@ def forwards(self, distance):
 	time = distance / speed
 	sleep(time)
 
-def reverse(self, distance):
+def reverse(distance):
 	print "Reverse"
+	speed = 200 # mm/s
 	GPIO.output(Motor1A, GPIO.LOW)
 	GPIO.output(Motor2A, GPIO.HIGH)
 	GPIO.output(Motor3A, GPIO.LOW)
@@ -43,7 +44,7 @@ def reverse(self, distance):
 	time = distance / speed
 	sleep(time)
 
-def turn_clockwise(self, angle):
+def turn_clockwise(angle):
 	print "Turn clockwise by", angle, "degrees"
 	GPIO.output(Motor1A, GPIO.HIGH)
 	GPIO.output(Motor2A, GPIO.LOW)
@@ -54,25 +55,25 @@ def turn_clockwise(self, angle):
 	time = angle/turnRate
 	sleep(time)
 
-def return_to_centre(self,angle,distance):
-	if angle > 0
+def return_to_centre(angle,distance):
+	if angle > 0:
 		turnAntiClockWise(angle)
-	else
+	else:
 		turnClockwise(abs(angle))
 
 	forwards(distance)
 
-def left_turn(self):
+def left_turn():
 	self.forwards(1)
 	self.turnAntiClockWise(90)
 	self.forwards(1)
 
-def right_turn(self):
+def right_turn():
 	self.forwards(1)
 	self.turnClockwise(90)
 	self.forwards(1)
 
-def turn_anti_clockwise(self, angle):
+def turn_anti_clockwise(angle):
 	print "Turn anti-clockwise by", angle, "degrees"
 	GPIO.output(Motor1A, GPIO.LOW)
 	GPIO.output(Motor2A, GPIO.HIGH)
@@ -83,7 +84,7 @@ def turn_anti_clockwise(self, angle):
 	time = angle/turnRate
 	sleep(time)
 
-def stop(self):
+def stop():
 	print "Stop"
 	GPIO.output(Motor12EN, GPIO.LOW)
 	GPIO.output(Motor34EN, GPIO.LOW)

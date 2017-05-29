@@ -1,9 +1,7 @@
-import RPi.GPIO as GPIO
 from motors import *
 from time import sleep
 
 GPIO.setmode(GPIO.BOARD)
-GPIO.setwarnings(False)
 
 Motor1A = 16
 Motor2A = 18
@@ -15,7 +13,4 @@ Motor34EN = 15
 
 motor_setup()
 
-sleep(1)
-
-forwards(1000)
-stop()
+forwards(1)
