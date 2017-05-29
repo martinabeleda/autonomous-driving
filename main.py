@@ -23,15 +23,15 @@ time.sleep(0.1)
 
 # Main loop
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-    # grab the raw NumPy array representing the image, then initialize the timestamp
+    	# grab the raw NumPy array representing the image, then initialize the timestamp
 	# and occupied/unoccupied text
 	image = frame.array
 
-    (img, angle, topDisplacement, bottomDisplacement) = lane_detect(image)
+    	(img, angle, topDisplacement, bottomDisplacement) = lane_detect(image)
 
 	# show the frame
 	cv2.imshow("Frame", img)
-    key = cv2.waitKey(1) & 0xFF
+    	key = cv2.waitKey(1) & 0xFF
 
 	# clear the stream in preparation for the next frame
 	rawCapture.truncate(0)
