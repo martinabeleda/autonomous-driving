@@ -1,6 +1,8 @@
 import RPi.GPIO as GPIO
 from time import sleep
 
+from motors import forwards, turn_clockwise, return_to_centre, turn_anti_clockwise
+
 GPIO.setmode(GPIO.BOARD)
 
 motor1A = 11
@@ -17,7 +19,7 @@ GPIO.setup(motor2A, GPIO.OUT)
 GPIO.setup(motor2B, GPIO.OUT)
 GPIO.setup(motor2E, GPIO.OUT)
 
-def drive(angle, displacement, centreThreshold = 50, angleThreshold = 5)
+def drive(angle, topDisplacement, centreThreshold=50, angleThreshold=5)
     """
     Drive function.
 
@@ -25,24 +27,25 @@ def drive(angle, displacement, centreThreshold = 50, angleThreshold = 5)
 	function and controls the motors in order to follow the lanes.
     """
 
-	if displacement > centreThreshold:
-	# Robot is to the right of the centre line
+	if angle > angleThreshold:
+	    # Robot is to the right of the centre line
 
-        # Turn left
+        turn_anti_clockwise()
+        forwards()
 
-	elif displacement < -centreThreshold:
-	# Robot is to the left of the centre line
+	elif angle < -angleThreshold:
+	    # Robot is to the left of the centre line
 
-        # Turn right
+        turn_clockwise()
+        forwards()
 
 	else:
-	# Robot is close enough to the centre of the lanes
-
-        if angle < -angleThreshold:
-            # turn left by angle
-
-        elif angle > angleThreshold:
-            # turn right by angle
+	    # Robot is close enough to the centre of the lanes
+        if topDisplacement < -centreThreshold:
+            # Robot is angled to the left
+                
+        elif topDisplacement > centreThreshold:
+            # Robot is angled to the right
 
         else:
             # Move forward

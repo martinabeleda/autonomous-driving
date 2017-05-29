@@ -8,6 +8,7 @@ import cv2
 import numpy as np
 
 from motor_control.drive import drive
+from motor_control.motors import motor_setup
 from lane_follow.lane_detect import lane_detect
 
 # initialize the camera and grab a reference to the raw camera capture
