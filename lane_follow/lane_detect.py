@@ -13,6 +13,20 @@ def lane_detect(img):
     removes false negatives, hough lines and then
     combines small lines into 2 lanes. Draws the lanes
     on the original image.
+
+    Outputs:
+        img - The original image with the lane centre line (green), lanes (cyan),
+            frame centre line (blue) and angle, d_top and d_bot overlayed.
+        angle - The angle of the centre line from the vertical. The angle
+            indicates the horizontal position of the robot in the lanes. Positive
+            angle corresponds to displacement to the right of the lane and vice
+            versa.
+        topDisplacement - Top displacement indicates the angle that the robot
+            is heading. Positive topDisplacement corresponds to the robot pointing
+            to the right and vice versa.
+        bottomDisplacement - Bottom displacement seems to be affected by both the
+            angle and horizontal position of the robot so is not a good indicator
+            of either.
     """
 
     # Convert to grayscale
