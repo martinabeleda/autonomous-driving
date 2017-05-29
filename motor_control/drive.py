@@ -17,8 +17,34 @@ GPIO.setup(motor2A, GPIO.OUT)
 GPIO.setup(motor2B, GPIO.OUT)
 GPIO.setup(motor2E, GPIO.OUT)
 
-var = 1
-while var == 1:
+def drive(angle, displacement, centreThreshold = 50, angleThreshold = 5)
+    """
+	Drive function.
 
+	This function takes the angle and displacement from the `lane_detect()`
+	function and controls the motors in order to follow the lanes.
+    """
 
-GPIO.cleanup()
+	if displacement > centreThreshold:
+	# Robot is to the right of the centre line
+
+        # Turn left
+
+	elif displacement < -centreThreshold:
+	# Robot is to the left of the centre line
+
+        # Turn right
+
+	else:
+	# Robot is close enough to the centre of the lanes
+
+        if angle < -angleThreshold:
+            # turn left by angle
+
+        elif angle > angleThreshold:
+            # turn right by angle
+
+        else:
+            # Move forward
+
+    GPIO.cleanup()
