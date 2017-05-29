@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-from lane_detect import lane_detect
+import lane_detect
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
