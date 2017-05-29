@@ -28,26 +28,26 @@ def drive(angle, topDisplacement, centreThreshold=50, angleThreshold=5)
     """
 
 	if angle > angleThreshold:
-	    # Robot is to the right of the centre line
+	    	# Robot is to the right of the centre line
 
-        turn_anti_clockwise()
-        forwards()
+        	turn_anti_clockwise()
+        	forwards()
 
 	elif angle < -angleThreshold:
-	    # Robot is to the left of the centre line
+	    	# Robot is to the left of the centre line
 
-        turn_clockwise()
-        forwards()
+        	turn_clockwise()
+        	forwards()
 
 	else:
-	    # Robot is close enough to the centre of the lanes
+	   	# Robot is close enough to the centre of the lanes
         if topDisplacement < -centreThreshold:
-            # Robot is angled to the left
+            	# Robot is angled to the left
                 
         elif topDisplacement > centreThreshold:
-            # Robot is angled to the right
+            	# Robot is angled to the right
 
         else:
-            # Move forward
+            	# Move forward
 
-    GPIO.cleanup()
+    	GPIO.cleanup()
