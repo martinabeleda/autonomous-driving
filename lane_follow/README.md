@@ -22,6 +22,7 @@ Lane detection is implemented in the `lane_detect()` function which takes in an 
 Examples of the output image are below:
 
 ![](https://github.com/martinabeleda/PiCar/blob/master/lane_follow/images/lane_follow1.png)
+![](https://github.com/martinabeleda/PiCar/blob/master/lane_follow/images/lane_follow2.png)
 
 ## Processing
 The image processing is:
