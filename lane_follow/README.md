@@ -19,6 +19,10 @@ Lane detection is implemented in the `lane_detect()` function which takes in an 
 3. `angle` - The angle between the robot heading and the centre line of the lanes;
 4. `displacement` - The displacement between the bottom of the lane centre line and the robot heading line.
 
+Examples of the output image are below:
+
+![](https://github.com/martinabeleda/PiCar/blob/master/lane_follow/images/lane_follow1.png)
+
 ## Processing
 The image processing is:
 1. Convert to grayscale;
