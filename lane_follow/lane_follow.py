@@ -11,10 +11,10 @@ from lane_detect import lane_detect
 startTime = datetime.now()
 
 # Read image in color
-img = cv2.imread('images/2017-05-19_120235.jpg', cv2.IMREAD_COLOR)
+#img = cv2.imread('images/2017-05-19_120235.jpg', cv2.IMREAD_COLOR)
 #img = cv2.imread('images/2017-05-19_120326.jpg', cv2.IMREAD_COLOR)
 #img = cv2.imread('images/2017-05-19_120425.jpg', cv2.IMREAD_COLOR)
-#img = cv2.imread('images/2017-05-19_120257.jpg', cv2.IMREAD_COLOR)
+img = cv2.imread('images/2017-05-19_120257.jpg', cv2.IMREAD_COLOR)
 #img = cv2.imread('images/2017-05-19_120344.jpg', cv2.IMREAD_COLOR)
 #img = cv2.imread('images/2017-05-19_120448.jpg', cv2.IMREAD_COLOR)
 #img = cv2.imread('images/2017-05-19_120311.jpg', cv2.IMREAD_COLOR)
