@@ -6,10 +6,9 @@ from picamera import PiCamera
 import time
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 
-import motor_control.drive.py
-import lane_follow.lane_detect.py
+from motor_control.drive import drive
+from lane_follow.lane_detect import lane_detect
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
@@ -24,15 +23,15 @@ time.sleep(0.1)
 
 # Main loop
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-	# grab the raw NumPy array representing the image, then initialize the timestamp
+    # grab the raw NumPy array representing the image, then initialize the timestamp
 	# and occupied/unoccupied text
 	image = frame.array
 
-    	(detected, masked, angle, displacement) = lane_detect(image)
+    (img, angle, topDisplacement, bottomDisplacement) = lane_detect(image)
 
 	# show the frame
-	cv2.imshow("Frame", detected)
-    	key = cv2.waitKey(1) & 0xFF
+	cv2.imshow("Frame", img)
+    key = cv2.waitKey(1) & 0xFF
 
 	# clear the stream in preparation for the next frame
 	rawCapture.truncate(0)

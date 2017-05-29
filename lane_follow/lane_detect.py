@@ -62,9 +62,9 @@ def lane_detect(img):
         pass
 
     # Display hough lines
-    (angle, displacement) = draw_lines(img, lines)
+    (angle, topDisplacement, bottomDisplacement) = draw_lines(img, lines)
 
     # Display center line
     cv2.line(img, (400, 0), (400, 600), (255, 0, 0), thickness=2)
 
-    return img, masked, angle, displacement
+    return img, angle, topDisplacement, bottomDisplacement

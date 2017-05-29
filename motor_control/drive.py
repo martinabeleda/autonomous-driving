@@ -19,7 +19,7 @@ GPIO.setup(motor2E, GPIO.OUT)
 
 def drive(angle, displacement, centreThreshold = 50, angleThreshold = 5)
     """
-	Drive function.
+    Drive function.
 
 	This function takes the angle and displacement from the `lane_detect()`
 	function and controls the motors in order to follow the lanes.

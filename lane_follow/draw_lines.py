@@ -6,7 +6,22 @@ import matplotlib.pyplot as plt
 def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
     """
     This function connects the two `lines` with `color` and `thickness`.
-    It ignores `lines` that are close to 0 gradient.
+    It ignores `lines` that are close to 0 gradient. It then draws a centre
+    line which is the average of the two lines and outputs data regarding the
+    centre line so that we can determine the position of the robot within the
+    lanes.
+
+    Outputs:
+        angle - The angle of the centre line from the vertical. The angle
+            indicates the horizontal position of the robot in the lanes. Positive
+            angle corresponds to displacement to the right of the lane and vice
+            versa.
+        topDisplacement - Top displacement indicates the angle that the robot
+            is heading. Positive topDisplacement corresponds to the robot pointing
+            to the right and vice versa.
+        bottomDisplacement - Bottom displacement seems to be affected by both the
+            angle and horizontal position of the robot so is not a good indicator
+            of either.
     """
 
     # These variables represent the y-axis coordinates to which the line will be extrapolated to
@@ -74,12 +89,15 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
 
         # Calculate and display angle and displacement of robot in relation to centre line
         angle = math.degrees(math.atan2(top_x - bottom_x, ymax_global - ymin_global))
-        displacement = img.shape[1]/2 - bottom_x
+        topDisplacement = img.shape[1]/2 - top_x
+        bottomDisplacement = img.shape[1]/2 - bottom_x
         font = cv2.FONT_HERSHEY_PLAIN
         fontSize = 1
         color = [0, 255, 0]
 
-        cv2.putText(img, 'd = ' + str(displacement), (bottom_x + 10, ymax_global - 10),
+        cv2.putText(img, 'd_bot = ' + str(bottomDisplacement), (bottom_x + 10, ymax_global - 10),
+                    font, fontSize, color)
+        cv2.putText(img, 'd_top = ' + str(topDisplacement), (top_x + 10, ymin_global + 10),
                     font, fontSize, color)
         cv2.putText(img, 'alpha = ' + "{0:.2f}".format(angle), (top_x + 10, ymin_global),
                     font, fontSize, color)
@@ -89,4 +107,4 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
         displacement = 0
 
 
-    return angle, displacement
+    return angle, topDisplacement, bottomDisplacement
