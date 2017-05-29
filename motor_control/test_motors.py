@@ -17,5 +17,5 @@ motor_setup()
 
 sleep(1)
 
-forwards(1000)
+forwards(50,3)
 stop()
