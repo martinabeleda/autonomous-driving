@@ -19,10 +19,6 @@ def motor_setup():
 	GPIO.setup(Motor3A, GPIO.OUT)
 	GPIO.setup(Motor4A, GPIO.OUT)
 	GPIO.setup(Motor34EN, GPIO.OUT)
-	pwm1 = GPIO.PWM(Motor12EN,100) # 100 Hz frequency
-	pwm1.start(0) # 0% duty cycle
-	pwm2 = GPIO.PWM(Motor34EN,100)
-	pwm2.start(0)
 
 def forwards(duty,time):
 	print "Forwards"
