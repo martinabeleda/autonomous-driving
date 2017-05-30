@@ -20,7 +20,7 @@ def motor_setup():
 	GPIO.setup(Motor4A, GPIO.OUT)
 	GPIO.setup(Motor34EN, GPIO.OUT)
 
-def forwards(duty,time):
+def forwards(pwm1,pwm2,duty,time):
 	print "Forwards"
 	GPIO.output(Motor1A, GPIO.HIGH)
 	GPIO.output(Motor2A, GPIO.LOW)
@@ -30,7 +30,7 @@ def forwards(duty,time):
 	pwm2.ChangeDutyCycle(duty)
 	sleep(time)
 
-def reverse(distance):
+def reverse(pwm1,pwm2,distance):
 	print "Reverse"
 	GPIO.output(Motor1A, GPIO.LOW)
 	GPIO.output(Motor2A, GPIO.HIGH)
@@ -40,7 +40,7 @@ def reverse(distance):
 	pwm2.ChangeDutyCycle(duty)
 	sleep(time)
 
-def turn_clockwise(angle):
+def turn_clockwise(pwm1,pwm2,angle):
 	print "Turn clockwise by", angle, "degrees"
 	turnRate = 100
 	GPIO.output(Motor1A, GPIO.HIGH)
@@ -52,7 +52,7 @@ def turn_clockwise(angle):
 	time = angle/turnRate
 	sleep(time)
 	
-def turn_anti_clockwise(angle):
+def turn_anti_clockwise(pwm1,pwm2,angle):
 	print "Turn anti-clockwise by", angle, "degrees"
 	turnRate = 100
 	GPIO.output(Motor1A, GPIO.LOW)
@@ -82,7 +82,7 @@ def right_turn():
 	self.turnClockwise(90)
 	self.forwards(1)
 
-def stop():
+def stop(pwm1,pwm2):
 	print "Stop"
 	pwm1.stop()
 	pwm2.stop()
