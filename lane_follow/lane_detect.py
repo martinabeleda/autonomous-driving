@@ -32,10 +32,6 @@ def lane_detect(img):
     # Convert to grayscale
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
-    # Gaussian Blur
-    kernelSize = 5
-    blur = cv2.GaussianBlur(gray, (kernelSize,kernelSize), 0)
-
     # Canny Edge Detection
     lowThreshold = 150
     highThreshold = 200

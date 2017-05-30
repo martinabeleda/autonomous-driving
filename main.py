@@ -7,8 +7,8 @@ import time
 import cv2
 import numpy as np
 
-from motor_control.drive import drive
-from motor_control.motors import motor_setup
+from motor_control.drive import drive, turn_decide
+from motor_control.motors import motor_setup, forwards, turn_clockwise
 from lane_follow.lane_detect import lane_detect
 from intersection.intersection import is_red_line, read_barcode, check_light
 
@@ -20,16 +20,49 @@ rawCapture = PiRGBArray(camera, size=(800, 600))
 camera.vflip = True
 camera.hflip = True
 
+RED = 1
+
 # allow the camera to warmup
 time.sleep(0.1)
 
-# Main loop
+# main loop
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     	# grab the raw NumPy array representing the image, then initialize the timestamp
 		# and occupied/unoccupied text
 		image = frame.array
 
-		(img, angle, topDisplacement, bottomDisplacement) = lane_detect(image)
+	    # gaussian blur
+	    kernelSize = 5
+	    blur = cv2.GaussianBlur(gray, (kernelSize,kernelSize), 0)
+
+		# check if we are at the red line
+		masked, line = is_red_line(image)
+
+		if line is RED:
+
+			# display raw input
+			img = image
+
+			# store the number of barcode lines
+			barcode = read_barcode(masked)
+
+			# move forwards to the line
+			forwards(200)
+
+			# wait for the light to turn green
+			check_light()
+
+			# execute a random turn based on barcode
+			turn_decide(barcode)
+
+		else:
+
+			# detect lanes in the image
+			(img, angle, topDisplacement, bottomDisplacement) = lane_detect(image)
+
+			# execute lane following algorithm
+			drive(angle, displacement)
+
 
 		# show the frame
 		cv2.imshow("Frame", img)

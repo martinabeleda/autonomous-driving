@@ -19,6 +19,10 @@ GPIO.setup(motor2A, GPIO.OUT)
 GPIO.setup(motor2B, GPIO.OUT)
 GPIO.setup(motor2E, GPIO.OUT)
 
+def turn_decide(barcode)
+
+
+
 def drive(angle, topDisplacement, centreThreshold=50, angleThreshold=5)
     """
     Drive function.
@@ -43,7 +47,7 @@ def drive(angle, topDisplacement, centreThreshold=50, angleThreshold=5)
 	   	# Robot is close enough to the centre of the lanes
         if topDisplacement < -centreThreshold:
             	# Robot is angled to the left
-                
+
         elif topDisplacement > centreThreshold:
             	# Robot is angled to the right
 
