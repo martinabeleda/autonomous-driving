@@ -11,6 +11,7 @@ Motor4A = 13
 
 MotorEN = 12
 
+GPIO.setup(MotorEN, GPIO.OUT)
 pwm = GPIO.PWM(MotorEN,100) # 100 Hz frequency
 
 def motor_setup():
@@ -19,24 +20,23 @@ def motor_setup():
 	GPIO.setup(Motor2A, GPIO.OUT)
 	GPIO.setup(Motor3A, GPIO.OUT)
 	GPIO.setup(Motor4A, GPIO.OUT)
-	GPIO.setup(MotorEN, GPIO.OUT)
 
 def forwards(duty,time):
 	print "Forwards"
+	pwm.ChangeDutyCycle(duty)
 	GPIO.output(Motor1A, GPIO.HIGH)
 	GPIO.output(Motor2A, GPIO.LOW)
 	GPIO.output(Motor3A, GPIO.HIGH)
 	GPIO.output(Motor4A, GPIO.LOW)
-	pwm.ChangeDutyCycle(duty)
 	sleep(time)
 
 def reverse(distance):
 	print "Reverse"
+	pwm.ChangeDutyCycle(duty)
 	GPIO.output(Motor1A, GPIO.LOW)
 	GPIO.output(Motor2A, GPIO.HIGH)
 	GPIO.output(Motor3A, GPIO.LOW)
 	GPIO.output(Motor4A, GPIO.HIGH)
-	pwm.ChangeDutyCycle(duty)
 	sleep(time)
 
 def turn_clockwise(angle):

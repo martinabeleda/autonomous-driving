@@ -20,6 +20,6 @@ pwm.start(0) # 0% duty cycle
 
 sleep(1)
 
-forwards(50,3)
+forwards(80,10)
 stop()
 GPIO.cleanup()
