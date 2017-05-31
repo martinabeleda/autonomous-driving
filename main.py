@@ -11,9 +11,9 @@ cmd = 'sudo pigpiod'
 os.system(cmd)
 
 from motor_control.drive import drive_feedback, turn_decide
-from motor_control.motors import motor_setup, calibrate_motors, forwards_hard, forwards_lane_follow
+from motor_control.motors import motor_setup, calibrate_motors, forwards_hard
 from lane_follow.lane_detect import lane_detect
-from intersection.intersection import is_red_line
+from intersection import intersection
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
@@ -40,7 +40,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
     # gaussian blur
     kernelSize = 5
-    blur = cv2.GaussianBlur(image, (kernelSize,kernelSize), 0)
+    blur = cv2.GaussianBlur(gray, (kernelSize,kernelSize), 0)
 
     # check if we are at the red line
     masked, line = is_red_line(image)
@@ -71,8 +71,6 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	# execute lane following algorithm
 	rightDuty = drive_feedback(angle, topDisplacement, leftDuty, rightDuty)
 
-        forwards_lane_follow(leftDuty, rightDuty)
-        
     # show the frame
     cv2.imshow("Frame", img)
     key = cv2.waitKey(1) & 0xFF

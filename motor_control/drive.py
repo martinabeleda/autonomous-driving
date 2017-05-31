@@ -68,12 +68,14 @@ def drive_feedback(angle, topDisplacement, leftDuty, rightDuty, angleGain=1, cen
     	# robot is to the right of the centre line
         # increase rightDuty
         newRightDuty = rightDuty + angleGain
-
+        print 'boost right centre'
+        
     elif angle < -angleThreshold:
     	# robot is to the left of the centre line
         # decrease rightDuty
         newRightDuty = rightDuty - angleGain
-
+        print 'decrease right centre'
+        
     else:
    	# robot is close enough to the centre of the lanes
     	if topDisplacement < -centreThreshold:
@@ -82,12 +84,14 @@ def drive_feedback(angle, topDisplacement, leftDuty, rightDuty, angleGain=1, cen
             #angle = abs(topDisplacement/2)
             #turn_clockwise(angle)
             newRightDuty = rightDuty - angleGain
-
+            print 'boost right angle'
+            
         elif topDisplacement > centreThreshold:
     	    # robot is angled to the right
             # calculate angle
             #angle = topDisplacement/2    
             #turn_anti_clockwise(angle)
             newRightDuty = rightDuty + angleGain
-
+            print 'decrease right angle'
+            
     return newRightDuty
