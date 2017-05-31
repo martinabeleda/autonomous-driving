@@ -2,24 +2,24 @@ import RPi.GPIO as GPIO
 from motors import *
 from time import sleep
 
-GPIO.setmode(GPIO.BOARD)
+#GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 
-Motor1A = 16
-Motor2A = 18
+#Motor1A = 16
+#Motor2A = 18
 
-Motor3A = 11
-Motor4A = 13
+#Motor3A = 11
+#Motor4A = 13
 
-MotorEN = 12
+#MotorEN = 12
 
 motor_setup()
 
-pwm = GPIO.PWM(MotorEN,100) # 100 Hz frequency
-pwm.start(0) # 0% duty cycle
+#pwm = GPIO.PWM(MotorEN,100) # 100 Hz frequency
+#pwm.start(0) # 0% duty cycle
 
 sleep(1)
 
-forwards(80,10)
+forwards(128,500)
 stop()
 GPIO.cleanup()
