@@ -104,7 +104,7 @@ def turn_clockwise(angle):
 	
 def turn_anti_clockwise(angle):
 	print "Turn anti-clockwise by", angle, "degrees"
-	TURN_RATE = 100
+	TURN_RATE = 500
 	pi.set_PWM_dutycycle(motorLEN,0)
 	pi.write(motorR3A, True)
 	pi.write(motorR4A, False)
