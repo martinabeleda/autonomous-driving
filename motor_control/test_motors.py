@@ -20,6 +20,6 @@ motor_setup()
 
 sleep(1)
 
-forwards(128,500)
+forwards(160,200)
 stop()
 GPIO.cleanup()

@@ -56,8 +56,9 @@ def forwards(dc,distance):
 
 #	pwm.ChangeDutyCycle(dc)
 	pi.set_PWM_dutycycle(Motor12EN,dc)
-	pi.set_PWM_dutycycle(Motor34EN,dc+(255-dc)/4.5)
-
+	dcR = dc-dc/2.8
+	pi.set_PWM_dutycycle(Motor34EN,dcR)
+	print dcR
 	time = distance/SPEED
 
 	sleep(time)
