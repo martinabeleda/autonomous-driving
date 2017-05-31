@@ -2,7 +2,7 @@
 import random
 from time import sleep
 
-from motors import forwards_lane_follow
+from motors import forwards_lane_follow, right_turn, left_turn, forwards_hard
 
 
 #GPIO.setmode(GPIO.BOARD)
@@ -23,7 +23,7 @@ GPIO.setup(motor2B, GPIO.OUT)
 GPIO.setup(motor2E, GPIO.OUT)
 """
 
-def turn_decide(barcode):
+def turn_decide(dcL, barcode):
     """
     Turn decide function.
 
@@ -50,10 +50,9 @@ def turn_decide(barcode):
 
     	if choice is 'right': right_turn()
 
-	    elif choice is 'left': left_turn()
+	elif choice is 'left': left_turn()
 
-	    elif choice is 'forwards': forwards(200)
-
+	elif choice is 'forwards': forwards_hard(dcL, 200)
 
 def drive_feedback(angle, topDisplacement, leftDuty, rightDuty, angleGain=1, centreGain=1, centreThreshold=50, angleThreshold=5):
     """
@@ -63,6 +62,8 @@ def drive_feedback(angle, topDisplacement, leftDuty, rightDuty, angleGain=1, cen
 	function and controls the motors using a feedback loop in order to follow
     the lanes.
     """
+    newRightDuty = rightDuty
+    
     if angle > angleThreshold:
     	# robot is to the right of the centre line
         # increase rightDuty
@@ -78,15 +79,15 @@ def drive_feedback(angle, topDisplacement, leftDuty, rightDuty, angleGain=1, cen
     	if topDisplacement < -centreThreshold:
     	    # robot is angled to the left
             # calculate angle
-            angle = abs(topDisplacement/2)
-            turn_clockwise(angle)
+            #angle = abs(topDisplacement/2)
+            #turn_clockwise(angle)
+            newRightDuty = rightDuty - angleGain
 
         elif topDisplacement > centreThreshold:
     	    # robot is angled to the right
             # calculate angle
-            angle = topDisplacement/2    
-            turn_anti_clockwise(angle)
-
-    forwards_lane_follow(leftDuty, newRightDuty)
+            #angle = topDisplacement/2    
+            #turn_anti_clockwise(angle)
+            newRightDuty = rightDuty + angleGain
 
     return newRightDuty

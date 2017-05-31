@@ -8,7 +8,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
-import lane_detect
+from lane_detect import lane_detect
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
@@ -27,7 +27,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	# and occupied/unoccupied text
 	image = frame.array
 
-	(img, angle, topDisplacement, bottomDisplacement) = lane_detect(image)
+        # gaussian blur
+	kernelSize = 5
+	blur = cv2.GaussianBlur(image, (kernelSize,kernelSize), 0)
+        
+	(img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur)
 
 	# show the frame
 	cv2.imshow("Frame", img)

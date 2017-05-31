@@ -24,6 +24,10 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
             of either.
     """
 
+    angle = 0
+    topDisplacement = 0
+    bottomDisplacement = 0
+
     # These variables represent the y-axis coordinates to which the line will be extrapolated to
     ymin_global = img.shape[0]
     ymax_global = img.shape[0]
@@ -104,7 +108,8 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
 
     else:
         angle = 0
-        displacement = 0
+        topDisplacement = 0
+        bottomDisplacement = 0
 
 
     return angle, topDisplacement, bottomDisplacement

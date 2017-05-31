@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 from region_of_interest import region_of_interest
 
-def is_red_line(image)
+def is_red_line(image):
 
 	#crop to region of interest --> save time?? - rather than mask
 	crop = image[500:600, 0:800]
@@ -38,8 +38,8 @@ def is_red_line(image)
 	return red_img_crop, red_flag
 
 
-def read_barcode(maskedImage)
+def read_barcode(maskedImage):
+    print 'barcode'
 
-
-
-def check_light()
+def check_light():
+    print 'checklight'    

@@ -45,7 +45,7 @@ def motor_setup():
 #	GPIO.setup(motorR4A, GPIO.OUT)
 #	GPIO.setup(motorEN, GPIO.OUT)
 
-def calibrate_motors(dcL)
+def calibrate_motors(dcL):
 	dcR = dcL-dcL/2.8
 	return dcR
 
