@@ -1,7 +1,7 @@
 #import RPi.GPIO as GPIO
-import os
-cmd = 'sudo pigpiod'
-os.system(cmd)
+#import os
+#cmd = 'sudo pigpiod'
+#os.system(cmd)
 from time import sleep
 import pigpio
 
@@ -73,7 +73,7 @@ def reverse(distance):
 	pi.write(MotorR3A, False)
 	pi.write(MotorR4A, True)
 	pi.set_PWM_dutycycle(MotorLEN,dc)
-	dcR = dc-dc/2.8
+	dcR = dc-dc/2.6
 	pi.set_PWM_dutycycle(MotorREN,dcR)
 	print dcR
 	time = distance/SPEED
