@@ -5,15 +5,16 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 import time
 import cv2
+import RPi.GPIO as GPIO
 import numpy as np
 import os
 cmd = 'sudo pigpiod'
 os.system(cmd)
 
 from motor_control.drive import drive_feedback, turn_decide
-from motor_control.motors import motor_setup, calibrate_motors, forwards_hard
+from motor_control.motors import motor_setup, calibrate_motors, forwards_hard, forwards_lane_follow, stop 
 from lane_follow.lane_detect import lane_detect
-from intersection import intersection
+from intersection.intersection import is_red_line
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
@@ -24,7 +25,7 @@ camera.vflip = True
 camera.hflip = True
 
 RED = 1
-leftDuty = 160
+leftDuty = 100
 rightDuty = calibrate_motors(leftDuty)
 
 motor_setup()
@@ -34,50 +35,50 @@ time.sleep(1)
 
 # main loop
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-    # grab the raw NumPy array representing the image, then initialize the timestamp
-    # and occupied/unoccupied text
-    image = frame.array
 
-    # gaussian blur
-    kernelSize = 5
-    blur = cv2.GaussianBlur(gray, (kernelSize,kernelSize), 0)
+    try:
 
-    # check if we are at the red line
-    masked, line = is_red_line(image)
+        # grab the raw NumPy array representing the image, then initialize the timestamp
+        # and occupied/unoccupied text
+        image = frame.array
 
-    if line is RED:
+        # gaussian blur
+        kernelSize = 5
+        blur = cv2.GaussianBlur(image, (kernelSize,kernelSize), 0)
 
-        print "red"
-        """
-	# display raw input
-	img = image
+        # check if we are at the red line
+        masked, line = is_red_line(blur)
 
-	# store the number of barcode lines
-	barcode = read_barcode(masked)
+        if line is RED:
 
-	# move forwards to the line
-	forwards_hard(leftDuty, distance=200)
-  
-        # wait for the light to turn green
-	    check_light()
+            print "red"
+            """
+            # display raw input
+            img = image
 
-	# execute a random turn based on barcode
-	turn_decide(leftDuty, barcode)
-        """
-    else:
-	# detect lanes in the image
-	(img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur)
+            # store the number of barcode lines
+            barcode = read_barcode(masked)
 
-	# execute lane following algorithm
-	rightDuty = drive_feedback(angle, topDisplacement, leftDuty, rightDuty)
+            # move forwards to the line
+            forwards_hard(leftDuty, distance=200)
+      
+            # wait for the light to turn green
+                check_light()
 
-    # show the frame
-    cv2.imshow("Frame", img)
-    key = cv2.waitKey(1) & 0xFF
+            # execute a random turn based on barcode
+            turn_decide(leftDuty, barcode)
+            """
+        else:
+            # detect lanes in the image
+            (img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur)
 
-    # clear the stream in preparation for the next frame
-    rawCapture.truncate(0)
+            # execute lane following algorithm
+            rightDuty = drive_feedback(angle, topDisplacement, leftDuty, rightDuty)
 
-    # if the `q` key was pressed, break from the loop
-    if key == ord("q"):
-        break
+            forwards_lane_follow(leftDuty, rightDuty)
+
+        # clear the stream in preparation for the next frame
+        rawCapture.truncate(0)
+
+    except KeyboardInterrupt:
+        stop()
