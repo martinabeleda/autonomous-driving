@@ -9,72 +9,85 @@ pi = pigpio.pi()
 
 #GPIO.setmode(GPIO.BOARD)
 
-#MotorL1A = 16
-#MotorL2A = 18
+#motorL1A = 16
+#motorL2A = 18
 
-MotorL1A = 23
-MotorL2A = 24
+motorL1A = 23
+motorL2A = 24
 
-#MotorR3A = 11
-#MotorR4A = 13
+#motorR3A = 11
+#motorR4A = 13
 
-MotorR3A = 17
-MotorR4A = 27
+motorR3A = 17
+motorR4A = 27
 
-#MotorEN = 12
+#motorEN = 12
 
-MotorLEN = 18
-MotorREN = 22
+motorLEN = 18
+motorREN = 22
 
-#GPIO.setup(MotorEN, GPIO.OUT)
-#pwm = GPIO.PWM(MotorEN,100) # 100 Hz frequency
+#GPIO.setup(motorEN, GPIO.OUT)
+#pwm = GPIO.PWM(motorEN,100) # 100 Hz frequency
 
 def motor_setup():
-	print "Setup Motor GPIO"
-	pi.set_mode(MotorL1A, pigpio.OUTPUT)
-	pi.set_mode(MotorL2A, pigpio.OUTPUT)
-	pi.set_mode(MotorR3A, pigpio.OUTPUT)
-	pi.set_mode(MotorR4A, pigpio.OUTPUT)
-	pi.set_mode(MotorLEN, pigpio.OUTPUT)
-	pi.set_mode(MotorREN, pigpio.OUTPUT)
-	pi.set_PWM_frequency(MotorLEN, 100) # 100 Hz frequency
-	pi.set_PWM_frequency(MotorREN, 100)
-#	GPIO.setup(MotorL1A, GPIO.OUT)
-#	GPIO.setup(MotorL2A, GPIO.OUT)
-#	GPIO.setup(MotorR3A, GPIO.OUT)
-#	GPIO.setup(MotorR4A, GPIO.OUT)
-#	GPIO.setup(MotorEN, GPIO.OUT)
+	print "Setup motor GPIO"
+	pi.set_mode(motorL1A, pigpio.OUTPUT)
+	pi.set_mode(motorL2A, pigpio.OUTPUT)
+	pi.set_mode(motorR3A, pigpio.OUTPUT)
+	pi.set_mode(motorR4A, pigpio.OUTPUT)
+	pi.set_mode(motorLEN, pigpio.OUTPUT)
+	pi.set_mode(motorREN, pigpio.OUTPUT)
+	pi.set_PWM_frequency(motorLEN, 100) # 100 Hz frequency
+	pi.set_PWM_frequency(motorREN, 100)
+#	GPIO.setup(motorL1A, GPIO.OUT)
+#	GPIO.setup(motorL2A, GPIO.OUT)
+#	GPIO.setup(motorR3A, GPIO.OUT)
+#	GPIO.setup(motorR4A, GPIO.OUT)
+#	GPIO.setup(motorEN, GPIO.OUT)
 
-def forwards(dc,distance):
+def calibrate_motors(dcL)
+	dcR = dcL-dcL/2.8
+	return dcR
+
+def forwards_hard(dcL,distance):
 	print "Forwards"
 	SPEED = 39 # mm/s
-#	GPIO.output(MotorL1A, GPIO.HIGH)
-#	GPIO.output(MotorL2A, GPIO.LOW)
-#	GPIO.output(MotorR3A, GPIO.HIGH)
-#	GPIO.output(MotorR4A, GPIO.LOW)
-	pi.write(MotorL1A, True)
-	pi.write(MotorL2A, False)
-	pi.write(MotorR3A, True)
-	pi.write(MotorR4A, False)
+#	GPIO.output(motorL1A, GPIO.HIGH)
+#	GPIO.output(motorL2A, GPIO.LOW)
+#	GPIO.output(motorR3A, GPIO.HIGH)
+#	GPIO.output(motorR4A, GPIO.LOW)
+	pi.write(motorL1A, True)
+	pi.write(motorL2A, False)
+	pi.write(motorR3A, True)
+	pi.write(motorR4A, False)
 
 #	pwm.ChangeDutyCycle(dc)
-	pi.set_PWM_dutycycle(MotorLEN,dc)
-	dcR = dc-dc/2.8
-	pi.set_PWM_dutycycle(MotorREN,dcR)
+	pi.set_PWM_dutycycle(motorLEN,dcL)
+	dcR = calibrate_motors(dcL)
+	pi.set_PWM_dutycycle(motorREN,dcR)
 	print dcR
 	time = distance/SPEED
 	sleep(time)
+	
+def forwards_lane_follow(dcL,dcR):
+	pi.write(motorL1A, True)
+	pi.write(motorL2A, False)
+	pi.write(motorR3A, True)
+	pi.write(motorR4A, False)
+	pi.set_PWM_dutycycle(motorLEN,dcL)
+	pi.set_PWM_dutycycle(motorREN,dcR)
+	# maybe set sleep time ay
 
 def reverse(distance):
 	print "Reverse"
 	SPEED = 39 # mm/s
-	pi.write(MotorL1A, False)
-	pi.write(MotorL2A, True)
-	pi.write(MotorR3A, False)
-	pi.write(MotorR4A, True)
-	pi.set_PWM_dutycycle(MotorLEN,dc)
+	pi.write(motorL1A, False)
+	pi.write(motorL2A, True)
+	pi.write(motorR3A, False)
+	pi.write(motorR4A, True)
+	pi.set_PWM_dutycycle(motorLEN,dc)
 	dcR = dc-dc/2.8
-	pi.set_PWM_dutycycle(MotorREN,dcR)
+	pi.set_PWM_dutycycle(motorREN,dcR)
 	print dcR
 	time = distance/SPEED
 	sleep(time)
@@ -82,20 +95,20 @@ def reverse(distance):
 def turn_clockwise(angle):
 	print "Turn clockwise by", angle, "degrees"
 	TURN_RATE = 100
-	pi.set_PWM_dutycycle(MotorREN,0)
-	pi.write(MotorL1A, True)
-	pi.write(MotorL2A, False)
-	pi.set_PWM_dutycycle(MotorLEN,255)
+	pi.set_PWM_dutycycle(motorREN,0)
+	pi.write(motorL1A, True)
+	pi.write(motorL2A, False)
+	pi.set_PWM_dutycycle(motorLEN,255)
 	time = angle/TURN_RATE
 	sleep(time)
 	
 def turn_anti_clockwise(angle):
 	print "Turn anti-clockwise by", angle, "degrees"
-	TURN_RATE = 100
-	pi.set_PWM_dutycycle(MotorLEN,0)
-	pi.write(MotorR3A, True)
-	pi.write(MotorR4A, False)
-	pi.set_PWM_dutycycle(MotorREN,255)
+	TURN_RATE = 500
+	pi.set_PWM_dutycycle(motorLEN,0)
+	pi.write(motorR3A, True)
+	pi.write(motorR4A, False)
+	pi.set_PWM_dutycycle(motorREN,255)
 	time = angle/TURN_RATE
 	sleep(time)
 
@@ -110,17 +123,17 @@ def turn_anti_clockwise(angle):
 def left_turn():
 	"Left turn"
 	self.forwards(160,225)
-	self.turnAntiClockWise(90)
+	self.turn_anti_clockwise(90)
 	self.forwards(160,140)
 
 def right_turn():
 	"Left turn"
 	self.forwards(160,225)
-	self.turnClockwise(90)
+	self.turn_clockwise(90)
 	self.forwards(160,140)
 
 def stop():
 	print "Stop"
 	#pwm.stop()
-	pi.set_PWM_dutycycle(MotorLEN, 0)
-	pi.set_PWM_dutycycle(MotorREN, 0)
+	pi.set_PWM_dutycycle(motorLEN, 0)
+	pi.set_PWM_dutycycle(motorREN, 0)
