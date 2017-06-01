@@ -2,6 +2,7 @@
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy import trapz
 
 from datetime import datetime
 
@@ -27,13 +28,15 @@ def is_red_line(image):
 	red_hist = cv2.calcHist([crop],[2],mask,[256],[1,256])
 
 	#see maximum red amount
-	#or can change mask red values and do a for loop --> depends how time consuming that is
-	amount_of_red = np.amax(red_hist)
+	#find area under curve
+	redH_trans = np.transpose(red_hist)
 
-	if amount_of_red > 450:
-	    red_flag = 1
+	areaHist = trapz(redH_trans, dx=1)
+
+	if areaHist[0] > 12000:
+    	print("Red detected") 
 	else:
-	    red_flag = 0
+    	print("NOT AN INTERSECTION")
 
 	return red_img_crop, red_flag
 
