@@ -50,8 +50,12 @@ def calibrate_motors(dcL)
 	while 1:
 		forwards_lane_follow(dcL,dcR)
 		inkey = raw_input()
-		if inkey == 'i': dcR += 0.2
-		elif inkey == 'p': dcR -= 0.2
+		if inkey == 'i':
+			dcR += 0.2
+			print "right duty %f" % (dcR)
+		elif inkey == 'p':
+			dcR -= 0.2
+			print "right duty %f" % (dcR)
 		elif inkey == 'q': break
 	return dcR
 
