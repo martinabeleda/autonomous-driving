@@ -40,7 +40,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	# check if we are at the red line
 	masked, line = is_red_line(blur)
 
-	if line is RED:
+    if line is RED:
 
 	    print "red"
 """
@@ -61,13 +61,13 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	    turn_decide(barcode)
 
 """
-	else:
+    else:
 
-	    # detect lanes in the image
-	    (img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur)
+		# detect lanes in the image
+		(img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur)
 
-            # execute lane following algorithm
-	    rightDuty = drive_feedback(angle, topDisplacement, leftDuty, rightDuty)
+		# execute lane following algorithm
+		rightDuty = drive_feedback(angle, topDisplacement, leftDuty, rightDuty)
 
 	# show the frame
 	cv2.imshow("Frame", img)
