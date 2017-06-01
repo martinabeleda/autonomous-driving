@@ -54,7 +54,7 @@ def turn_decide(dcL, barcode):
 
 	elif choice is 'forwards': forwards_hard(dcL, 200)
 
-def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, angleGain=0.5, displacementGain=0.5, centreThreshold=10, angleThreshold=5):
+def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, angleGain=2, displacementGain=2, centreThreshMin=-15, centreThreshMax = 50, angleThreshMin=-5, angleThreshMax=10):
     """
     Drive function.
 
@@ -64,31 +64,31 @@ def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, angleGain=0.5, d
     """
     newRightDuty = rightDuty
 
-    if topDisplacement < -centreThreshold and rightDuty - displacementGain > calibrate_motors(leftDuty) - displacementGain*2:
+    if topDisplacement < centreThreshMin and rightDuty - displacementGain > calibrate_motors(leftDuty) - displacementGain*5:
         # robot is angled to the left
         # calculate angle
         #angle = abs(topDisplacement/2)
         #turn_clockwise(angle)
-        newRightDuty = rightDuty + displacementGain
-        print 'boost right angle %f' % (newRightDuty)
+        newRightDuty = rightDuty - displacementGain
+        print 'decrease right robot angle %f' % (newRightDuty)
 
-    elif topDisplacement > centreThreshold and rightDuty + displacementGain < calibrate_motors(leftDuty) + displacementGain*2:
+    elif topDisplacement > centreThreshMax and rightDuty + displacementGain < calibrate_motors(leftDuty) + displacementGain*15:
 	# robot is angled to the right
         # calculate angle
         #angle = topDisplacement/2
         #turn_anti_clockwise(angle)
-        newRightDuty = rightDuty - displacementGain
-        print 'decrease right angle %f' % (newRightDuty)
+        newRightDuty = rightDuty + displacementGain
+        print 'boost right robot angle %f' % (newRightDuty)
 
     else:
 
-        if angle > angleThreshold and rightDuty + angleGain < calibrate_motors(leftDuty) + angleGain*2:
+        if angle > angleThreshMax and rightDuty + angleGain < calibrate_motors(leftDuty) + angleGain*15:
             # robot is to the right of the centre line
             # increase rightDuty
             newRightDuty = rightDuty + angleGain
             print 'boost right centre %f' % (newRightDuty)
 
-        elif angle < -angleThreshold and rightDuty - angleGain > calibrate_motors(leftDuty) - angleGain*2:
+        elif angle < angleThreshMin and rightDuty - angleGain > calibrate_motors(leftDuty) - angleGain*5:
             # robot is to the left of the centre line
             # decrease rightDuty
             newRightDuty = rightDuty - angleGain
