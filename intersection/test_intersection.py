@@ -35,7 +35,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		maskedImage, line = is_red_line(image)
 
 		if line is RED:
-
+			print("RED LINE!!!")
 			#if at intersection 
 			turnCode = read_barcode(maskedImage)
 			print("Turn Code", turnCode)
