@@ -30,7 +30,7 @@ camera.vflip = True
 camera.hflip = True
 
 RED = 1
-leftDuty = 120
+leftDuty = 80
 rightDuty = calibrate_motors(leftDuty)
 	
 motor_setup()
@@ -78,7 +78,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             (img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur)
 
             # execute lane following algorithm
-            rightDuty = drive_feedback(angle, rightDuty, leftDuty)
+            rightDuty = drive_feedback(angle, topDisplacement, rightDuty, leftDuty)
 
             forwards_lane_follow(leftDuty, rightDuty)
 

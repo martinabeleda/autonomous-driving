@@ -54,7 +54,7 @@ def turn_decide(dcL, barcode):
 
 	elif choice is 'forwards': forwards_hard(dcL, 200)
 
-def drive_feedback(angle, rightDuty, leftDuty, angleGain=1, displacementGain=1, centreThreshold=50, angleThreshold=5):
+def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, angleGain=0.5, displacementGain=0.5, centreThreshold=10, angleThreshold=5):
     """
     Drive function.
 
@@ -64,34 +64,37 @@ def drive_feedback(angle, rightDuty, leftDuty, angleGain=1, displacementGain=1, 
     """
     newRightDuty = rightDuty
 
-    if angle > angleThreshold and rightDuty < (calibrate_motors(leftDuty)+angleGain):
+    if angle > angleThreshold and rightDuty + angleGain < calibrate_motors(leftDuty) + angleGain*2:
     	# robot is to the right of the centre line
         # increase rightDuty
         newRightDuty = rightDuty + angleGain
-        print 'boost right centre %d' % (newRightDuty)
+        print 'boost right centre %f' % (newRightDuty)
 
-    elif angle < -angleThreshold and rightDuty > calibrate_motors(leftDuty)-angleGain:
+    elif angle < -angleThreshold and rightDuty - angleGain > calibrate_motors(leftDuty) - angleGain*2:
     	# robot is to the left of the centre line
         # decrease rightDuty
         newRightDuty = rightDuty - angleGain
-        print 'decrease right centre %d' % (newRightDuty)
+        print 'decrease right centre %f' % (newRightDuty)
 
     else:
    	    # robot is close enough to the centre of the lanes
-    	if topDisplacement < -centreThreshold:
+    	if topDisplacement < -centreThreshold and rightDuty - displacementGain > calibrate_motors(leftDuty) - displacementGain*2:
     	    # robot is angled to the left
             # calculate angle
             #angle = abs(topDisplacement/2)
             #turn_clockwise(angle)
-            newRightDuty = rightDuty - displacementGain
-            print 'boost right angle'
+            newRightDuty = rightDuty + displacementGain
+            print 'boost right angle %f' % (newRightDuty)
 
-        elif topDisplacement > centreThreshold:
+        elif topDisplacement > centreThreshold and rightDuty + displacementGain < calibrate_motors(leftDuty) + displacementGain*2:
     	    # robot is angled to the right
             # calculate angle
             #angle = topDisplacement/2
             #turn_anti_clockwise(angle)
-            newRightDuty = rightDuty + displacementGain
-            print 'decrease right angle'
+            newRightDuty = rightDuty - displacementGain
+            print 'decrease right angle %f' % (newRightDuty)
+
+	else:
+            print 'right duty is %f' % (newRightDuty)
 
     return newRightDuty

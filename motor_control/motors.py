@@ -46,7 +46,7 @@ def motor_setup():
 #	GPIO.setup(motorEN, GPIO.OUT)
 
 def calibrate_motors(dcL):
-	dcR = dcL-dcL/3
+	dcR = dcL
 	return dcR
 
 def forwards_hard(dcL,distance):

@@ -111,13 +111,13 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
                     font, fontSize, color)
         '''
 
-    elif ((len(all_left_grad) = 0) and (len(all_right_grad) > 0)):
+    elif ((len(all_left_grad) == 0) and (len(all_right_grad) > 0)):
         # if we only have the right lane
         angle = 15
         topDisplacement = 0
         bottomDisplacement = 0
 
-    elif ((len(all_left_grad) > 0) and (len(all_right_grad) = 0)):
+    elif ((len(all_left_grad) > 0) and (len(all_right_grad) == 0)):
         # if we only have the left lane
         angle = -15
         topDisplacement = 0
