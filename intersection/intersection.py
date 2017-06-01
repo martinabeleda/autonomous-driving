@@ -8,7 +8,7 @@ from datetime import datetime
 from region_of_interest import region_of_interest
 
 
-def is_red_line(image)
+def is_red_line(image):
 
 	#crop to region of interest --> save time?? - rather than mask
 	crop = image[500:600, 0:800]
@@ -17,7 +17,7 @@ def is_red_line(image)
 	#set limits for what is considered "red"
 	#0 0 100 --> to always get all red --> or lower threshold 
 	red_bound_low = np.array([0,0,120])
-	red_bound_high =np.array([115,115,255])
+	red_bound_high =np.array([130,130,255])
 
 	#find red areas and apply mask
 	mask = cv2.inRange(crop, red_bound_low, red_bound_high)
@@ -40,8 +40,8 @@ def is_red_line(image)
 	return red_img_crop, red_flag
 
 
-def read_barcode(maskedImage)
+def read_barcode(maskedImage):
 
 
 
-def check_light()
+def check_light():
