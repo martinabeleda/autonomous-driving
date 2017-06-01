@@ -21,6 +21,17 @@ Lane following and traffic sign reading differential drive robot. Developed for 
 git clone https://github.com/martinabeleda/PiCar.git
 ```
 
+Checkout to branch:
+```
+git checkout --track origin/<branch_name>
+```
+
+Run the code:
+```
+cd PiCar
+python main.py
+```
+
 ## PiCar setup
 
 The Pi is configured to startup in Command Line Interface (CLI) mode and automatically logged in as pi. This saves memory and startup time because the front end GUI doesn't have to load. To manually start the desktop GUI, type `startx` into CLI.
