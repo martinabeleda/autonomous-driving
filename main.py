@@ -31,7 +31,8 @@ camera.hflip = True
 
 RED = 1
 leftDuty = 80
-rightDuty = calibrate_motors(leftDuty)
+rightDutyInit = calibrate_motors(leftDuty)
+rightDuty = rightDutyInit
 	
 motor_setup()
 
@@ -65,7 +66,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             barcode = read_barcode(masked)
 
             # move forwards to the line
-            forwards_hard(leftDuty, distance=200)
+            forwards_hard(leftDuty, rightDuty, distance=200)
       
             # wait for the light to turn green
             check_light()
@@ -78,7 +79,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             (img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur)
 
             # execute lane following algorithm
-            rightDuty = drive_feedback(angle, topDisplacement, rightDuty, leftDuty)
+            rightDuty = drive_feedback(angle, topDisplacement, rightDuty, leftDuty, rightDutyInit)
 
             forwards_lane_follow(leftDuty, rightDuty)
 
