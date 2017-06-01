@@ -1,7 +1,7 @@
 # PiCar
 Lane following and traffic sign reading differential drive robot. Developed for MTRX5700 Experimental Robotics Major Project 2017 by:
 
-* Martin Abeleda
+* Martin Abelayda
 * Tom Rapson
 * Kristina Mahoney
 * Riley Green
