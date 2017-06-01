@@ -60,7 +60,7 @@ def read_barcode(maskedImage):
 	return code
 
 def check_light():
-	print("blah")
+	print("checking light")
 
 	
 def turn_decide(barcode):

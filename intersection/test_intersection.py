@@ -20,7 +20,7 @@ time.sleep(0.1)
 
 #defines
 RED = 1
-
+cv2.namedWindow('Main Frame', cv2.WINDOW_NORMAL)
 # Main loop
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     	# grab the raw NumPy array representing the image, then initialize the timestamp
@@ -28,7 +28,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		image = frame.array
 
 		# gaussian blur
-	    	kernelSize = 7
+	    	kernelSize = 5
 	    	blur = cv2.GaussianBlur(image, (kernelSize,kernelSize), 0)
 
 		#Check to see  if red line is present - enter intersection module 
@@ -51,10 +51,12 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
 		else:
 			print("Not an intersection")
+			#delay frame rate - maybs remove?
+			time.sleep(0.1)
 
 
 		# show the frame
-		cv2.imshow("Frame", image)
+		cv2.imshow('Main Frame', image)
                 key = cv2.waitKey(1) & 0xFF
 
 		# clear the stream in preparation for the next frame
@@ -62,6 +64,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
 		# if the `q` key was pressed, break from the loop
 		if key == ord("q"):
+			cv2.destroyAllWindows()
 			break
 
 
