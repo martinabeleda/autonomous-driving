@@ -49,7 +49,6 @@ def calibrate_motors(dcL):
 	dcR = dcL
 	while 1:
 		forwards_lane_follow(dcL,dcR)
-		print "i'm out baby"
 		inkey = raw_input()
 		if inkey is "i":
 			dcR += 0.5
@@ -72,12 +71,8 @@ def forwards_hard(dcL,dcR,distance):
 	pi.write(motorL2A, False)
 	pi.write(motorR3A, True)
 	pi.write(motorR4A, False)
-
-#	pwm.ChangeDutyCycle(dc)
 	pi.set_PWM_dutycycle(motorLEN,dcL)
-	dcR = calibrate_motors(dcL)
 	pi.set_PWM_dutycycle(motorREN,dcR)
-	print dcR
 	time = distance/SPEED
 	sleep(time)
 	
@@ -133,17 +128,17 @@ def turn_anti_clockwise(angle):
 
 	# self.forwards(50,distance)
 
-def left_turn():
+def left_turn(dcL,dcR):
 	"Left turn"
-	self.forwards(160,225)
-	self.turn_anti_clockwise(90)
-	self.forwards(160,140)
+	forwards_hard(dcL,dcR,210)
+	turn_anti_clockwise(90)
+	forwards_hard(dcL,dcR,210)
 
 def right_turn():
 	"Left turn"
-	self.forwards(160,225)
+	forwards_hard(dcL,dcR,210)
 	self.turn_clockwise(90)
-	self.forwards(160,140)
+	forwards_hard(dcL,dcR,210)
 
 def stop():
 	print "Stop"

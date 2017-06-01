@@ -30,7 +30,7 @@ camera.vflip = True
 camera.hflip = True
 
 RED = 1
-leftDuty = 120
+leftDuty = 90
 rightDutyInit = calibrate_motors(leftDuty)
 rightDuty = rightDutyInit
 
