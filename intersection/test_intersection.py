@@ -28,7 +28,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		image = frame.array
 
 		# gaussian blur
-	    kernelSize = 5
+	    kernelSize = 9
 	    blur = cv2.GaussianBlur(gray, (kernelSize,kernelSize), 0)
 
 		#Check to see  if red line is present - enter intersection module 
