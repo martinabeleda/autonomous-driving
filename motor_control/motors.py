@@ -46,7 +46,7 @@ def motor_setup():
 #	GPIO.setup(motorEN, GPIO.OUT)
 
 def calibrate_motors(dcL):
-	dcR = dcL-dcL/2.8
+	dcR = dcL-dcL/3
 	return dcR
 
 def forwards_hard(dcL,distance):
@@ -79,6 +79,7 @@ def forwards_lane_follow(dcL,dcR):
 	# maybe set sleep time ay
 
 def reverse(distance):
+	# fix
 	print "Reverse"
 	SPEED = 39 # mm/s
 	pi.write(motorL1A, False)
@@ -86,7 +87,7 @@ def reverse(distance):
 	pi.write(motorR3A, False)
 	pi.write(motorR4A, True)
 	pi.set_PWM_dutycycle(motorLEN,dc)
-	dcR = dc-dc/2.8
+	dcR = calibrate_motors(dc)
 	pi.set_PWM_dutycycle(motorREN,dcR)
 	print dcR
 	time = distance/SPEED

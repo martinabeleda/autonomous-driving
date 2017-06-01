@@ -3,9 +3,9 @@
 # Date: 19/05/2017
 from picamera.array import PiRGBArray
 from picamera import PiCamera
+import atexit
 import time
 import cv2
-import RPi.GPIO as GPIO
 import numpy as np
 import os
 cmd = 'sudo pigpiod'
@@ -16,6 +16,11 @@ from motor_control.motors import motor_setup, calibrate_motors, forwards_hard, f
 from lane_follow.lane_detect import lane_detect
 from intersection.intersection import is_red_line
 
+def exit_handler():
+    stop()
+
+atexit.register(exit_handler)
+
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
 camera.resolution = (800, 600)
@@ -25,9 +30,9 @@ camera.vflip = True
 camera.hflip = True
 
 RED = 1
-leftDuty = 100
+leftDuty = 120
 rightDuty = calibrate_motors(leftDuty)
-
+	
 motor_setup()
 
 # allow the camera to warmup
@@ -35,9 +40,9 @@ time.sleep(1)
 
 # main loop
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-
+	
     try:
-
+	
         # grab the raw NumPy array representing the image, then initialize the timestamp
         # and occupied/unoccupied text
         image = frame.array
@@ -63,7 +68,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             forwards_hard(leftDuty, distance=200)
       
             # wait for the light to turn green
-                check_light()
+            check_light()
 
             # execute a random turn based on barcode
             turn_decide(leftDuty, barcode)
@@ -73,7 +78,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             (img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur)
 
             # execute lane following algorithm
-            rightDuty = drive_feedback(angle, topDisplacement, leftDuty, rightDuty)
+            rightDuty = drive_feedback(angle, rightDuty, leftDuty)
 
             forwards_lane_follow(leftDuty, rightDuty)
 
@@ -81,4 +86,4 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         rawCapture.truncate(0)
 
     except KeyboardInterrupt:
-        stop()
+        pi.stop()

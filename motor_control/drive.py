@@ -2,7 +2,7 @@
 import random
 from time import sleep
 
-from motors import forwards_lane_follow, right_turn, left_turn, forwards_hard
+from motors import forwards_lane_follow, right_turn, left_turn, forwards_hard, calibrate_motors
 
 
 #GPIO.setmode(GPIO.BOARD)
@@ -54,7 +54,7 @@ def turn_decide(dcL, barcode):
 
 	elif choice is 'forwards': forwards_hard(dcL, 200)
 
-def drive_feedback(angle, topDisplacement, leftDuty, rightDuty, angleGain=1, centreGain=1, centreThreshold=50, angleThreshold=5):
+def drive_feedback(angle, rightDuty, leftDuty, angleGain=1, centreThreshold=50, angleThreshold=5):
     """
     Drive function.
 
@@ -64,34 +64,34 @@ def drive_feedback(angle, topDisplacement, leftDuty, rightDuty, angleGain=1, cen
     """
     newRightDuty = rightDuty
     
-    if angle > angleThreshold:
+    if angle > angleThreshold and rightDuty < (calibrate_motors(leftDuty)+angleGain):
     	# robot is to the right of the centre line
         # increase rightDuty
         newRightDuty = rightDuty + angleGain
-        print 'boost right centre'
+        print 'boost right centre %d' % (newRightDuty)
         
-    elif angle < -angleThreshold:
+    elif angle < -angleThreshold and rightDuty > calibrate_motors(leftDuty)-angleGain:
     	# robot is to the left of the centre line
         # decrease rightDuty
         newRightDuty = rightDuty - angleGain
-        print 'decrease right centre'
+        print 'decrease right centre %d' % (newRightDuty)
         
-    else:
+    #else:
    	# robot is close enough to the centre of the lanes
-    	if topDisplacement < -centreThreshold:
+    	#if topDisplacement < -centreThreshold:
     	    # robot is angled to the left
             # calculate angle
             #angle = abs(topDisplacement/2)
             #turn_clockwise(angle)
-            newRightDuty = rightDuty - angleGain
-            print 'boost right angle'
+            #newRightDuty = rightDuty - angleGain
+            #print 'boost right angle'
             
-        elif topDisplacement > centreThreshold:
+        #elif topDisplacement > centreThreshold:
     	    # robot is angled to the right
             # calculate angle
             #angle = topDisplacement/2    
             #turn_anti_clockwise(angle)
-            newRightDuty = rightDuty + angleGain
-            print 'decrease right angle'
+            #newRightDuty = rightDuty + angleGain
+            #print 'decrease right angle'
             
     return newRightDuty
