@@ -34,7 +34,7 @@ def lane_detect(img):
 
     # Canny Edge Detection
     lowThreshold = 150
-    highThreshold = 200
+    highThreshold = 20
     edges = cv2.Canny(gray, lowThreshold, highThreshold)
 
     # Mask out areas outside region of interest
