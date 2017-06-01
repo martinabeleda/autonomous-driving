@@ -2,7 +2,8 @@
 import random
 from time import sleep
 
-#from motors import forwards, turn_clockwise, return_to_centre, turn_anti_clockwise, right_turn, left_turn
+from motors import forwards_lane_follow
+
 
 #GPIO.setmode(GPIO.BOARD)
 
@@ -48,43 +49,44 @@ def turn_decide(barcode):
         choice = random.choice(result)
 
     	if choice is 'right': right_turn()
-	
+
 	    elif choice is 'left': left_turn()
 
 	    elif choice is 'forwards': forwards(200)
 
 
-def drive(angle, topDisplacement, centreThreshold=50, angleThreshold=5):
+def drive_feedback(angle, topDisplacement, leftDuty, rightDuty, angleGain=1, centreGain=1, centreThreshold=50, angleThreshold=5):
     """
     Drive function.
 
 	This function takes the angle and displacement from the `lane_detect()`
-	function and controls the motors in order to follow the lanes.
-    """
+	function and controls the motors using a feedback loop in order to follow
+    the lanes.
     """
     if angle > angleThreshold:
-    	# Robot is to the right of the centre line
-
-	turn_anti_clockwise()
-	forwards()
+    	# robot is to the right of the centre line
+        # increase rightDuty
+        newRightDuty = rightDuty + angleGain
 
     elif angle < -angleThreshold:
-    	# Robot is to the left of the centre line
-
-	turn_clockwise()
-	forwards()
+    	# robot is to the left of the centre line
+        # decrease rightDuty
+        newRightDuty = rightDuty - angleGain
 
     else:
-   	# Robot is close enough to the centre of the lanes
+   	# robot is close enough to the centre of the lanes
     	if topDisplacement < -centreThreshold:
-    	    # Robot is angled to the left
+    	    # robot is angled to the left
+            # calculate angle
+            angle = abs(topDisplacement/2)
+            turn_clockwise(angle)
 
         elif topDisplacement > centreThreshold:
-    	    # Robot is angled to the right
+    	    # robot is angled to the right
+            # calculate angle
+            angle = topDisplacement/2    
+            turn_anti_clockwise(angle)
 
-        else:
-    	    # Move forward
+    forwards_lane_follow(leftDuty, newRightDuty)
 
-
-    GPIO.cleanup()
-    """
+    return newRightDuty
