@@ -4,7 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from datetime import datetime
-from region_of_interest import region_of_interest
 
 
 def is_red_line(image):
@@ -31,7 +30,7 @@ def is_red_line(image):
 	#or can change mask red values and do a for loop --> depends how time consuming that is
 	amount_of_red = np.amax(red_hist)
 
-	if amount_of_red > 450:
+	if amount_of_red > 500:
 	    red_flag = 1
 	else:
 	    red_flag = 0
@@ -42,7 +41,7 @@ def is_red_line(image):
 def read_barcode(maskedImage):
 
 	#potentially do this before hand if rest of code works with 9,9 kernel
-	maskedImage = cv2.GaussianBlur(img2, (9,9),0)
+	maskedImage = cv2.GaussianBlur(maskedImage, (9,9),0)
 	blurred = cv2.pyrMeanShiftFiltering(maskedImage,51,91)
 
 	grayImage = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
@@ -56,3 +55,39 @@ def read_barcode(maskedImage):
 
 def check_light():
 	print("blah")
+
+	
+def turn_decide(barcode):
+    print("turn decide");
+    '''
+    Turn decide function.	
+    =======
+    This function looks at the barcode and randomly decides on a next turn to
+    make and then calls the appropriate motor function.
+
+
+    choices = {0: ('forwards', 'right', 'left'),
+               1: ('right'),
+               2: ('left'),
+               3: ('forwards', 'left'),
+               4: ('right', 'left'),
+               5: ('forwards', 'right')}
+    default = 0
+    result = choices.get(barcode, default);
+
+    if(result is 'right'):
+        right_turn();
+    elif(result is 'left'):
+        left_turn();
+    else:
+        # make a random choice
+        choice = random.choice(result)
+
+    	if choice is 'right': right_turn()
+
+	    elif choice is 'left': left_turn()
+
+	    elif choice is 'forwards': forwards(200)
+    '''  
+
+
