@@ -30,7 +30,7 @@ def is_red_line(image):
 	#or can change mask red values and do a for loop --> depends how time consuming that is
 	amount_of_red = np.amax(red_hist)
 
-	if amount_of_red > 500:
+	if amount_of_red > 450:
 	    red_flag = 1
 	else:
 	    red_flag = 0
@@ -49,7 +49,13 @@ def read_barcode(maskedImage):
 
 	contours,_ = cv2.findContours(thresh1, cv2.RETR_LIST,cv2.CHAIN_APPROX_NONE)
 
-	code = len(contours)-2
+	#remove false positives (noise) and remove red box contour
+	code = 0
+	for i in range(0,len(contours)):
+		cnt = contours[i]
+		area = cv2.contourArea(cnt)
+		if area > 20 and area < 3000:
+			code = code+1
 
 	return code
 
