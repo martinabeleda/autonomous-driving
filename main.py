@@ -30,9 +30,15 @@ camera.vflip = True
 camera.hflip = True
 
 RED = 1
-leftDuty = 80
+leftDuty = 120
 rightDutyInit = calibrate_motors(leftDuty)
 rightDuty = rightDutyInit
+
+# wait for user to say GO
+print "Waiting for you to press g"
+while(1):
+	inkey = raw_input()
+	if inkey is "g": break
 	
 motor_setup()
 

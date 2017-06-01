@@ -45,18 +45,20 @@ def motor_setup():
 #	GPIO.setup(motorR4A, GPIO.OUT)
 #	GPIO.setup(motorEN, GPIO.OUT)
 
-def calibrate_motors(dcL)
+def calibrate_motors(dcL):
 	dcR = dcL
 	while 1:
 		forwards_lane_follow(dcL,dcR)
+		print "i'm out baby"
 		inkey = raw_input()
-		if inkey == 'i':
-			dcR += 0.2
+		if inkey is "i":
+			dcR += 0.5
 			print "right duty %f" % (dcR)
-		elif inkey == 'p':
-			dcR -= 0.2
+		elif inkey is "p":
+			dcR -= 0.5
 			print "right duty %f" % (dcR)
-		elif inkey == 'q': break
+		elif inkey is "q": break
+	stop()
 	return dcR
 
 def forwards_hard(dcL,dcR,distance):
