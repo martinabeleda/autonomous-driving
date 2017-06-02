@@ -40,8 +40,8 @@ camera.hflip = True
 
 RED = 1
 leftDuty = 70
-rightDutyInit = calibrate_motors(leftDuty)
-rightDuty = rightDutyInit
+rightDuty = calibrate_motors(leftDuty)
+
 lastMove = 'centre'
 
 # wait for user to say GO
@@ -64,6 +64,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # and occupied/unoccupied text
         image = frame.array
         start = datetime.now()
+        
         # gaussian blur
         kernelSize = 5
         blur = cv2.GaussianBlur(image, (kernelSize,kernelSize), 0)
@@ -106,8 +107,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         font = cv2.FONT_HERSHEY_PLAIN
         fontSize = 3
         color = [0, 255, 0]
-        cv2.putText(img, str(fps) + "FPS", (30, 0),
-                    font, fontSize, color)
+        cv2.putText(img, str(fps) + "FPS", (30, 0), font, fontSize, color)
         cv2.imshow('Main Frame', img)
         key = cv2.waitKey(1) & 0xFF
 
