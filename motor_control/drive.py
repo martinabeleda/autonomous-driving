@@ -1,6 +1,27 @@
+#import RPi.GPIO as GPIO
 import random
 from time import sleep
+
 from motors import forwards_lane_follow, right_turn, left_turn, forwards_hard
+
+
+#GPIO.setmode(GPIO.BOARD)
+
+motor1A = 11
+motor1B = 13
+motor1E = 15
+motor2A = 16
+motor2B = 18
+motor2E = 22
+
+"""
+GPIO.setup(motor1A, GPIO.OUT)
+GPIO.setup(motor1B, GPIO.OUT)
+GPIO.setup(motor1E, GPIO.OUT)
+GPIO.setup(motor2A, GPIO.OUT)
+GPIO.setup(motor2B, GPIO.OUT)
+GPIO.setup(motor2E, GPIO.OUT)
+"""
 
 def turn_decide(dcL, barcode):
     """
@@ -33,61 +54,54 @@ def turn_decide(dcL, barcode):
 
 	elif choice is 'forwards': forwards_hard(leftDuty, rightDuty, 210)
 
-def drive_feedback(angle, topDisp, rightDuty, lastMove, angleCalibrate=5.16, topDispCalibrate=31,
-                   yawGain=0.01, yawThresh=15,
-                   centreGain=1, centreThresh=10):
+def drive_feedback(angle, topD, rightDuty, lastMove, angleGain=0.0003, displacementGain=1000,
+                   centreThreshMin=-15, centreThreshMax = 50, angleThreshMin=-5, angleThreshMax=10):
     """
     Drive function.
 
 	This function takes the angle and displacement from the `lane_detect()`
 	function and controls the motors using a feedback loop in order to follow
-        the lanes.
+    the lanes.
     """
     MIN_DUTY = 48
-    MAX_DUTY = 150
+    MAX_DUTY = 100
     newRightDuty = rightDuty
 
-    if topDisp < -yawThresh and rightDuty + yawGain*topDisp > MIN_DUTY: ### and lastMove is not 'decrease':
-        
+    if topD < centreThreshMin and rightDuty + displacementGain*topD > MIN_DUTY and lastMove is not 'decrease':
         # robot is angled to the left
-        newRightDuty = rightDuty + yawGain*topDisp
-        lastMove = 'decrease'
-        print 'decrease right robot yaw %f' % (newRightDuty)
+        # calculate angle
 
-    elif topDisp > yawThresh and rightDuty + yawGain*topDisp < MAX_DUTY: ### and lastMove is not 'boost':
-        
-	    # robot is angled to the right
-        newRightDuty = rightDuty + yawGain*topDisp
+        newRightDuty = rightDuty + displacementGain*topD
+        lastMove = 'decrease'
+        print 'decrease right robot angle %f' % (newRightDuty)
+
+    elif topD > centreThreshMax and rightDuty + displacementGain*topD < MAX_DUTY and lastMove is not 'boost':
+	# robot is angled to the right
+        # calculate angle
+
+        newRightDuty = rightDuty + displacementGain*topD
         lastMove = 'boost'
-        print 'boost right robot yaw %f' % (newRightDuty)
+        print 'boost right robot angle %f' % (newRightDuty)
 
     else:
 
-        if angle > centreThresh and rightDuty + centreGain*angle < MAX_DUTY: ### and lastMove is not 'boost':
-            
+        if angle > angleThreshMax and rightDuty + angleGain*angle < MAX_DUTY and lastMove is not 'boost':
             # robot is to the right of the centre line
-            newRightDuty = rightDuty + centreGain*angle
+            # increase rightDuty
+            newRightDuty = rightDuty + angleGain*angle
             lastMove = 'boost'
             print 'boost right centre %f' % (newRightDuty)
 
-        elif angle < -centreThresh and rightDuty + centreGain*angle > MIN_DUTY: ### and lastMove is not 'decrease':
-            
+        elif angle < angleThreshMin and rightDuty + angleGain*angle > MIN_DUTY and lastMove is not 'decrease':
             # robot is to the left of the centre line
-            newRightDuty = rightDuty + centreGain*angle
+            # decrease rightDuty
+            newRightDuty = rightDuty + angleGain*angle
             lastMove = 'decrease'
             print 'decrease right centre %f' % (newRightDuty)
 
         else:
-            
             # robot is close enough to the centre of the lanes
             lastMove = 'centre'
             print 'right duty is %f' % (newRightDuty)
-			
-    print "right duty changed by %f" % (newRightDuty - rightDuty)
-    print "topDisp (yaw) %f" % (topDisp)
-    print "yaw thresh %f" % (yawThresh)
-    print "yaw gain %f" % (yawGain)
-    print "angle (centre) %f" % (angle)
-    print "centre thresh %f" % (centreThresh)
-    print "centre gain %f" % (centreGain)
+
     return newRightDuty, lastMove

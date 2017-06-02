@@ -15,8 +15,9 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 from datetime import datetime
 from motor_control.drive import drive_feedback, turn_decide
-from motor_control.motors import motor_setup, calibrate_motors, forwards_hard, forwards_lane_follow, stop 
+from motor_control.motors import motor_setup, calibrate_motors, forwards_hard, forwards_lane_follow, stop
 from lane_follow.lane_detect import lane_detect
+from lane_follow.calibrate_camera import calibrate_camera
 from intersection.intersection import is_red_line
 
 pi = pigpio.pi()
@@ -26,10 +27,10 @@ def exit_handler():
     stop()
     cv2.destroyAllWindows()
 
+atexit.register(exit_handler)
+
 # ignore polyfit rank warnings
 warnings.simplefilter('ignore', np.RankWarning)
-
-atexit.register(exit_handler)
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
@@ -39,19 +40,26 @@ rawCapture = PiRGBArray(camera, size=(800, 600))
 camera.vflip = True
 camera.hflip = True
 
+# Red flag
 RED = 1
+
+# Camera calibration
+topDispCalibrate, angleCalibrate = calibrate_camera()
+#topDispCalibrate=42.54
+#angleCalibrate=1.808021636
+print "topDispCalibrate = %d, angleCalibrate = "
+
+# Motor Calibration
 leftDuty = 70
-### rightDutyInit = calibrate_motors(leftDuty)
+### rightDuty = calibrate_motors(leftDuty)
 rightDuty = 64
 lastMove = 'centre'
 
 ###
-centreThresh=10
+centreThresh = 10
 centreGain = 1
-yawThresh=15
-yawGain=0.01
-topDispCalibrate=42.54
-angleCalibrate=1.808021636
+yawThresh = 15
+yawGain = 0.01
 ###
 
 # wait for user to say GO
@@ -59,7 +67,7 @@ print "Waiting for you to press g"
 while(1):
     inkey = raw_input()
     if inkey is "g": break
-	
+
 motor_setup()
 
 # allow the camera to warmup
@@ -67,14 +75,14 @@ time.sleep(1)
 
 # main loop
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-	
+
     try:
-	
+
         # grab the raw NumPy array representing the image, then initialize the timestamp
         # and occupied/unoccupied text
         image = frame.array
         start = datetime.now()
-        
+
         # gaussian blur
         kernelSize = 5
         blur = cv2.GaussianBlur(image, (kernelSize,kernelSize), 0)
@@ -95,7 +103,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
             # move forwards to the line
             forwards_hard(leftDuty, rightDuty, distance=200)
-      
+
             # wait for the light to turn green
             check_light()
 
@@ -105,10 +113,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         else:
             # detect lanes in the image
             (img, angle, topDisp, bottomDisp) = lane_detect(blur)
-		
+
             topDisp = topDisp - topDispCalibrate
             angle = angle - angleCalibrate
 
+            # Set upper and lower bounds for angle and topDisplacement
             # once gains are tuned, check that we need this
             if angle > 45:
                 angle = 45
@@ -120,7 +129,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             elif topDisp < -100:
                 topDisp = -100
 
-            ###		
+            ###
 	    while 1:
 		print "type a - centreGain, s - centreThresh, d - yawGain, f - yawThresh, g - angleCalibrate, h - topDispCalibrate, or n"
 	        inkey = raw_input()
@@ -132,7 +141,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		elif inkey is "h": topDispCalibrate = float(raw_input("set topDispCalibrate to "))
                 elif inkey is "n": break
             ###
-			
+
             # execute lane following algorithm
             rightDuty, lastMove = drive_feedback(angle, topDisp, rightDuty, lastMove, angleCalibrate, topDispCalibrate,
                                                  yawGain, yawThresh, centreGain, centreThresh)  ###
@@ -141,7 +150,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
         runtime = datetime.now() - start
         fps = round(1/runtime.total_seconds(), 1)
-        
+
         font = cv2.FONT_HERSHEY_PLAIN
         fontSize = 3
         color = [0, 255, 0]
@@ -152,7 +161,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # if the `q` key was pressed, break from the loop
 	if key == ord("q"):
 	    break
-        
+
         #  clear the stream in preparation for the next frame
         rawCapture.truncate(0)
 
