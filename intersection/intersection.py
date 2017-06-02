@@ -34,18 +34,17 @@ def is_red_line(image):
 	areaHist = trapz(redH_trans, dx=1)
 
 	if areaHist[0] > 12000:
-    	print("Red detected") 
+    	red_flag = 1
 	else:
-    	print("NOT AN INTERSECTION")
-
+    	red_flag = 0
 	return red_img_crop, red_flag
 
 
-def read_barcode(maskedImage):
+def read_barcode(cropImage):
 
 	#potentially do this before hand if rest of code works with 9,9 kernel
-	maskedImage = cv2.GaussianBlur(maskedImage, (9,9),0)
-	blurred = cv2.pyrMeanShiftFiltering(maskedImage,51,91)
+	cropImage = cv2.GaussianBlur(cropImage, (9,9),0)
+	blurred = cv2.pyrMeanShiftFiltering(cropImage,51,91)
 
 	grayImage = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
 	ret,thresh1 = cv2.threshold(grayImage,70,255,cv2.THRESH_BINARY_INV)
@@ -59,8 +58,14 @@ def read_barcode(maskedImage):
 		area = cv2.contourArea(cnt)
 		if area > 20 and area < 3000:
 			code = code+1
+			actual_contours.append(cnt)
 
-	return code
+	#add crop value to all contours (500)		
+	for j in range(0,len(actual_contours)):
+		for k in range(0,len(actual_contours[j])-1):
+			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] + 500
+
+	return code, actual_contours
 
 def check_light():
 	print("checking light")
@@ -68,12 +73,12 @@ def check_light():
 	
 def turn_decide(barcode):
     print("turn decide");
-    '''
+ 	'''
     Turn decide function.	
     =======
     This function looks at the barcode and randomly decides on a next turn to
     make and then calls the appropriate motor function.
-
+	'''
 
     choices = {0: ('forwards', 'right', 'left'),
                1: ('right'),
@@ -85,18 +90,23 @@ def turn_decide(barcode):
     result = choices.get(barcode, default);
 
     if(result is 'right'):
-        right_turn();
+        #right_turn();
+        print("Choice = Right")
     elif(result is 'left'):
-        left_turn();
+        #left_turn();
+        print("Choice = Left")
     else:
         # make a random choice
         choice = random.choice(result)
 
-    	if choice is 'right': right_turn()
+    	if choice is 'right': 
+    		#right_turn()
+    		print("Choice = Right")
 
-	    elif choice is 'left': left_turn()
-
-	    elif choice is 'forwards': forwards(200)
-    '''  
-
+	    elif choice is 'left': 
+	    	#left_turn()
+	    	print("Choice = Left")
+	    elif choice is 'forwards': 
+	    	#forwards(200) 
+	    	print("Choice = Straight")
 
