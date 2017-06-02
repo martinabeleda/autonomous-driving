@@ -62,8 +62,8 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
                     all_right_x += [x1, x2]
                     cv2.line(img, (x1, y1), (x2, y2), [255, 0, 255], thickness=2)
 
-        print 'max left grad = ' + str(max(all_left_grad)) + ' min' + str(min(all_left_grad))
-        print 'max right grad = ' + str(max(all_right_grad)) + ' min' + str(min(all_right_grad))
+        #print 'max left grad = ' + str(max(all_left_grad)) + ' min' + str(min(all_left_grad))
+        #print 'max right grad = ' + str(max(all_right_grad)) + ' min' + str(min(all_right_grad))
 
     except:
         pass

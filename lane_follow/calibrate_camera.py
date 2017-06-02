@@ -1,9 +1,12 @@
 import numpy
 import time
+import cv2
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 
-def calibrate_camera():
+from lane_follow.lane_detect import lane_detect
+
+def calibrate_camera(camera):
     """
     Calibrate shift function
 
@@ -19,12 +22,12 @@ def calibrate_camera():
     # allow the camera to warmup
     time.sleep(1)
 
-    camera = PiCamera()
     rawCapture = PiRGBArray(camera)
 
     print "Place the robot in the centre of the lanes and take measurements. Take a number of measurements in a variety of places."
 
-    while 1:
+    for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+
         # capture these values when the user hits <p>
         inkey = raw_input("Get measurement. <p> Remove last. <r> Finished? <q>")
 
@@ -32,9 +35,11 @@ def calibrate_camera():
             # take a piccy
             print "Taking measurement"
             # grab an image from the camera
-            camera.capture(rawCapture, format="bgr")
-            image = rawCapture.array
+            #camera.capture(rawCapture, format="bgr")
+            #image = rawCapture.array
 
+            image = frame.array
+            
             # display the image on screen and wait for a keypress
             cv2.imshow("Image", image)
 
@@ -60,7 +65,11 @@ def calibrate_camera():
             print "Done"
             break
 
+        rawCapture.truncate(0)
+
     topDispMean = numpy.mean(topDispMeasurements)
     angleMean = numpy.mean(angleMeasurements)
 
+
+    
     return topDispMean, angleMean

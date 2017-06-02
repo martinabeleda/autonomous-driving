@@ -34,9 +34,9 @@ warnings.simplefilter('ignore', np.RankWarning)
 
 # initialize the camera and grab a reference to the raw camera capture
 camera = PiCamera()
-camera.resolution = (800, 600)
+camera.resolution = (800, 608)
 camera.framerate = 32
-rawCapture = PiRGBArray(camera, size=(800, 600))
+rawCapture = PiRGBArray(camera, size=(800, 608))
 camera.vflip = True
 camera.hflip = True
 
@@ -45,7 +45,7 @@ RED = 1
 NOT_RED = 0
 
 # Camera calibration
-topDispCalibrate, angleCalibrate = calibrate_camera()
+topDispCalibrate, angleCalibrate = calibrate_camera(camera)
 #topDispCalibrate=42.54
 #angleCalibrate=1.808021636
 print "topDispCalibrate = %f, angleCalibrate = %f" % (topDispCalibrate, angleCalibrate)
