@@ -36,6 +36,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
 		if line is RED:
 			print("RED LINE!!!")
+
 			#if at intersection 
 			turnCode = read_barcode(maskedImage)
 			print("Turn Code", turnCode)
@@ -56,6 +57,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
 
 		# show the frame
+		# display all data to screen 
+
 		cv2.imshow('Main Frame', image)
                 key = cv2.waitKey(1) & 0xFF
 

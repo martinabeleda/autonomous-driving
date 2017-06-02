@@ -34,10 +34,9 @@ def is_red_line(image):
 	areaHist = trapz(redH_trans, dx=1)
 
 	if areaHist[0] > 12000:
-    	print("Red detected") 
+    	red_flag = 1
 	else:
-    	print("NOT AN INTERSECTION")
-
+    	red_flag = 0
 	return red_img_crop, red_flag
 
 
