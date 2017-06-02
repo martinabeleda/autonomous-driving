@@ -40,10 +40,10 @@ def lane_detect(img):
     # Mask out areas outside region of interest
     # Region of interest is defined as a trapezoid to account for perspective
     lowerLeftPoint = [0, 600]
-    middleLeftPoint = [0, 450]
+    middleLeftPoint = [0, 500]
     upperLeftPoint = [250, 300]
     upperRightPoint = [550, 300]
-    middleRightPoint = [800, 450]
+    middleRightPoint = [800, 500]
     lowerRightPoint = [800, 600]
     pts = np.array([[lowerLeftPoint, middleLeftPoint, upperLeftPoint,
                    upperRightPoint, middleRightPoint, lowerRightPoint]], dtype=np.int32)
@@ -76,5 +76,7 @@ def lane_detect(img):
 
     # Display center line
     cv2.line(img, (400, 0), (400, 600), (255, 0, 0), thickness=2)
+
+    img = region_of_interest(img, pts)
 
     return img, angle, topDisplacement, bottomDisplacement

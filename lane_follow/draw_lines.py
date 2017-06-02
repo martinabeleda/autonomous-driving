@@ -125,7 +125,7 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
                  color, thickness)
 
         angle = 0
-        topDisplacement = 15
+        topDisplacement = 40
         bottomDisplacement = 0
 
     # if we only have the left lane
@@ -144,13 +144,15 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
                  color, thickness)
 
         angle = 0
-        topDisplacement = -15
+        topDisplacement = -40
         bottomDisplacement = 0
 
+    # No lanes found
     else:
-        # No lanes found
+        
         angle = 0
         topDisplacement = 0
         bottomDisplacement = 0
+
 
     return angle, topDisplacement, bottomDisplacement
