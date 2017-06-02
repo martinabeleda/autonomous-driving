@@ -85,9 +85,9 @@ def drive_feedback(angle, topDisp, rightDuty, lastMove, angleCalibrate=5.16, top
 			
     print "right duty changed by %f" % (newRightDuty - rightDuty)
     print "topDisp (yaw) %f" % (topDisp)
-    print "yaw thresh %f" % (yawThresh)
-    print "yaw gain %f" % (yawGain)
+    #print "yaw thresh %f" % (yawThresh)
+    #print "yaw gain %f" % (yawGain)
     print "angle (centre) %f" % (angle)
-    print "centre thresh %f" % (centreThresh)
-    print "centre gain %f" % (centreGain)
+    #print "centre thresh %f" % (centreThresh)
+    #print "centre gain %f" % (centreGain)
     return newRightDuty, lastMove

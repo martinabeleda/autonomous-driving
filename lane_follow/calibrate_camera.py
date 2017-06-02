@@ -40,7 +40,7 @@ def calibrate_camera(camera):
             image = frame.array
 
             # display the image on screen and wait for a keypress
-            cv2.imshow("Image", image)
+            #cv2.imshow("Image", image)
 
             # gaussian blur
             kernelSize = 5

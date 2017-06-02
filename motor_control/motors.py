@@ -48,7 +48,7 @@ def motor_setup():
 def calibrate_motors(dcL):
 	MAX_DUTY = 100
 	MIN_DUTY = 48
-	dcR = dcL - 1.6
+	dcR = dcL - 3.6
 
         print "Adjust right duty <p> <i>. When finished <q>" 
 	
