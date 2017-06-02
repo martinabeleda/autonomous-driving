@@ -54,7 +54,7 @@ def turn_decide(dcL, barcode):
 
 	elif choice is 'forwards': forwards_hard(leftDuty, rightDuty, 210)
 
-def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, lastMove, angleGain=0.0003, displacementGain=10, centreThreshMin=-15, centreThreshMax = 50, angleThreshMin=-5, angleThreshMax=10):
+def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, lastMove, angleGain, displacementGain, angleThreshMin, angleThreshMax, centreThreshMin, centreThreshMax):
     """
     Drive function.
 
@@ -104,14 +104,13 @@ def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, lastMove, angleG
             # robot is close enough to the centre of the lanes
             lastMove = 'centre'
             print 'right duty is %f' % (newRightDuty)
-
-    print "right duty %f" % (newRightDuty)
-	print "angle thresh min %f" % (angleThreshMin)
-	print "angle thresh max %f" % (angleThreshMax)
-	print "angle %f" % (angle)
-	print "angle gain %f" (angleGain)
-	print "displacement thresh min %f" % (centreThreshMin)
-	print "centre thresh max %f" % (centreThreshMax)
-	print "topDisplacement %f" % (topDisplacement)
-    print "displacement gain %f" (displacementGain)
-	return newRightDuty, lastMove
+    print "right duty changed by %f" % (newRightDuty - rightDuty)
+    print "topDisplacement %f" % (topDisplacement)
+    print "centre thresh min %f" % (centreThreshMin)
+    print "centre thresh max %f" % (centreThreshMax)
+    print "displacement gain %f" % (displacementGain)
+    print "angle %f" % (angle)
+    print "angle thresh min %f" % (angleThreshMin)
+    print "angle thresh max %f" % (angleThreshMax)
+    print "angle gain %f" % (angleGain)
+    return newRightDuty, lastMove

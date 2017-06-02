@@ -38,14 +38,18 @@ lastMove = 'centre'
 
 ###
 angleGain = 1
-displacementGain= 1
+angleThreshMin = -10
+angleThreshMax = 20
+displacementGain= 0.01
+centreThreshMin = -15
+centreThreshMax = 60
 ###
 
 # wait for user to say GO
 print "Waiting for you to press g"
 while(1):
-	inkey = raw_input()
-	if inkey is "g": break
+    inkey = raw_input()
+    if inkey is "g": break
 	
 motor_setup()
 
@@ -93,14 +97,19 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		
         ###		
 	    while 1:
+		print "type a - angleGain, s - angleThreshMin, x - angleThreshMax, d - displacementGain, f - centreThreshMin, g - centreThreshMax, or n"
 	        inkey = raw_input()
 	        if inkey is "a": angleGain = float(raw_input("set angleGain to "))
-		    elif inkey is "d": displacementGain = float(raw_input("set displacementGain to "))
-			elif inkey is " ": break
-		###
+		elif inkey is "s": angleThreshMin = float(raw_input("set angleThreshMin to "))
+		elif inkey is "x": angleThreshMax = float(raw_input("set angleThreshMax to "))
+		elif inkey is "d": displacementGain = float(raw_input("set displacementGain to "))
+		elif inkey is "f": centreThreshMin = float(raw_input("set centreThreshMin to "))
+		elif inkey is "g": centreThreshMax = float(raw_input("set centreThreshMax to "))
+                elif inkey is "n": break
+        ###
 			
             # execute lane following algorithm
-            rightDuty, lastMove = drive_feedback(angle, topDisplacement, rightDuty, leftDuty, lastMove, angleGain, displacementGain) ###
+            rightDuty, lastMove = drive_feedback(angle, topDisplacement, rightDuty, leftDuty, lastMove, angleGain, displacementGain, angleThreshMin, angleThreshMax, centreThreshMin, centreThreshMax)  ###
 
             ###forwards_lane_follow(leftDuty, rightDuty)
 
