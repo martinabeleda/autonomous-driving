@@ -54,7 +54,7 @@ def turn_decide(dcL, barcode):
 
 	elif choice is 'forwards': forwards_hard(leftDuty, rightDuty, 210)
 
-def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, rightDutyInit, lastMove, angleGain=0.003, displacementGain=1, centreThreshMin=-15, centreThreshMax = 50, angleThreshMin=-5, angleThreshMax=10):
+def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, rightDutyInit, lastMove, angleGain=0.0003, displacementGain=1000, centreThreshMin=-15, centreThreshMax = 50, angleThreshMin=-5, angleThreshMax=10):
     """
     Drive function.
 
