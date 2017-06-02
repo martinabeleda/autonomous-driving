@@ -62,21 +62,12 @@ def lane_detect(img):
     lines = cv2.HoughLinesP(closing, rho, theta, threshold,
                           minLineLength, maxLineGap)
 
-    masked = region_of_interest(img, pts)
+    img = region_of_interest(img, pts)
 
-    try:
-        for line in lines:
-            for x1,y1,x2,y2 in line:
-                cv2.line(masked, (x1, y1), (x2, y2), [0, 0, 255], thickness=2)
-    except:
-        pass
-
-    # Display hough lines
+    # Display lane lines
     (angle, topDisplacement, bottomDisplacement) = draw_lines(img, lines)
 
     # Display center line
     cv2.line(img, (400, 0), (400, 600), (255, 0, 0), thickness=2)
-
-    img = region_of_interest(img, pts)
 
     return img, angle, topDisplacement, bottomDisplacement

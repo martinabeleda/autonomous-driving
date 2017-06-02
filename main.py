@@ -40,6 +40,7 @@ camera.vflip = True
 camera.hflip = True
 
 RED = 1
+NOT_RED = 0
 leftDuty = 70
 ### rightDutyInit = calibrate_motors(leftDuty)
 rightDuty = 64
@@ -47,11 +48,13 @@ lastMove = 'centre'
 
 ###
 centreThresh=10
-centreGain = 1
-yawThresh=15
+centreGain = 0.03
+yawThresh = 25
 yawGain=0.01
 topDispCalibrate=42.54
 angleCalibrate=1.808021636
+topDispMax = 80
+angleMax = 45
 ###
 
 # wait for user to say GO
@@ -80,8 +83,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         blur = cv2.GaussianBlur(image, (kernelSize,kernelSize), 0)
 
         # check if we are at the red line
-        masked, line = is_red_line(blur)
+        #masked, line = is_red_line(blur)
 
+        line = NOT_RED
         if line is RED:
 
             img = blur
@@ -110,17 +114,18 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             angle = angle - angleCalibrate
 
             # once gains are tuned, check that we need this
-            if angle > 45:
-                angle = 45
-            elif angle < -45:
-                angle = -45
+            if angle > angleMax:
+                angle = angleMax
+            elif angle < -angleMax:
+                angle = -angleMax
 
-            if topDisp > 100:
-                topDisp = 100
-            elif topDisp < -100:
-                topDisp = -100
+            if topDisp > topDispMax:
+                topDisp = topDispMax
+            elif topDisp < -topDispMax:
+                topDisp = -topDispMax
 
-            ###		
+            ###
+            
 	    while 1:
 		print "type a - centreGain, s - centreThresh, d - yawGain, f - yawThresh, g - angleCalibrate, h - topDispCalibrate, or n"
 	        inkey = raw_input()
@@ -132,7 +137,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		elif inkey is "h": topDispCalibrate = float(raw_input("set topDispCalibrate to "))
                 elif inkey is "n": break
             ###
-			
+	    
             # execute lane following algorithm
             rightDuty, lastMove = drive_feedback(angle, topDisp, rightDuty, lastMove, angleCalibrate, topDispCalibrate,
                                                  yawGain, yawThresh, centreGain, centreThresh)  ###

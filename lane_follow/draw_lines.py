@@ -3,7 +3,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
+def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, vertThresh=1000):
     """
     This function connects the two `lines` with `color` and `thickness`.
     It ignores `lines` that are close to 0 gradient. It then draws a centre
@@ -32,12 +32,12 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
     ymin_global = img.shape[0]
     ymax_global = img.shape[0]
 
-    # Left lane line variables
+    # Right lane line variables
     all_left_grad = []
     all_left_y = []
     all_left_x = []
 
-    # Right lane line variables
+    # Left lane line variables
     all_right_grad = []
     all_right_y = []
     all_right_x = []
@@ -50,20 +50,28 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
                 gradient, intercept = np.polyfit((x1,x2), (y1,y2), 1)
                 ymin_global = min(min(y1, y2), ymin_global)
 
-                if (gradient > 0 + thresh):
+                if gradient > horizThresh and gradient < vertThresh:
                     all_left_grad += [gradient]
                     all_left_y += [y1, y2]
                     all_left_x += [x1, x2]
-                elif (gradient < 0 - thresh):
+                    cv2.line(img, (x1, y1), (x2, y2), [0, 255, 255], thickness=2)
+
+                elif gradient < -horizThresh and gradient > -vertThresh:
                     all_right_grad += [gradient]
                     all_right_y += [y1, y2]
                     all_right_x += [x1, x2]
+                    cv2.line(img, (x1, y1), (x2, y2), [255, 0, 255], thickness=2)
+
+        print 'max left grad = ' + str(max(all_left_grad)) + ' min' + str(min(all_left_grad))
+        print 'max right grad = ' + str(max(all_right_grad)) + ' min' + str(min(all_right_grad))
 
     except:
         pass
 
     # Make sure we have some points in each lane line category
     if ((len(all_left_grad) > 0) and (len(all_right_grad) > 0)):
+
+       
 
         left_mean_grad = np.mean(all_left_grad)
         left_y_mean = np.mean(all_left_y)
@@ -109,7 +117,7 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
         cv2.putText(img, 'alpha = ' + "{0:.2f}".format(angle), (top_x + 10, ymin_global),
                     font, fontSize, color)
 
-    # if we only have the right lane
+    # if we only have the left lane
     elif ((len(all_left_grad) == 0) and (len(all_right_grad) > 0)):
 
         # draw the right line
@@ -123,12 +131,12 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
 
         cv2.line(img, (upper_right_x, ymin_global), (lower_right_x, ymax_global),
                  color, thickness)
-
+        print 'left lane only'
         angle = 0
-        topDisplacement = 200
+        topDisplacement = -200
         bottomDisplacement = 0
 
-    # if we only have the left lane
+    # if we only have the right lane
     elif ((len(all_left_grad) > 0) and (len(all_right_grad) == 0)):
 
         # draw the left line
@@ -142,9 +150,9 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
 
         cv2.line(img, (upper_left_x, ymin_global), (lower_left_x, ymax_global),
                  color, thickness)
-
+        print 'right lane only'
         angle = 0
-        topDisplacement = -200
+        topDisplacement = 200
         bottomDisplacement = 0
 
     # No lanes found
