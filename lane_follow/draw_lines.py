@@ -137,6 +137,9 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
         left_x_mean = np.mean(all_left_x)
         left_intercept = left_y_mean - (left_mean_grad * left_x_mean)
 
+        upper_left_x = int((ymin_global - left_intercept) / left_mean_grad)
+        lower_left_x = int((ymax_global - left_intercept) / left_mean_grad)
+        
         cv2.line(img, (upper_left_x, ymin_global), (lower_left_x, ymax_global),
                  color, thickness)
 

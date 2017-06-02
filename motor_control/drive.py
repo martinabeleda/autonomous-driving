@@ -54,13 +54,14 @@ def turn_decide(dcL, barcode):
 
 	elif choice is 'forwards': forwards_hard(leftDuty, rightDuty, 210)
 
-def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, rightDutyInit, lastMove, angleGain=0.0003, displacementGain=1000, centreThreshMin=-15, centreThreshMax = 50, angleThreshMin=-5, angleThreshMax=10):
+def drive_feedback(angle, topDisplacement, rightDuty, lastMove, angleGain=0.0003, displacementGain=1000,
+                   centreThreshMin=-15, centreThreshMax = 50, angleThreshMin=-5, angleThreshMax=10):
     """
     Drive function.
 
 	This function takes the angle and displacement from the `lane_detect()`
 	function and controls the motors using a feedback loop in order to follow
-    the lanes.
+        the lanes.
     """
     MIN_DUTY = 48
     MAX_DUTY = 100
@@ -69,8 +70,7 @@ def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, rightDutyInit, l
     if topDisplacement < centreThreshMin and rightDuty + displacementGain*topDisplacement > MIN_DUTY and lastMove is not 'decrease':
         # robot is angled to the left
         # calculate angle
-        #angle = abs(topDisplacement/2)
-        #turn_clockwise(angle)
+
         newRightDuty = rightDuty + displacementGain*topDisplacement
         lastMove = 'decrease'
         print 'decrease right robot angle %f' % (newRightDuty)
@@ -78,8 +78,7 @@ def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, rightDutyInit, l
     elif topDisplacement > centreThreshMax and rightDuty + displacementGain*topDisplacement < MAX_DUTY and lastMove is not 'boost':
 	# robot is angled to the right
         # calculate angle
-        #angle = topDisplacement/2
-        #turn_anti_clockwise(angle)
+
         newRightDuty = rightDuty + displacementGain*topDisplacement
         lastMove = 'boost'
         print 'boost right robot angle %f' % (newRightDuty)

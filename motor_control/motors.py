@@ -49,6 +49,9 @@ def calibrate_motors(dcL):
 	MAX_DUTY = 100
 	MIN_DUTY = 48
 	dcR = dcL - 1.6
+
+        print "Adjust right duty <p> <i>. When finished <q>" 
+	
 	while 1:
 		forwards_lane_follow(dcL,dcR)
 		inkey = raw_input()
