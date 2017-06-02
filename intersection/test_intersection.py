@@ -55,7 +55,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 			turn_decide(turnCode)
 			if DISPLAY:
 				cv2.putText(image,'Red Line 20cm Away',(25,25), font, fontsize, green,2)
-				cv2.putText(image,'Barcode = '+ str(count),(25,100), font, fontsize, green ,2)
+				cv2.putText(image,'Barcode = '+ str(turnCode),(25,100), font, fontsize, green ,2)
 				cv2.drawContours(image,barcode_contours,-1,(0,255,0),2)
 
 		else:

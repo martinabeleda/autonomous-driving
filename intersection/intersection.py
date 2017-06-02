@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy import trapz
+import random
 
 from datetime import datetime
 
@@ -53,6 +54,7 @@ def read_barcode(cropImage):
 
 	#remove false positives (noise) and remove red box contour
 	code = 0
+	actual_contours = []
 	for i in range(0,len(contours)):
 		cnt = contours[i]
 		area = cv2.contourArea(cnt)
