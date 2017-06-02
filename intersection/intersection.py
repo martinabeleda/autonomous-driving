@@ -68,12 +68,12 @@ def check_light():
 	
 def turn_decide(barcode):
     print("turn decide");
-    '''
+ 	'''
     Turn decide function.	
     =======
     This function looks at the barcode and randomly decides on a next turn to
     make and then calls the appropriate motor function.
-
+	'''
 
     choices = {0: ('forwards', 'right', 'left'),
                1: ('right'),
@@ -96,7 +96,6 @@ def turn_decide(barcode):
 
 	    elif choice is 'left': left_turn()
 
-	    elif choice is 'forwards': forwards(200)
-    '''  
+	    elif choice is 'forwards': forwards(200) 
 
 
