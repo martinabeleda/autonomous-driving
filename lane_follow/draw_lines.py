@@ -58,21 +58,22 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
                     all_right_grad += [gradient]
                     all_right_y += [y1, y2]
                     all_right_x += [x1, x2]
+
     except:
         pass
 
-    left_mean_grad = np.mean(all_left_grad)
-    left_y_mean = np.mean(all_left_y)
-    left_x_mean = np.mean(all_left_x)
-    left_intercept = left_y_mean - (left_mean_grad * left_x_mean)
-
-    right_mean_grad = np.mean(all_right_grad)
-    right_y_mean = np.mean(all_right_y)
-    right_x_mean = np.mean(all_right_x)
-    right_intercept = right_y_mean - (right_mean_grad * right_x_mean)
-
     # Make sure we have some points in each lane line category
     if ((len(all_left_grad) > 0) and (len(all_right_grad) > 0)):
+
+        left_mean_grad = np.mean(all_left_grad)
+        left_y_mean = np.mean(all_left_y)
+        left_x_mean = np.mean(all_left_x)
+        left_intercept = left_y_mean - (left_mean_grad * left_x_mean)
+
+        right_mean_grad = np.mean(all_right_grad)
+        right_y_mean = np.mean(all_right_y)
+        right_x_mean = np.mean(all_right_x)
+        right_intercept = right_y_mean - (right_mean_grad * right_x_mean)
 
         upper_left_x = int((ymin_global - left_intercept) / left_mean_grad)
         lower_left_x = int((ymax_global - left_intercept) / left_mean_grad)
@@ -80,26 +81,24 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
         lower_right_x = int((ymax_global - right_intercept) / right_mean_grad)
 
         # Draw the lane lines
-        
         cv2.line(img, (upper_left_x, ymin_global), (lower_left_x, ymax_global),
                  color, thickness)
         cv2.line(img, (upper_right_x, ymin_global), (lower_right_x, ymax_global),
                  color, thickness)
-        
+
         # Draw the centre lane line
         top_x = int(np.mean((upper_left_x, upper_right_x)))
         bottom_x = int(np.mean((lower_left_x, lower_right_x)))
-        
+
         cv2.line(img, (top_x, ymin_global), (bottom_x, ymax_global),
                  [0, 255, 0], thickness)
-        
+
         # Calculate angle and displacement of robot in relation to centre line
         angle = math.degrees(math.atan2(top_x - bottom_x, ymax_global - ymin_global))
         topDisplacement = img.shape[1]/2 - top_x
         bottomDisplacement = img.shape[1]/2 - bottom_x
 
         # Display angle and displacement of robot in relation to centre line
-        
         font = cv2.FONT_HERSHEY_PLAIN
         fontSize = 1
         color = [0, 255, 0]
@@ -109,16 +108,38 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
                     font, fontSize, color)
         cv2.putText(img, 'alpha = ' + "{0:.2f}".format(angle), (top_x + 10, ymin_global),
                     font, fontSize, color)
-        
 
+    # if we only have the right lane
     elif ((len(all_left_grad) == 0) and (len(all_right_grad) > 0)):
-        # if we only have the right lane
+
+        # draw the right line
+        right_mean_grad = np.mean(all_right_grad)
+        right_y_mean = np.mean(all_right_y)
+        right_x_mean = np.mean(all_right_x)
+        right_intercept = right_y_mean - (right_mean_grad * right_x_mean)
+
+        upper_right_x = int((ymin_global - right_intercept) / right_mean_grad)
+        lower_right_x = int((ymax_global - right_intercept) / right_mean_grad)
+
+        cv2.line(img, (upper_right_x, ymin_global), (lower_right_x, ymax_global),
+                 color, thickness)
+
         angle = 0
         topDisplacement = 15
         bottomDisplacement = 0
 
+    # if we only have the left lane
     elif ((len(all_left_grad) > 0) and (len(all_right_grad) == 0)):
-        # if we only have the left lane
+
+        # draw the left line
+        left_mean_grad = np.mean(all_left_grad)
+        left_y_mean = np.mean(all_left_y)
+        left_x_mean = np.mean(all_left_x)
+        left_intercept = left_y_mean - (left_mean_grad * left_x_mean)
+
+        cv2.line(img, (upper_left_x, ymin_global), (lower_left_x, ymax_global),
+                 color, thickness)
+
         angle = 0
         topDisplacement = -15
         bottomDisplacement = 0
@@ -128,14 +149,5 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
         angle = 0
         topDisplacement = 0
         bottomDisplacement = 0
-    
-    if angle > 45:
-	angle = 45
-    elif angle < -45:
-        angle = -45
-    elif topDisplacement > 20:
-        topDisplacement = 20
-    elif topDisplacement < -20:
-        topDisplacement = 20
 
     return angle, topDisplacement, bottomDisplacement
