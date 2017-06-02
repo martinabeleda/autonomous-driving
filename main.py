@@ -30,50 +30,52 @@ time.sleep(0.1)
 # main loop
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
     	# grab the raw NumPy array representing the image, then initialize the timestamp
-		# and occupied/unoccupied text
-		image = frame.array
+	# and occupied/unoccupied text
+	image = frame.array
 
-	    # gaussian blur
-	    kernelSize = 5
-	    blur = cv2.GaussianBlur(gray, (kernelSize,kernelSize), 0)
+	# gaussian blur
+	kernelSize = 5
+	blur = cv2.GaussianBlur(gray, (kernelSize,kernelSize), 0)
 
-		# check if we are at the red line
-		masked, line = is_red_line(image)
+	# check if we are at the red line
+	masked, line = is_red_line(blur)
 
-		if line is RED:
+    if line is RED:
 
-			print "red"
+	    print "red"
 """
-			# display raw input
-			img = image
+            # display raw input
+	    img = image
 
-			# store the number of barcode lines
-			barcode = read_barcode(masked)
+	    # store the number of barcode lines
+	    barcode = read_barcode(masked)
 
-			# move forwards to the line
-			forwards_hard(leftDuty, distance=200)
+	    # move forwards to the line
+	    forwards_hard(leftDuty, distance=200)
 
-			# wait for the light to turn green
-			check_light()
+	    # wait for the light to turn green
+	    check_light()
 
-			# execute a random turn based on barcode
-			turn_decide(barcode)
+
+	    # execute a random turn based on barcode
+	    turn_decide(barcode)
+
 """
-		else:
+    else:
 
-			# detect lanes in the image
-			(img, angle, topDisplacement, bottomDisplacement) = lane_detect(image)
+		# detect lanes in the image
+		(img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur)
 
-			# execute lane following algorithm
-			rightDuty = drive_feedback(angle, topDisplacement, leftDuty, rightDuty)
+		# execute lane following algorithm
+		rightDuty = drive_feedback(angle, topDisplacement, leftDuty, rightDuty)
 
-		# show the frame
-		cv2.imshow("Frame", img)
+	# show the frame
+	cv2.imshow("Frame", img)
     	key = cv2.waitKey(1) & 0xFF
 
-		# clear the stream in preparation for the next frame
-		rawCapture.truncate(0)
+	# clear the stream in preparation for the next frame
+	rawCapture.truncate(0)
 
-		# if the `q` key was pressed, break from the loop
-		if key == ord("q"):
-			break
+	# if the `q` key was pressed, break from the loop
+	if key == ord("q"):
+	    break
