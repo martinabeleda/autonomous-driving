@@ -34,9 +34,9 @@ def is_red_line(image):
 	areaHist = trapz(redH_trans, dx=1)
 
 	if areaHist[0] > 12000:
-    	red_flag = 1
+                red_flag = 1
 	else:
-    	red_flag = 0
+                red_flag = 0
 	return red_img_crop, red_flag
 
 
@@ -73,12 +73,12 @@ def check_light():
 	
 def turn_decide(barcode):
     print("turn decide");
- 	'''
+    '''
     Turn decide function.	
     =======
     This function looks at the barcode and randomly decides on a next turn to
     make and then calls the appropriate motor function.
-	'''
+    '''
 
     choices = {0: ('forwards', 'right', 'left'),
                1: ('right'),
@@ -89,10 +89,10 @@ def turn_decide(barcode):
     default = 0
     result = choices.get(barcode, default);
 
-    if(result is 'right'):
+    if result is 'right':
         #right_turn();
         print("Choice = Right")
-    elif(result is 'left'):
+    elif result is 'left':
         #left_turn();
         print("Choice = Left")
     else:
@@ -100,13 +100,12 @@ def turn_decide(barcode):
         choice = random.choice(result)
 
     	if choice is 'right': 
-    		#right_turn()
-    		print("Choice = Right")
+    	    #right_turn()
+    	    print("Choice = Right")
 
-	    elif choice is 'left': 
-	    	#left_turn()
-	    	print("Choice = Left")
-	    elif choice is 'forwards': 
-	    	#forwards(200) 
-	    	print("Choice = Straight")
-
+	elif choice is 'left': 
+	    #left_turn()
+	    print("Choice = Left")
+	elif choice is 'forwards': 
+	    #forwards(200) 
+	    print("Choice = Straight")
