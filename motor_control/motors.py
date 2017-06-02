@@ -50,8 +50,8 @@ def calibrate_motors(dcL):
 	MIN_DUTY = 48
 	dcR = dcL - 1.6
 
-        print "Adjust right duty <p> <i>. When finished <q>" 
-	
+    print "Adjust right duty cycle <p> <i>. When finished <q>"
+
 	while 1:
 		forwards_lane_follow(dcL,dcR)
 		inkey = raw_input()
@@ -79,7 +79,7 @@ def forwards_hard(dcL,dcR,distance):
 	pi.set_PWM_dutycycle(motorREN,dcR)
 	time = distance/SPEED
 	sleep(time)
-	
+
 def forwards_lane_follow(dcL,dcR):
 	pi.write(motorL1A, True)
 	pi.write(motorL2A, False)
@@ -113,7 +113,7 @@ def turn_clockwise(angle):
 	pi.set_PWM_dutycycle(motorLEN,255)
 	time = angle/TURN_RATE
 	sleep(time)
-	
+
 def turn_anti_clockwise(angle):
 	print "Turn anti-clockwise by", angle, "degrees"
 	TURN_RATE = 500
