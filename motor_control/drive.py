@@ -54,7 +54,7 @@ def turn_decide(dcL, barcode):
 
 	elif choice is 'forwards': forwards_hard(leftDuty, rightDuty, 210)
 
-def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, rightDutyInit, lastMove, angleGain=0.0003, displacementGain=1000, centreThreshMin=-15, centreThreshMax = 50, angleThreshMin=-5, angleThreshMax=10):
+def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, lastMove, angleGain=0.0003, displacementGain=10, centreThreshMin=-15, centreThreshMax = 50, angleThreshMin=-5, angleThreshMax=10):
     """
     Drive function.
 
@@ -65,6 +65,11 @@ def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, rightDutyInit, l
     MIN_DUTY = 48
     MAX_DUTY = 100
     newRightDuty = rightDuty
+	
+	print "angle is %f" % (angle) ###
+	print "angleGain is %f" % (angleGain)###
+	print "topDisplacement is %f" % (topDisplacement) ###
+	print "displacementGain is %f" % (displacementGain) ###
 
     if topDisplacement < centreThreshMin and rightDuty + displacementGain*topDisplacement > MIN_DUTY and lastMove is not 'decrease':
         # robot is angled to the left
@@ -103,6 +108,6 @@ def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, rightDutyInit, l
         else:
             # robot is close enough to the centre of the lanes
             lastMove = 'centre'
-            print 'right duty is %f' % (newRightDuty)
+            ###print 'right duty is %f' % (newRightDuty)
 
     return newRightDuty, lastMove

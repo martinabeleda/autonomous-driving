@@ -31,9 +31,13 @@ camera.hflip = True
 
 RED = 1
 leftDuty = 70
-rightDutyInit = calibrate_motors(leftDuty)
+### rightDutyInit = calibrate_motors(leftDuty)
+rightDutyInit = 64
 rightDuty = rightDutyInit
 lastMove = 'centre'
+
+angleGain=0.0003 ###
+displacementGain=10 ###
 
 # wait for user to say GO
 print "Waiting for you to press g"
@@ -84,11 +88,19 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         else:
             # detect lanes in the image
             (img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur)
+			
+			while 1: ###
+				inkey = raw_input ###
+				if inkey is "w": angleGain += 0.00001 ###
+				elif inkey is "s": angleGain -= 0.00001 ###
+				elif inkey is "p": displacementGain += 10 ###
+				elif inkey is "l": displacementGain -= 10 ###
+				elif inkey is " ": break ###
 
             # execute lane following algorithm
-            rightDuty, lastMove = drive_feedback(angle, topDisplacement, rightDuty, leftDuty, rightDutyInit, lastMove)
+            rightDuty, lastMove = drive_feedback(angle, topDisplacement, rightDuty, leftDuty, lastMove, angleGain, displacementGain) ###
 
-            forwards_lane_follow(leftDuty, rightDuty)
+            ###forwards_lane_follow(leftDuty, rightDuty)
 
         # clear the stream in preparation for the next frame
         rawCapture.truncate(0)
