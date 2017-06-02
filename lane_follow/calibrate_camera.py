@@ -1,4 +1,5 @@
 import numpy
+import time
 from picamera import PiCamera
 from picamera.array import PiRGBArray
 
@@ -17,6 +18,9 @@ def calibrate_camera():
 
     # allow the camera to warmup
     time.sleep(1)
+
+    camera = PiCamera()
+    rawCapture = PiRGBArray(camera)
 
     print "Place the robot in the centre of the lanes and take measurements. Take a number of measurements in a variety of places."
 
@@ -53,7 +57,7 @@ def calibrate_camera():
 
         elif inkey is "q":
 
-            Print "Done"
+            print "Done"
             break
 
     topDispMean = numpy.mean(topDispMeasurements)

@@ -46,22 +46,22 @@ def motor_setup():
 #	GPIO.setup(motorEN, GPIO.OUT)
 
 def calibrate_motors(dcL):
-	MAX_DUTY = 100
-	MIN_DUTY = 48
-	dcR = dcL - 1.6
+    MAX_DUTY = 100
+    MIN_DUTY = 48
+    dcR = dcL - 1.6
 
     print "Adjust right duty cycle <p> <i>. When finished <q>"
 
-	while 1:
-		forwards_lane_follow(dcL,dcR)
-		inkey = raw_input()
-		if inkey is "i" and dcR < MAX_DUTY:
-			dcR += 0.1
-			print "right duty %f" % (dcR)
-		elif inkey is "p" and dcR > MIN_DUTY:
-			dcR -= 0.1
-			print "right duty %f" % (dcR)
-		elif inkey is "q": break
+    while 1:
+	forwards_lane_follow(dcL,dcR)
+	inkey = raw_input()
+	if inkey is "i" and dcR < MAX_DUTY:
+            dcR += 0.1
+	    print "right duty %f" % (dcR)
+	elif inkey is "p" and dcR > MIN_DUTY:
+	    dcR -= 0.1
+	    print "right duty %f" % (dcR)
+	elif inkey is "q": break
 	return dcR
 
 def forwards_hard(dcL,dcR,distance):
