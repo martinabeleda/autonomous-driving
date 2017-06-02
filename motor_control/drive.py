@@ -66,10 +66,10 @@ def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, lastMove, angleG
     MAX_DUTY = 100
     newRightDuty = rightDuty
 	
-	print "angle is %f" % (angle) ###
-	print "angleGain is %f" % (angleGain)###
-	print "topDisplacement is %f" % (topDisplacement) ###
-	print "displacementGain is %f" % (displacementGain) ###
+    print "angle is %f" % (angle) ###
+    print "angleGain is %f" % (angleGain)###
+    print "topDisplacement is %f" % (topDisplacement) ###
+    print "displacementGain is %f" % (displacementGain) ###
 
     if topDisplacement < centreThreshMin and rightDuty + displacementGain*topDisplacement > MIN_DUTY and lastMove is not 'decrease':
         # robot is angled to the left
