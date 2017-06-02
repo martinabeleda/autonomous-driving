@@ -128,5 +128,14 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, thresh=0.15):
         angle = 0
         topDisplacement = 0
         bottomDisplacement = 0
+    
+    if angle > 45:
+	angle = 45
+    elif angle < -45:
+        angle = -45
+    elif topDisplacement > 20:
+        topDisplacement = 20
+    elif topDisplacement < -20:
+        topDisplacement = 20
 
     return angle, topDisplacement, bottomDisplacement

@@ -30,9 +30,10 @@ camera.vflip = True
 camera.hflip = True
 
 RED = 1
-leftDuty = 90
+leftDuty = 70
 rightDutyInit = calibrate_motors(leftDuty)
 rightDuty = rightDutyInit
+lastMove = 'centre'
 
 # wait for user to say GO
 print "Waiting for you to press g"
@@ -85,7 +86,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             (img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur)
 
             # execute lane following algorithm
-            rightDuty = drive_feedback(angle, topDisplacement, rightDuty, leftDuty, rightDutyInit)
+            rightDuty, lastMove = drive_feedback(angle, topDisplacement, rightDuty, leftDuty, rightDutyInit, lastMove)
 
             forwards_lane_follow(leftDuty, rightDuty)
 
