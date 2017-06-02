@@ -32,12 +32,14 @@ camera.hflip = True
 RED = 1
 leftDuty = 70
 ### rightDutyInit = calibrate_motors(leftDuty)
-rightDutyInit = 64
+rightDutyInit = 64 ###
 rightDuty = rightDutyInit
 lastMove = 'centre'
 
-angleGain=1 ###
-displacementGain=1 ###
+###
+angleGain = 1
+displacementGain= 1
+###
 
 # wait for user to say GO
 print "Waiting for you to press g"
@@ -88,23 +90,15 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         else:
             # detect lanes in the image
             (img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur)
+		
+        ###		
+	    while 1:
+	        inkey = raw_input()
+	        if inkey is "a": angleGain = float(raw_input("set angleGain to "))
+		    elif inkey is "d": displacementGain = float(raw_input("set displacementGain to "))
+			elif inkey is " ": break
+		###
 			
-	    while 1: ###
-	        inkey = raw_input() ###
-	        if inkey is "w": 
-                    angleGain += 0.1 ###
-		    print "angleGain is " % (angleGain)
-		elif inkey is "s": 
-		    angleGain -= 0.1 ###
-		    print "angleGain is" %(angleGain)
-		elif inkey is "p": 
-		    displacementGain += 0.1 ###
-		    print "displacementGain is " % (displacementGain) ###
-		elif inkey is "l": 
-		    displacementGain -= 0.1 ###
-		    print "displacementGain is " % (displacementGain)
-		elif inkey is " ": break ###
-
             # execute lane following algorithm
             rightDuty, lastMove = drive_feedback(angle, topDisplacement, rightDuty, leftDuty, lastMove, angleGain, displacementGain) ###
 

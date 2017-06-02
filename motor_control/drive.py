@@ -65,13 +65,8 @@ def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, lastMove, angleG
     MIN_DUTY = 48
     MAX_DUTY = 100
     newRightDuty = rightDuty
-	
-    print "angle is %f" % (angle) ###
-    print "angleGain is %f" % (angleGain)###
-    print "topDisplacement is %f" % (topDisplacement) ###
-    print "displacementGain is %f" % (displacementGain) ###
 
-    if topDisplacement < centreThreshMin and rightDuty + displacementGain*topDisplacement > MIN_DUTY and lastMove is not 'decrease':
+    if topDisplacement < centreThreshMin and rightDuty + displacementGain*topDisplacement > MIN_DUTY: ###and lastMove is not 'decrease':
         # robot is angled to the left
         # calculate angle
         #angle = abs(topDisplacement/2)
@@ -80,7 +75,7 @@ def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, lastMove, angleG
         lastMove = 'decrease'
         print 'decrease right robot angle %f' % (newRightDuty)
 
-    elif topDisplacement > centreThreshMax and rightDuty + displacementGain*topDisplacement < MAX_DUTY and lastMove is not 'boost':
+    elif topDisplacement > centreThreshMax and rightDuty + displacementGain*topDisplacement < MAX_DUTY: ###and lastMove is not 'boost':
 	# robot is angled to the right
         # calculate angle
         #angle = topDisplacement/2
@@ -91,14 +86,14 @@ def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, lastMove, angleG
 
     else:
 
-        if angle > angleThreshMax and rightDuty + angleGain*angle < MAX_DUTY and lastMove is not 'boost':
+        if angle > angleThreshMax and rightDuty + angleGain*angle < MAX_DUTY: ### and lastMove is not 'boost':
             # robot is to the right of the centre line
             # increase rightDuty
             newRightDuty = rightDuty + angleGain*angle
             lastMove = 'boost'
             print 'boost right centre %f' % (newRightDuty)
 
-        elif angle < angleThreshMin and rightDuty + angleGain*angle > MIN_DUTY and lastMove is not 'decrease':
+        elif angle < angleThreshMin and rightDuty + angleGain*angle > MIN_DUTY: ### and lastMove is not 'decrease':
             # robot is to the left of the centre line
             # decrease rightDuty
             newRightDuty = rightDuty + angleGain*angle
@@ -108,6 +103,15 @@ def drive_feedback(angle, topDisplacement, rightDuty, leftDuty, lastMove, angleG
         else:
             # robot is close enough to the centre of the lanes
             lastMove = 'centre'
-            ###print 'right duty is %f' % (newRightDuty)
+            print 'right duty is %f' % (newRightDuty)
 
-    return newRightDuty, lastMove
+    print "right duty %f" % (newRightDuty)
+	print "angle thresh min %f" % (angleThreshMin)
+	print "angle thresh max %f" % (angleThreshMax)
+	print "angle %f" % (angle)
+	print "angle gain %f" (angleGain)
+	print "displacement thresh min %f" % (centreThreshMin)
+	print "centre thresh max %f" % (centreThreshMax)
+	print "topDisplacement %f" % (topDisplacement)
+    print "displacement gain %f" (displacementGain)
+	return newRightDuty, lastMove
