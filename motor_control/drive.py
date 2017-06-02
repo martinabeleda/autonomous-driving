@@ -47,20 +47,6 @@ def drive_feedback(angle, topDisp, rightDuty, lastMove, angleCalibrate=5.16, top
     MAX_DUTY = 150
     newRightDuty = rightDuty
 
-    topDisp = topDisp - topDispCalibrate
-    angle = angle - angleCalibrate
-    
-	# once gains are tuned, check that we need this
-    if angle > 45:
-        angle = 45
-    elif angle < -45:
-        angle = -45
-
-    if topDisp > 100:
-        topDisp = 100
-    elif topDisp < -100:
-        topDisp = -100
-
     if topDisp < -yawThresh and rightDuty + yawGain*topDisp > MIN_DUTY: ### and lastMove is not 'decrease':
         
         # robot is angled to the left

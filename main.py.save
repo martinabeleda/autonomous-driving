@@ -145,15 +145,15 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         font = cv2.FONT_HERSHEY_PLAIN
         fontSize = 3
         color = [0, 255, 0]
-        cv2.putText(img, str(fps) + "FPS", (0, 30), font, fontSize, color)
+        cv2.putText(img, str(fps) + "FPS", (30, 0), font, fontSize, color)
         cv2.imshow('Main Frame', img)
-        key = cv2.waitKey(1) & 0xFF
+        #key = cv2.waitKey(1) & 0xFF
 
         # if the `q` key was pressed, break from the loop
 	if key == ord("q"):
-	    break
+#    break
         
-        #  clear the stream in preparation for the next frame
+        # clear the stream in preparation for the next frame
         rawCapture.truncate(0)
 
     except KeyboardInterrupt:
