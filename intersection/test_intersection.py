@@ -42,13 +42,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
 		if line is RED:
 			print("RED LINE!!!")
-			if DISPLAY: 
-				cv2.putText(image,'Red Line 20cm Away',(25,25), font, fontsize, green,2)
 			#if at intersection 
-			turnCode = read_barcode(maskedImage)
+			turnCode,barcode_contours = read_barcode(maskedImage)
 			print("Turn Code", turnCode)
-			if DISPLAY:
-				cv2.putText(img2,'Barcode = '+ str(turnCode),(25,100), font, fontsize, green,2)
 			#Move forwards
 			print("Move Forwards")
 
@@ -57,20 +53,23 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 			print("Light is green")
 
 			turn_decide(turnCode)
-
+			if DISPLAY:
+				cv2.putText(image,'Red Line 20cm Away',(25,25), font, fontsize, green,2)
+				cv2.putText(image,'Barcode = '+ str(count),(25,100), font, fontsize, green ,2)
+				cv2.drawContours(image,barcode_contours,-1,(0,255,0),2)
 
 		else:
 			print("Not an intersection")
 			#delay frame rate - maybs remove?
 			if DISPLAY:
-				cv2.putText(image,'Not an Intersection',(25,25), font, fontsize, red, 2)
+				cv2.putText(image,'Not an Intersection',(25,25), font, fontsize, green, 2)
 			time.sleep(0.1)
 
 
 		# show the frame
 		# display all data to screen 
 		if DISPLAY:
-			cv2.line(image,(0,500),(800,500),color,2)
+			cv2.line(image,(0,500),(800,500),red,2)
 
 		cv2.imshow('Main Frame', image)
                 key = cv2.waitKey(1) & 0xFF

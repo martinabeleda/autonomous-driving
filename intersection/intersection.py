@@ -40,11 +40,11 @@ def is_red_line(image):
 	return red_img_crop, red_flag
 
 
-def read_barcode(maskedImage):
+def read_barcode(cropImage):
 
 	#potentially do this before hand if rest of code works with 9,9 kernel
-	maskedImage = cv2.GaussianBlur(maskedImage, (9,9),0)
-	blurred = cv2.pyrMeanShiftFiltering(maskedImage,51,91)
+	cropImage = cv2.GaussianBlur(cropImage, (9,9),0)
+	blurred = cv2.pyrMeanShiftFiltering(cropImage,51,91)
 
 	grayImage = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
 	ret,thresh1 = cv2.threshold(grayImage,70,255,cv2.THRESH_BINARY_INV)
@@ -58,8 +58,14 @@ def read_barcode(maskedImage):
 		area = cv2.contourArea(cnt)
 		if area > 20 and area < 3000:
 			code = code+1
+			actual_contours.append(cnt)
 
-	return code
+	#add crop value to all contours (500)		
+	for j in range(0,len(actual_contours)):
+		for k in range(0,len(actual_contours[j])-1):
+			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] + 500
+
+	return code, actual_contours
 
 def check_light():
 	print("checking light")
