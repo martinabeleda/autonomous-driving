@@ -132,7 +132,7 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
                  color, thickness)
         print 'left lane only'
         angle = 0
-        topDisplacement = -50
+        topDisplacement = -100
         bottomDisplacement = 0
 
     # if we only have the right lane
@@ -151,7 +151,7 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
                  color, thickness)
         print 'right lane only'
         angle = 0
-        topDisplacement = 50
+        topDisplacement = 100
         bottomDisplacement = 0
 
     # No lanes found

@@ -150,13 +150,13 @@ def left(rightDuty):
     pi.write(motorL1A, True)
     pi.write(motorL2A, False)
     pi.set_PWM_dutycycle(motorLEN,0)
-    pi.set_PWM_dutycycle(motorREN,rightDuty)
+    pi.set_PWM_dutycycle(motorREN,60)
 
 def right(leftDuty):
     print "right"
     pi.write(motorR3A, True)
     pi.write(motorR4A, False)
-    pi.set_PWM_dutycycle(motorLEN,leftDuty)
+    pi.set_PWM_dutycycle(motorLEN,60)
     pi.set_PWM_dutycycle(motorREN,0)
 
 

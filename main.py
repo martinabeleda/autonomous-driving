@@ -15,7 +15,7 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 from datetime import datetime
 from motor_control.drive import drive_feedback, turn_decide
-from motor_control.motors import motor_setup, calibrate_motors stop
+from motor_control.motors import motor_setup, calibrate_motors, stop
 from lane_follow.lane_detect import lane_detect
 from lane_follow.calibrate_camera import calibrate_camera
 from intersection.intersection import is_red_line
@@ -54,7 +54,7 @@ rightDuty = calibrate_motors(leftDuty)
 lastMove = 'centre'
 
 # Camera Calibration
-yawThresh = 20
+yawThresh = 30
 topDispCalibrate=33.17
 topDispMax = 50
 

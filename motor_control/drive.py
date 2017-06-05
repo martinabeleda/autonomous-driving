@@ -47,11 +47,18 @@ def drive_feedback(topDisp, rightDuty, leftDuty, yawThresh):
         
         # robot is angled to the left
         right(leftDuty)
+        sleep(0.2)
+        straight(leftDuty,rightDuty)
+        sleep(0.3)
+        
 
-    elif topDisp > yawThresh
+    elif topDisp > yawThresh:
         
 	# robot is angled to the right
         left(rightDuty)
+        sleep(0.1)
+        straight(leftDuty,rightDuty)
+        sleep(0.1)
 
     else:
             
