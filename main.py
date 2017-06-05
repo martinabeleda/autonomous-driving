@@ -93,7 +93,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         blur = cv2.GaussianBlur(image, (kernelSize,kernelSize), 0)
 
         # check if we are at the red line
-        maskedImage, line = is_red_line(image)
+        maskedImage, line = is_red_line(blur)
 
         if line is RED:
 
@@ -124,7 +124,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         #cv2.putText(img, str(fps) + "FPS", (0, 30), font, fontSize, color)
         if DISPLAY:
             cv2.line(image,(0,450),(800,450), red, 2)
-        cv2.imshow('Main Frame', image)
+        cv2.imshow('Main Frame', maskedImage)
         key = cv2.waitKey(1) & 0xFF
 
         # if the `q` key was pressed, break from the loop

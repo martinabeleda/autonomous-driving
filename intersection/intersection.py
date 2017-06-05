@@ -11,11 +11,16 @@ def is_red_line(image):
 
 	#crop to region of interest --> save time?? - rather than mask
         crop = image[450:600, 0:800]
+
+        #add contrast
+        crop = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
+        crop[:,:,2] = [[max(pixel - 25,0) if pixel < 190 else min (pixel + 25,255) for pixel in row] for row in crop[:,:,2]]
+        crop = cv2.cvtColor(crop, cv2.COLOR_HSV2BGR)
         
 	#note OpenCV represents images as NumPy arrays in reverse order - BGR
 	#set limits for what is considered "red"
 	#0 0 100 --> to always get all red --> or lower threshold
-	red_bound_low = np.array([0,0,120])
+	red_bound_low = np.array([0,0,160])
 	#148 148 255
 	red_bound_high = np.array([140,140,255])
 
@@ -24,13 +29,20 @@ def is_red_line(image):
 	red_img_crop = cv2.bitwise_and(crop,crop,mask=mask)
 
 	#smooth the smooth
-	red_img_crop = cv2.GaussianBlur(red_img_crop, (7,7), 0)
+	#red_img_crop = cv2.GaussianBlur(red_img_crop, (7,7), 0)
 
 	#calculate histogram with red channel mask --> so we can see only when red is high and blue and green are low
 	#range- only high levels of red
 	#look at red channel
 	red_hist = cv2.calcHist([crop],[2],mask,[256],[1,256])
 
+        #plot histogram for testing
+	'''
+	plt.figure(1)
+	plt.plot(red_hist)
+	plt.xlim([1,255])
+	plt.show()
+        '''
 	#see maximum red amount
 	#find area under curve
 	redH_trans = np.transpose(red_hist)
@@ -38,11 +50,12 @@ def is_red_line(image):
 	areaHist = trapz(redH_trans, dx=1)
         print(areaHist)
         #changed 
-	if areaHist[0] > 6500:
+	if areaHist[0] > 6000:
                 red_flag = 1
 	else:
                 red_flag = 0
-	return red_img_crop, red_flag
+        #change back to red_img_crop
+	return crop, red_flag
 
 def read_barcode(cropImage):
 
