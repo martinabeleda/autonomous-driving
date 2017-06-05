@@ -6,11 +6,10 @@ from numpy import trapz
 
 from datetime import datetime
 
-
 def is_red_line(image):
 
 	#crop to region of interest --> save time?? - rather than mask
-	crop = image[500:600, 0:800]
+	crop = image[540:600, 0:800]
 
 	#note OpenCV represents images as NumPy arrays in reverse order - BGR
 	#set limits for what is considered "red"
@@ -38,7 +37,6 @@ def is_red_line(image):
 	else:
                 red_flag = 0
 	return red_img_crop, red_flag
-
 
 def read_barcode(cropImage):
 
@@ -87,6 +85,10 @@ def turn_decide(barcode):
                4: ('right', 'left'),
                5: ('forwards', 'right')}
     default = 0
+    
+    if barcode > 5:
+        barcode = 5
+
     result = choices.get(barcode, default);
 
     if result is 'right':

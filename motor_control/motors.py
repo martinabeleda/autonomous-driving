@@ -45,11 +45,26 @@ def motor_setup():
 #	GPIO.setup(motorR4A, GPIO.OUT)
 #	GPIO.setup(motorEN, GPIO.OUT)
 
-def calibrate_motors(dcL)
-	dcR = dcL-dcL/2.8
+def calibrate_motors(dcL):
+	MAX_DUTY = 255
+	MIN_DUTY = 48
+	dcR = dcL - 0.3
+
+        print "Adjust right duty <p> <i>. When finished <q>" 
+	
+	while 1:
+		forwards_lane_follow(dcL,dcR)
+		inkey = raw_input()
+		if inkey is "i" and dcR < MAX_DUTY:
+			dcR += 0.1
+			print "right duty %f" % (dcR)
+		elif inkey is "p" and dcR > MIN_DUTY:
+			dcR -= 0.1
+			print "right duty %f" % (dcR)
+		elif inkey is "q": break
 	return dcR
 
-def forwards_hard(dcL,distance):
+def forwards_hard(dcL,dcR,distance):
 	print "Forwards"
 	SPEED = 39 # mm/s
 #	GPIO.output(motorL1A, GPIO.HIGH)
@@ -60,12 +75,8 @@ def forwards_hard(dcL,distance):
 	pi.write(motorL2A, False)
 	pi.write(motorR3A, True)
 	pi.write(motorR4A, False)
-
-#	pwm.ChangeDutyCycle(dc)
 	pi.set_PWM_dutycycle(motorLEN,dcL)
-	dcR = calibrate_motors(dcL)
 	pi.set_PWM_dutycycle(motorREN,dcR)
-	print dcR
 	time = distance/SPEED
 	sleep(time)
 	
@@ -79,6 +90,7 @@ def forwards_lane_follow(dcL,dcR):
 	# maybe set sleep time ay
 
 def reverse(distance):
+	# fix
 	print "Reverse"
 	SPEED = 39 # mm/s
 	pi.write(motorL1A, False)
@@ -86,7 +98,7 @@ def reverse(distance):
 	pi.write(motorR3A, False)
 	pi.write(motorR4A, True)
 	pi.set_PWM_dutycycle(motorLEN,dc)
-	dcR = dc-dc/2.8
+	dcR = calibrate_motors(dc)
 	pi.set_PWM_dutycycle(motorREN,dcR)
 	print dcR
 	time = distance/SPEED
@@ -112,25 +124,41 @@ def turn_anti_clockwise(angle):
 	time = angle/TURN_RATE
 	sleep(time)
 
-# def return_to_centre(angle,distance):
-	# if angle > 0:
-		# turnAntiClockWise(angle)
-	# else:
-		# turnClockwise(abs(angle))
-
-	# self.forwards(50,distance)
-
-def left_turn():
+def left_turn(dcL,dcR):
 	"Left turn"
-	self.forwards(160,225)
-	self.turn_anti_clockwise(90)
-	self.forwards(160,140)
+	forwards_hard(dcL,dcR,210)
+	turn_anti_clockwise(90)
+	forwards_hard(dcL,dcR,210)
 
 def right_turn():
 	"Left turn"
-	self.forwards(160,225)
+	forwards_hard(dcL,dcR,210)
 	self.turn_clockwise(90)
-	self.forwards(160,140)
+	forwards_hard(dcL,dcR,210)
+
+def straight(leftDuty, rightDuty):
+    print "straight"
+    pi.write(motorL1A, True)
+    pi.write(motorL2A, False)
+    pi.write(motorR3A, True)
+    pi.write(motorR4A, False)
+    pi.set_PWM_dutycycle(motorLEN,leftDuty)
+    pi.set_PWM_dutycycle(motorREN,rightDuty)
+
+def left(rightDuty):
+    print "left"
+    pi.write(motorL1A, True)
+    pi.write(motorL2A, False)
+    pi.set_PWM_dutycycle(motorLEN,0)
+    pi.set_PWM_dutycycle(motorREN,60)
+
+def right(leftDuty):
+    print "right"
+    pi.write(motorR3A, True)
+    pi.write(motorR4A, False)
+    pi.set_PWM_dutycycle(motorLEN,60)
+    pi.set_PWM_dutycycle(motorREN,0)
+
 
 def stop():
 	print "Stop"

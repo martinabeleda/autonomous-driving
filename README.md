@@ -1,7 +1,7 @@
 # PiCar
 Lane following and traffic sign reading differential drive robot. Developed for MTRX5700 Experimental Robotics Major Project 2017 by:
 
-* Martin Abeleda
+* Martin Abelayda
 * Tom Rapson
 * Kristina Mahoney
 * Riley Green
@@ -19,6 +19,17 @@ Lane following and traffic sign reading differential drive robot. Developed for 
 
 ```
 git clone https://github.com/martinabeleda/PiCar.git
+```
+
+Checkout to branch:
+```
+git checkout --track origin/<branch_name>
+```
+
+Run the code:
+```
+cd PiCar
+python main.py
 ```
 
 ## PiCar setup

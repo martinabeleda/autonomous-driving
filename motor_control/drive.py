@@ -1,29 +1,9 @@
-#import RPi.GPIO as GPIO
 import random
+from datetime import datetime
 from time import sleep
+from motors import straight, left, right
 
-from motors import forwards_lane_follow
-
-
-#GPIO.setmode(GPIO.BOARD)
-
-motor1A = 11
-motor1B = 13
-motor1E = 15
-motor2A = 16
-motor2B = 18
-motor2E = 22
-
-"""
-GPIO.setup(motor1A, GPIO.OUT)
-GPIO.setup(motor1B, GPIO.OUT)
-GPIO.setup(motor1E, GPIO.OUT)
-GPIO.setup(motor2A, GPIO.OUT)
-GPIO.setup(motor2B, GPIO.OUT)
-GPIO.setup(motor2E, GPIO.OUT)
-"""
-
-def turn_decide(barcode):
+def turn_decide(dcL, barcode):
     """
     Turn decide function.
 
@@ -50,43 +30,37 @@ def turn_decide(barcode):
 
     	if choice is 'right': right_turn()
 
-	    elif choice is 'left': left_turn()
+	elif choice is 'left': left_turn()
 
-	    elif choice is 'forwards': forwards(200)
+	elif choice is 'forwards': forwards_hard(leftDuty, rightDuty, 210)
 
-
-def drive_feedback(angle, topDisplacement, leftDuty, rightDuty, angleGain=1, centreGain=1, centreThreshold=50, angleThreshold=5):
+def drive_feedback(topDisp, rightDuty, leftDuty, yawThresh):
     """
     Drive function.
 
 	This function takes the angle and displacement from the `lane_detect()`
-	function and controls the motors using a feedback loop in order to follow
-    the lanes.
+	function and controls the motors using a feedback loop in orSder to follow
+        the lanes.
     """
-    if angle > angleThreshold:
-    	# robot is to the right of the centre line
-        # increase rightDuty
-        newRightDuty = rightDuty + angleGain
 
-    elif angle < -angleThreshold:
-    	# robot is to the left of the centre line
-        # decrease rightDuty
-        newRightDuty = rightDuty - angleGain
+    if topDisp < -yawThresh:
+        
+        # robot is angled to the left
+        right(leftDuty)
+        sleep(0.2)
+        straight(leftDuty,rightDuty)
+        sleep(0.3)
+        
+
+    elif topDisp > yawThresh:
+        
+	# robot is angled to the right
+        left(rightDuty)
+        sleep(0.1)
+        straight(leftDuty,rightDuty)
+        sleep(0.1)
 
     else:
-   	# robot is close enough to the centre of the lanes
-    	if topDisplacement < -centreThreshold:
-    	    # robot is angled to the left
-            # calculate angle
-            angle = abs(topDisplacement/2)
-            turn_clockwise(angle)
-
-        elif topDisplacement > centreThreshold:
-    	    # robot is angled to the right
-            # calculate angle
-            angle = topDisplacement/2    
-            turn_anti_clockwise(angle)
-
-    forwards_lane_follow(leftDuty, newRightDuty)
-
-    return newRightDuty
+            
+	# robot is close enough to the centre of the lanes
+        straight(leftDuty,rightDuty)

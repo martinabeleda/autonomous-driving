@@ -15,11 +15,13 @@ GPIO.setwarnings(False)
 
 motor_setup()
 
+leftDuty = 160
+rightDuty = calibrate_motors(leftDuty)
+
 #pwm = GPIO.PWM(MotorEN,100) # 100 Hz frequency
 #pwm.start(0) # 0% duty cycle
 
 sleep(1)
 
-turn_anti_clockwise(1800)
 stop()
 GPIO.cleanup()
