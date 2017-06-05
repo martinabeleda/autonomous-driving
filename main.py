@@ -18,7 +18,7 @@ from motor_control.drive import drive_feedback, turn_decide
 from motor_control.motors import motor_setup, calibrate_motors, stop
 from lane_follow.lane_detect import lane_detect
 from lane_follow.calibrate_camera import calibrate_camera
-from intersection.intersection import is_red_line
+from intersection.intersection import is_red_line, read_barcode, check_light, turn_decide
 
 pi = pigpio.pi()
 
@@ -43,6 +43,13 @@ camera.hflip = True
 # Red flag
 RED = 1
 NOT_RED = 0
+
+# Display defines
+DISPLAY = 1
+font = cv2.FONT_HERSHEY_PLAIN
+fontsize = 2
+green = [0,255,0]
+red = [0,0,255]
 
 # Camera calibration
 #topDispCalibrate, angleCalibrate = calibrate_camera(camera)
@@ -86,41 +93,24 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         blur = cv2.GaussianBlur(image, (kernelSize,kernelSize), 0)
 
         # check if we are at the red line
-        #masked, line = is_red_line(blur)
+        maskedImage, line = is_red_line(image)
 
         line = NOT_RED
         if line is RED:
 
-            img = blur
-            print "red"
-            """
-            # display raw input
-            img = image
-            # store the number of barcode lines
-            barcode = read_barcode(masked)
-            # move forwards to the line
-            forwards_hard(leftDuty, rightDuty, distance=200)
-            # wait for the light to turn green
-            check_light()
-            # execute a random turn based on barcode
-            turn_decide(leftDuty, barcode)
-            """
+            print("RED LINE!!!")
+            stop()
+	    turnCode,barcode_contours = read_barcode(maskedImage)
+	    print("Turn Code", turnCode)
+	    #Move forwards
+
+	    print("Move Forwards")
+
         else:
             # detect lanes in the image
             (img, angle, topDisp, bottomDisp) = lane_detect(blur)
 
-            topDisp = topDisp - topDispCalibrate
-
-	    #while 1:
-		#print "type a - centreGain, s - centreThresh, d - yawGain, f - yawThresh, g - angleCalibrate, h - topDispCalibrate, or n"
-	        #inkey = raw_input()
-	        #if inkey is "a": centreGain = float(raw_input("set centreGain to "))
-		#elif inkey is "s": centreThresh = float(raw_input("set centreThresh to "))
-		#elif inkey is "d": yawGain = float(raw_input("set yawGain to "))
-		#elif inkey is "f": yawThresh = float(raw_input("set yawThresh to "))
-		#elif inkey is "g": angleCalibrate = float(raw_input("set angleCalibrate to "))
-		#elif inkey is "h": topDispCalibrate = float(raw_input("set topDispCalibrate to "))
-                #elif inkey is "n": break
+            topDisp = topDisp - topDispCalibrates
 
             # execute lane following algorithm
             drive_feedback(topDisp, rightDuty, leftDuty, yawThresh)  ###
@@ -128,8 +118,6 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         runtime = datetime.now() - start
         fps = round(1/runtime.total_seconds(), 1)
 
-        font = cv2.FONT_HERSHEY_PLAIN
-        fontSize = 3
         color = [0, 255, 0]
         cv2.putText(img, str(fps) + "FPS", (0, 30), font, fontSize, color)
         
