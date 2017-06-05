@@ -40,7 +40,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
 		#Check to see  if red line is present - enter intersection module 
 		redLineT1 = datetime.now()
-		maskedImage, line = is_red_line(blur)
+		maskedImage, line = is_red_line(image)
 		redLineT2 = datetime.now()
 		print("red line time = "+ str(redLineT2 - redLineT1))
 

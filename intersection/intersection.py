@@ -43,28 +43,28 @@ def is_red_line(image):
 
 def read_barcode(cropImage):
 
-        blurT1 = datetime.now()
-	blurred = cv2.pyrMeanShiftFiltering(cropImage,61,91)
-        blurT2 = datetime.now()
-        print("Blur time = " + str(blurT2 - blurT1))
+        #blurT1 = datetime.now()
+	#blurred = cv2.pyrMeanShiftFiltering(cropImage,61,91)
+        #blurT2 = datetime.now()
+        #print("Blur time = " + str(blurT2 - blurT1))
 
-        grayT1 = datetime.now()
-	grayImage = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
-        grayT2 = datetime.now()
-        print("gray time = " + str(grayT2 - grayT1))
+        #grayT1 = datetime.now()
+	grayImage = cv2.cvtColor(cropImage, cv2.COLOR_BGR2GRAY)
+        #grayT2 = datetime.now()
+        #print("gray time = " + str(grayT2 - grayT1))
 
-        threshT1 = datetime.now()
+        #threshT1 = datetime.now()
 	ret,thresh1 = cv2.threshold(grayImage,100,255,cv2.THRESH_BINARY_INV)
-        threshT2 = datetime.now()
-        print("thresh time = " + str(threshT2 - threshT1))
+        #threshT2 = datetime.now()
+        #print("thresh time = " + str(threshT2 - threshT1))
 
-        contT1 = datetime.now()
+        #contT1 = datetime.now()
 	contours,_ = cv2.findContours(thresh1, cv2.RETR_LIST,cv2.CHAIN_APPROX_NONE)
-        contT2 = datetime.now()
-        print("contour time = " + str(contT2 - contT1))
+        #contT2 = datetime.now()
+        #print("contour time = " + str(contT2 - contT1))
 
 	#remove false positives (noise) and remove red box contour
-        findCT1 = datetime.now()
+        #findCT1 = datetime.now()
 	code = 0
 	actual_contours = []
 	for i in range(0,len(contours)):
@@ -73,16 +73,16 @@ def read_barcode(cropImage):
 		if area > 125 and area < 3000:
 			code = code+1
 			actual_contours.append(cnt)
-	findCT2 = datetime.now()
-        print("find actual contours time = " + str(findCT2 - findCT1))
+	#findCT2 = datetime.now()
+        #print("find actual contours time = " + str(findCT2 - findCT1))
 
-        moveCT1 = datetime.now()
+        #moveCT1 = datetime.now()
 	#add crop value to all contours (500)		
 	for j in range(0,len(actual_contours)):
 		for k in range(0,len(actual_contours[j])):
-			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] + 550
-        moveCT2 = datetime.now()
-        print("move drawn contour time = " + str(moveCT2 - moveCT1))
+			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] + 540
+        #moveCT2 = datetime.now()
+        #print("move drawn contour time = " + str(moveCT2 - moveCT1))
 	return code, actual_contours
 
 def check_light():
@@ -97,7 +97,7 @@ def turn_decide(barcode):
     This function looks at the barcode and randomly decides on a next turn to
     make and then calls the appropriate motor function.
     '''
-
+        
     choices = {0: ('forwards', 'right', 'left'),
                1: ('right'),
                2: ('left'),
@@ -105,6 +105,8 @@ def turn_decide(barcode):
                4: ('right', 'left'),
                5: ('forwards', 'right')}
     default = 0
+    if barcode > 5:
+        barcode = 5
     result = choices.get(barcode, default);
 
     if result is 'right':
