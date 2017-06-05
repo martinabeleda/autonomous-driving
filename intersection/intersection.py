@@ -10,17 +10,21 @@ from datetime import datetime
 def is_red_line(image):
 
 	#crop to region of interest --> save time?? - rather than mask
-	crop = image[540:600, 0:800]
-
+        crop = image[450:600, 0:800]
+        
 	#note OpenCV represents images as NumPy arrays in reverse order - BGR
 	#set limits for what is considered "red"
 	#0 0 100 --> to always get all red --> or lower threshold
 	red_bound_low = np.array([0,0,120])
-	red_bound_high =np.array([148,148,255])
+	#148 148 255
+	red_bound_high = np.array([140,140,255])
 
 	#find red areas and apply mask
 	mask = cv2.inRange(crop, red_bound_low, red_bound_high)
 	red_img_crop = cv2.bitwise_and(crop,crop,mask=mask)
+
+	#smooth the smooth
+	red_img_crop = cv2.GaussianBlur(red_img_crop, (7,7), 0)
 
 	#calculate histogram with red channel mask --> so we can see only when red is high and blue and green are low
 	#range- only high levels of red
@@ -32,8 +36,9 @@ def is_red_line(image):
 	redH_trans = np.transpose(red_hist)
 
 	areaHist = trapz(redH_trans, dx=1)
-
-	if areaHist[0] > 13000:
+        print(areaHist)
+        #changed 
+	if areaHist[0] > 6500:
                 red_flag = 1
 	else:
                 red_flag = 0
@@ -78,7 +83,7 @@ def read_barcode(cropImage):
 	#add crop value to all contours (500)		
 	for j in range(0,len(actual_contours)):
 		for k in range(0,len(actual_contours[j])):
-			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] + 540
+			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] + 450
         #moveCT2 = datetime.now()
         #print("move drawn contour time = " + str(moveCT2 - moveCT1))
 	return code, actual_contours

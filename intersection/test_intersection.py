@@ -14,7 +14,7 @@ camera.resolution = (800, 600)
 camera.framerate = 32
 rawCapture = PiRGBArray(camera, size=(800, 600))
 camera.vflip = True
-camera.hflip = True
+camera.hflip = Tru        e
 
 # allow the camera to warmup
 time.sleep(0.1)
@@ -78,7 +78,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		# show the frame
 		# display all data to screen 
 		if DISPLAY:
-			cv2.line(image,(0,540),(800,540),red,2)
+			cv2.line(image,(0,400),(800,400),red,2)
         
 		cv2.imshow('Main Frame', image)
                 key = cv2.waitKey(1) & 0xFF
