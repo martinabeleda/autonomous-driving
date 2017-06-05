@@ -33,7 +33,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
     	# grab the raw NumPy array representing the image, then initialize the timestamp
 		# and occupied/unoccupied text
 		image = frame.array
-
+            
 		# gaussian blur
 	    	kernelSize = 5
 	    	blur = cv2.GaussianBlur(image, (kernelSize,kernelSize), 0)
@@ -79,7 +79,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		# display all data to screen 
 		if DISPLAY:
 			cv2.line(image,(0,540),(800,540),red,2)
-
+        
 		cv2.imshow('Main Frame', image)
                 key = cv2.waitKey(1) & 0xFF
 
