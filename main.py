@@ -49,19 +49,19 @@ NOT_RED = 0
 #print "topDispCalibrate = %f, angleCalibrate = %f" % (topDispCalibrate, angleCalibrate)
 
 # Motor Calibration
-leftDuty = 70
+leftDuty = 90
 rightDuty = calibrate_motors(leftDuty)
 lastMove = 'centre'
 
 # Camera Calibration
 # centreThresh=10
 # centreGain = 0.03
-yawThresh = 25
-yawGain=0.012
-yawDerivativeGain=0.001
-topDispCalibrate=41.5
+yawThresh = 0
+yawGain=0.5 #0.3
+yawDerivativeGain=-0.3
+topDispCalibrate=33.17
 # angleCalibrate=1.134438
-topDispMax = 80
+topDispMax = 50
 # angleMax = 45
 prevTopDisp = 0
 
@@ -79,6 +79,7 @@ time.sleep(1)
 
 # main loop
 prevTime = datetime.now()
+
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
     try:
@@ -144,7 +145,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
             # execute lane following algorithm
             rightDuty, lastMove, prevTopDisp, prevTime = drive_feedback(topDisp, prevTopDisp, prevTime, rightDuty, lastMove, topDispCalibrate,
-                                                 yawGain, yawDerivativeGain, yawThresh)  ###
+                                                                        yawGain, yawDerivativeGain, yawThresh)  ###
 
             forwards_lane_follow(leftDuty, rightDuty)
 
