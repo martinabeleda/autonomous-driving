@@ -38,12 +38,18 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	    	blur = cv2.GaussianBlur(image, (kernelSize,kernelSize), 0)
 
 		#Check to see  if red line is present - enter intersection module 
+		redLineT1 = datetime.now()
 		maskedImage, line = is_red_line(blur)
+		redLineT2 = datetime.now()
+		print("red line time = "+ str(redLineT2 - redLineT1))
 
 		if line is RED:
 			print("RED LINE!!!")
 			#if at intersection 
+			barCodeT1 = datetime.now()
 			turnCode,barcode_contours = read_barcode(maskedImage)
+			barCodeT2 = datetime.now()
+			print("Barcode reading time = " + str(barCodeT2-barCodeT1))
 			print("Turn Code", turnCode)
 			#Move forwards
 			print("Move Forwards")
@@ -54,10 +60,12 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
 			turn_decide(turnCode)
 			if DISPLAY:
+				displayT1 = datetime.now()
 				cv2.putText(image,'Red Line 20cm Away',(25,25), font, fontsize, green,2)
 				cv2.putText(image,'Barcode = '+ str(turnCode),(25,100), font, fontsize, green ,2)
 				cv2.drawContours(image,barcode_contours,-1,(0,255,0),2)
-
+				displayT2 = datetime.now()
+				print("Display time = " + str(displayT2 - displayT1))
 		else:
 			print("Not an intersection")
 			#delay frame rate - maybs remove?

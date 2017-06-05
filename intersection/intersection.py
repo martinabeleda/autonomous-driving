@@ -17,7 +17,7 @@ def is_red_line(image):
 	#set limits for what is considered "red"
 	#0 0 100 --> to always get all red --> or lower threshold
 	red_bound_low = np.array([0,0,120])
-	red_bound_high =np.array([150,150,255])
+	red_bound_high =np.array([148,148,255])
 
 	#find red areas and apply mask
 	mask = cv2.inRange(crop, red_bound_low, red_bound_high)
