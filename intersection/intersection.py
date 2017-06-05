@@ -17,7 +17,7 @@ def is_red_line(image):
 	#set limits for what is considered "red"
 	#0 0 100 --> to always get all red --> or lower threshold
 	red_bound_low = np.array([0,0,120])
-	red_bound_high =np.array([130,130,255])
+	red_bound_high =np.array([150,150,255])
 
 	#find red areas and apply mask
 	mask = cv2.inRange(crop, red_bound_low, red_bound_high)
@@ -58,13 +58,13 @@ def read_barcode(cropImage):
 	for i in range(0,len(contours)):
 		cnt = contours[i]
 		area = cv2.contourArea(cnt)
-		if area > 20 and area < 3000:
+		if area > 125 and area < 3000:
 			code = code+1
 			actual_contours.append(cnt)
 
 	#add crop value to all contours (500)		
 	for j in range(0,len(actual_contours)):
-		for k in range(0,len(actual_contours[j])-1):
+		for k in range(0,len(actual_contours[j])):
 			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] + 500
 
 	return code, actual_contours
