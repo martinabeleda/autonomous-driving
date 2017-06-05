@@ -46,8 +46,6 @@ NOT_RED = 0
 
 # Camera calibration
 #topDispCalibrate, angleCalibrate = calibrate_camera(camera)
-#topDispCalibrate=42.54
-#angleCalibrate=1.808021636
 #print "topDispCalibrate = %f, angleCalibrate = %f" % (topDispCalibrate, angleCalibrate)
 
 # Motor Calibration
@@ -56,14 +54,16 @@ rightDuty = calibrate_motors(leftDuty)
 lastMove = 'centre'
 
 # Camera Calibration
-centreThresh=10
-centreGain = 0.03
+# centreThresh=10
+# centreGain = 0.03
 yawThresh = 25
 yawGain=0.012
+yawDerivativeGain=0.001
 topDispCalibrate=41.5
-angleCalibrate=1.134438
+# angleCalibrate=1.134438
 topDispMax = 80
-angleMax = 45
+# angleMax = 45
+prevTopDisp = 0
 
 
 # wait for user to say GO
@@ -78,6 +78,7 @@ motor_setup()
 time.sleep(1)
 
 # main loop
+prevTime = datetime.now()
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
     try:
@@ -116,14 +117,14 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             (img, angle, topDisp, bottomDisp) = lane_detect(blur)
 
             topDisp = topDisp - topDispCalibrate
-            angle = angle - angleCalibrate
+            # angle = angle - angleCalibrate
 
             # Set upper and lower bounds for angle and topDisplacement
             # once gains are tuned, check that we need this
-            if angle > angleMax:
-                angle = angleMax
-            elif angle < -angleMax:
-                angle = -angleMax
+            # if angle > angleMax:
+                # angle = angleMax
+            # elif angle < -angleMax:
+                # angle = -angleMax
 
             if topDisp > topDispMax:
                 topDisp = topDispMax
@@ -142,8 +143,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
                 #elif inkey is "n": break
 
             # execute lane following algorithm
-            rightDuty, lastMove = drive_feedback(angle, topDisp, rightDuty, lastMove, angleCalibrate, topDispCalibrate,
-                                                 yawGain, yawThresh, centreGain, centreThresh)  ###
+            rightDuty, lastMove, prevTopDisp, prevTime = drive_feedback(topDisp, prevTopDisp, prevTime, rightDuty, lastMove, topDispCalibrate,
+                                                 yawGain, yawDerivativeGain, yawThresh)  ###
 
             forwards_lane_follow(leftDuty, rightDuty)
 

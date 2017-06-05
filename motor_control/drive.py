@@ -1,4 +1,5 @@
 import random
+from datetime import datetime
 from time import sleep
 from motors import forwards_lane_follow, right_turn, left_turn, forwards_hard
 
@@ -33,9 +34,8 @@ def turn_decide(dcL, barcode):
 
 	elif choice is 'forwards': forwards_hard(leftDuty, rightDuty, 210)
 
-def drive_feedback(angle, topDisp, rightDuty, lastMove, angleCalibrate=5.16, topDispCalibrate=31,
-                   yawGain=0.01, yawThresh=15,
-                   centreGain=1, centreThresh=10):
+def drive_feedback(topDisp, prevTopDisp, prevTime=datetime.now(), rightDuty, lastMove,
+                   topDispCalibrate=31, yawGain=0.01, yawDerivativeGain=0.001, yawThresh=15):
     """
     Drive function.
 
@@ -46,48 +46,55 @@ def drive_feedback(angle, topDisp, rightDuty, lastMove, angleCalibrate=5.16, top
     MIN_DUTY = 48
     MAX_DUTY = 150
     newRightDuty = rightDuty
+	
+	dt = datetime.now() - prevTime
+	prevTime = datetime.now()
+	errorDot = (topDisp - prevTopDisp) / dt
 
-    if topDisp < -yawThresh and rightDuty + yawGain*topDisp > MIN_DUTY: ### and lastMove is not 'decrease':
+    if topDisp < -yawThresh and rightDuty + yawGain*topDisp + yawDerivativeGain*errorDot > MIN_DUTY: ### and lastMove is not 'decrease':
         
         # robot is angled to the left
-        newRightDuty = rightDuty + yawGain*topDisp
+        newRightDuty = rightDuty + yawGain*topDisp + yawDerivativeGain*errorDot
         lastMove = 'decrease'
         print 'decrease right robot yaw %f' % (newRightDuty)
 
-    elif topDisp > yawThresh and rightDuty + yawGain*topDisp < MAX_DUTY: ### and lastMove is not 'boost':
+    elif topDisp > yawThresh and rightDuty + yawGain*topDisp + yawDerivativeGain*errorDot < MAX_DUTY: ### and lastMove is not 'boost':
         
 	    # robot is angled to the right
-        newRightDuty = rightDuty + yawGain*topDisp
+        newRightDuty = rightDuty + yawGain*topDisp + yawDerivativeGain*errorDot
         lastMove = 'boost'
         print 'boost right robot yaw %f' % (newRightDuty)
 
     else:
 
-        if angle > centreThresh and rightDuty + centreGain*angle < MAX_DUTY: ### and lastMove is not 'boost':
+        # if angle > centreThresh and rightDuty + centreGain*angle < MAX_DUTY: ### and lastMove is not 'boost':
             
-            # robot is to the right of the centre line
-            newRightDuty = rightDuty + centreGain*angle
-            lastMove = 'boost'
-            print 'boost right centre %f' % (newRightDuty)
+            # # robot is to the right of the centre line
+            # newRightDuty = rightDuty + centreGain*angle
+            # lastMove = 'boost'
+            # print 'boost right centre %f' % (newRightDuty)
 
-        elif angle < -centreThresh and rightDuty + centreGain*angle > MIN_DUTY: ### and lastMove is not 'decrease':
+        # elif angle < -centreThresh and rightDuty + centreGain*angle > MIN_DUTY: ### and lastMove is not 'decrease':
             
-            # robot is to the left of the centre line
-            newRightDuty = rightDuty + centreGain*angle
-            lastMove = 'decrease'
-            print 'decrease right centre %f' % (newRightDuty)
+            # # robot is to the left of the centre line
+            # newRightDuty = rightDuty + centreGain*angle
+            # lastMove = 'decrease'
+            # print 'decrease right centre %f' % (newRightDuty)
 
-        else:
+        # else:
             
-            # robot is close enough to the centre of the lanes
-            lastMove = 'centre'
-            print 'right duty is %f' % (newRightDuty)
+		# robot is close enough to the centre of the lanes
+		lastMove = 'centre'
+		print 'right duty is %f' % (newRightDuty)
+			
+	prevTopDisp = topDisp
 			
     print "right duty changed by %f" % (newRightDuty - rightDuty)
     print "topDisp (yaw) %f" % (topDisp)
     #print "yaw thresh %f" % (yawThresh)
     #print "yaw gain %f" % (yawGain)
-    print "angle (centre) %f" % (angle)
-    #print "centre thresh %f" % (centreThresh)
-    #print "centre gain %f" % (centreGain)
-    return newRightDuty, lastMove
+	#print "yaw derivative gain %f" % (yawDerivativeGain)
+    # print "angle (centre) %f" % (angle)
+    # #print "centre thresh %f" % (centreThresh)
+    # #print "centre gain %f" % (centreGain)
+    return newRightDuty, lastMove, prevTopDisp, prevTIme
