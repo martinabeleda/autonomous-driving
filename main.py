@@ -15,7 +15,7 @@ from picamera.array import PiRGBArray
 from picamera import PiCamera
 from datetime import datetime
 from motor_control.drive import drive_feedback, turn_decide
-from motor_control.motors import motor_setup, calibrate_motors, forwards_hard, forwards_lane_follow, stop
+from motor_control.motors import motor_setup, calibrate_motors stop
 from lane_follow.lane_detect import lane_detect
 from lane_follow.calibrate_camera import calibrate_camera
 from intersection.intersection import is_red_line
@@ -49,21 +49,14 @@ NOT_RED = 0
 #print "topDispCalibrate = %f, angleCalibrate = %f" % (topDispCalibrate, angleCalibrate)
 
 # Motor Calibration
-leftDuty = 90
+leftDuty = 70
 rightDuty = calibrate_motors(leftDuty)
 lastMove = 'centre'
 
 # Camera Calibration
-# centreThresh=10
-# centreGain = 0.03
-yawThresh = 0
-yawGain=0.5 #0.3
-yawDerivativeGain=-0.3
+yawThresh = 20
 topDispCalibrate=33.17
-# angleCalibrate=1.134438
 topDispMax = 50
-# angleMax = 45
-prevTopDisp = 0
 
 
 # wait for user to say GO
@@ -78,7 +71,6 @@ motor_setup()
 time.sleep(1)
 
 # main loop
-prevTime = datetime.now()
 
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
@@ -118,19 +110,6 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             (img, angle, topDisp, bottomDisp) = lane_detect(blur)
 
             topDisp = topDisp - topDispCalibrate
-            # angle = angle - angleCalibrate
-
-            # Set upper and lower bounds for angle and topDisplacement
-            # once gains are tuned, check that we need this
-            # if angle > angleMax:
-                # angle = angleMax
-            # elif angle < -angleMax:
-                # angle = -angleMax
-
-            if topDisp > topDispMax:
-                topDisp = topDispMax
-            elif topDisp < -topDispMax:
-                topDisp = -topDispMax
 
 	    #while 1:
 		#print "type a - centreGain, s - centreThresh, d - yawGain, f - yawThresh, g - angleCalibrate, h - topDispCalibrate, or n"
@@ -144,10 +123,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
                 #elif inkey is "n": break
 
             # execute lane following algorithm
-            rightDuty, lastMove, prevTopDisp, prevTime = drive_feedback(topDisp, prevTopDisp, prevTime, rightDuty, lastMove, topDispCalibrate,
-                                                                        yawGain, yawDerivativeGain, yawThresh)  ###
-
-            forwards_lane_follow(leftDuty, rightDuty)
+            drive_feedback(topDisp, rightDuty, leftDuty, yawThresh)  ###
 
         runtime = datetime.now() - start
         fps = round(1/runtime.total_seconds(), 1)

@@ -1,7 +1,7 @@
 import random
 from datetime import datetime
 from time import sleep
-from motors import forwards_lane_follow, right_turn, left_turn, forwards_hard
+from motors import straight, left, right
 
 def turn_decide(dcL, barcode):
     """
@@ -34,69 +34,26 @@ def turn_decide(dcL, barcode):
 
 	elif choice is 'forwards': forwards_hard(leftDuty, rightDuty, 210)
 
-def drive_feedback(topDisp, prevTopDisp, prevTime, rightDuty, lastMove,
-                   topDispCalibrate=31, yawGain=0.01, yawDerivativeGain=0.001, yawThresh=15):
+def drive_feedback(topDisp, rightDuty, leftDuty, yawThresh):
     """
     Drive function.
 
 	This function takes the angle and displacement from the `lane_detect()`
-	function and controls the motors using a feedback loop in order to follow
+	function and controls the motors using a feedback loop in orSder to follow
         the lanes.
     """
-    MIN_DUTY = 48
-    MAX_DUTY = 255
-    newRightDuty = rightDuty
-	
-    dt = datetime.now() - prevTime
-    prevTime = datetime.now()
-    errorDot = (topDisp - prevTopDisp) / dt.total_seconds()
 
-    if topDisp < -yawThresh and rightDuty + yawGain*topDisp + yawDerivativeGain*errorDot > MIN_DUTY: ### and lastMove is not 'decrease':
+    if topDisp < -yawThresh:
         
         # robot is angled to the left
-        newRightDuty = rightDuty + yawGain*topDisp + yawDerivativeGain*errorDot
-        lastMove = 'decrease'
-        print 'decrease right robot yaw %f' % (newRightDuty)
+        right(leftDuty)
 
-    elif topDisp > yawThresh and rightDuty + yawGain*topDisp + yawDerivativeGain*errorDot < MAX_DUTY: ### and lastMove is not 'boost':
+    elif topDisp > yawThresh
         
 	# robot is angled to the right
-        newRightDuty = rightDuty + yawGain*topDisp + yawDerivativeGain*errorDot
-        lastMove = 'boost'
-        print 'boost right robot yaw %f' % (newRightDuty)
+        left(rightDuty)
 
     else:
-
-        # if angle > centreThresh and rightDuty + centreGain*angle < MAX_DUTY: ### and lastMove is not 'boost':
-            
-            # # robot is to the right of the centre line
-            # newRightDuty = rightDuty + centreGain*angle
-            # lastMove = 'boost'
-            # print 'boost right centre %f' % (newRightDuty)
-
-        # elif angle < -centreThresh and rightDuty + centreGain*angle > MIN_DUTY: ### and lastMove is not 'decrease':
-            
-            # # robot is to the left of the centre line
-            # newRightDuty = rightDuty + centreGain*angle
-            # lastMove = 'decrease'
-            # print 'decrease right centre %f' % (newRightDuty)
-
-        # else:
             
 	# robot is close enough to the centre of the lanes
-	lastMove = 'centre'
-	print 'right duty is %f' % (newRightDuty)
-			
-	prevTopDisp = topDisp
-			
-    print "right duty changed by %f     topDisp %f     Kp*e %f     Kd*e. %f\n" % (newRightDuty - rightDuty, topDisp, yawGain*topDisp, yawDerivativeGain*errorDot)
-    #print "topDisp (yaw) %f" % (topDisp)
-
-    #print "yaw thresh %f" % (yawThresh)
-    #print "kp*e %f" % (yawGain*topDisp)
-    #print "ke*edot %f" % (yawDerivativeGain*errorDot)
-    #print "yaw derivative gain %f" % (yawDerivativeGain)
-    # print "angle (centre) %f" % (angle)
-    # print "centre thresh %f" % (centreThresh)
-    # print "centre gain %f" % (centreGain)
-    return newRightDuty, lastMove, prevTopDisp, prevTime
+        straight(leftDuty,rightDuty)
