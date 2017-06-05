@@ -4,6 +4,7 @@ from picamera import PiCamera
 import time
 import cv2
 import numpy as np
+from datetime import datetime
 
 from intersection import is_red_line, read_barcode, check_light, turn_decide
 
@@ -77,7 +78,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 		# show the frame
 		# display all data to screen 
 		if DISPLAY:
-			cv2.line(image,(0,500),(800,500),red,2)
+			cv2.line(image,(0,540),(800,540),red,2)
 
 		cv2.imshow('Main Frame', image)
                 key = cv2.waitKey(1) & 0xFF

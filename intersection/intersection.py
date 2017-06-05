@@ -11,7 +11,7 @@ from datetime import datetime
 def is_red_line(image):
 
 	#crop to region of interest --> save time?? - rather than mask
-	crop = image[500:600, 0:800]
+	crop = image[540:600, 0:800]
 
 	#note OpenCV represents images as NumPy arrays in reverse order - BGR
 	#set limits for what is considered "red"
@@ -34,7 +34,7 @@ def is_red_line(image):
 
 	areaHist = trapz(redH_trans, dx=1)
 
-	if areaHist[0] > 12000:
+	if areaHist[0] > 13000:
                 red_flag = 1
 	else:
                 red_flag = 0
@@ -43,12 +43,11 @@ def is_red_line(image):
 
 def read_barcode(cropImage):
 
-	#potentially do this before hand if rest of code works with 9,9 kernel
-	cropImage = cv2.GaussianBlur(cropImage, (9,9),0)
-	blurred = cv2.pyrMeanShiftFiltering(cropImage,51,91)
+
+	blurred = cv2.pyrMeanShiftFiltering(cropImage,61,91)
 
 	grayImage = cv2.cvtColor(blurred, cv2.COLOR_BGR2GRAY)
-	ret,thresh1 = cv2.threshold(grayImage,70,255,cv2.THRESH_BINARY_INV)
+	ret,thresh1 = cv2.threshold(grayImage,100,255,cv2.THRESH_BINARY_INV)
 
 	contours,_ = cv2.findContours(thresh1, cv2.RETR_LIST,cv2.CHAIN_APPROX_NONE)
 
@@ -65,7 +64,7 @@ def read_barcode(cropImage):
 	#add crop value to all contours (500)		
 	for j in range(0,len(actual_contours)):
 		for k in range(0,len(actual_contours[j])):
-			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] + 500
+			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] + 550
 
 	return code, actual_contours
 
