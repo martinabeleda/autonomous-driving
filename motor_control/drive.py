@@ -34,7 +34,8 @@ def turn_decide(dcL, barcode):
 
 	elif choice is 'forwards': forwards_hard(leftDuty, rightDuty, 210)
 
-def drive_feedback(topDisp, rightDuty, leftDuty, yawThresh):
+def drive_feedback(rightDuty, leftDuty, topDisp, topDispThresh, angle, angleThresh, 
+                   sleepAngle=0.075 , sleepTopDisp=0.15, sleepStraight=0.15):
     """
     Drive function.
 
@@ -42,25 +43,41 @@ def drive_feedback(topDisp, rightDuty, leftDuty, yawThresh):
 	function and controls the motors using a feedback loop in orSder to follow
         the lanes.
     """
+    if topDisp > topDispThresh:
 
-    if topDisp < -yawThresh:
-        
-        # robot is angled to the left
-        right(leftDuty)
-        sleep(0.2)
-        straight(leftDuty,rightDuty)
-        sleep(0.3)
-        
-
-    elif topDisp > yawThresh:
-        
-	# robot is angled to the right
+        # robot is on the right
         left(rightDuty)
-        sleep(0.1)
+        sleep(sleepTopDisp)
         straight(leftDuty,rightDuty)
-        sleep(0.1)
+        sleep(sleepStraight)
+        print "Turn Left topDisp"
 
-    else:
-            
-	# robot is close enough to the centre of the lanes
+    elif topDisp < -topDispThresh:
+        # robot is on the left
+
+        right(leftDuty)
+        sleep(sleepTopDisp)
         straight(leftDuty,rightDuty)
+        sleep(sleepStraight)
+        print "Turn Right topDisp"
+    else:
+        if angle < -angleThresh:
+        
+            # robot is angled to the left
+            right(leftDuty)
+            sleep(sleepAngle)
+            straight(leftDuty,rightDuty)
+            sleep(sleepStraight)
+            print "Turn Right angle"
+        elif angle > angleThresh:
+        
+	    # robot is angled to the right
+            left(rightDuty)
+            sleep(sleepAngle)
+            straight(leftDuty,rightDuty)
+            sleep(sleepStraight)
+            print "Turn Left angle"
+        else:
+            
+	    # robot is close enough to the centre of the lanes
+            straight(leftDuty,rightDuty)
