@@ -124,7 +124,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         #cv2.putText(img, str(fps) + "FPS", (0, 30), font, fontSize, color)
         if DISPLAY:
             cv2.line(image,(0,450),(800,450), red, 2)
-        cv2.imshow('Main Frame', maskedImage)
+        cv2.imshow('Main Frame', image)
         key = cv2.waitKey(1) & 0xFF
 
         # if the `q` key was pressed, break from the loop
