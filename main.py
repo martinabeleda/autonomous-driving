@@ -56,21 +56,16 @@ red = [0,0,255]
 #print "topDispCalibrate = %f, angleCalibrate = %f" % (topDispCalibrate, angleCalibrate)
 
 # Motor Calibration
-leftDuty = 65
+leftDuty = 100
 rightDuty = calibrate_motors(leftDuty)
 lastMove = 'centre'
 
 # Camera Calibration
-yawThresh = 30
-topDispCalibrate=33.17
-topDispMax = 50
-
-
-# wait for user to say GO
-print "Waiting for you to press g"
-while(1):
-    inkey = raw_input()
-    if inkey is "g": break
+topDispThresh = 50
+topDispCalibrate=33
+#topDispMax = 50
+angleThresh = 2
+angleCalibrate = 0
 
 motor_setup()
 
@@ -104,32 +99,37 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	    #Move forwards
 
 	    print("Move Forwards")
+		
             if DISPLAY:
 	        cv2.putText(image,'Red Line 20cm Away',(25,25), font, fontSize, green,2)
 	        cv2.putText(image,'Barcode = '+ str(turnCode),(25,100), font, fontSize, green ,2)
 		cv2.drawContours(image,barcode_contours,-1,(0,255,0),2)
+		
         else:
             # detect lanes in the image
-            (img, angle, topDisp, bottomDisp) = lane_detect(blur)
+            (image, angle, topDisp, bottomDisp) = lane_detect(blur)
 
             topDisp = topDisp - topDispCalibrate
 
             # execute lane following algorithm
             drive_feedback(topDisp, rightDuty, leftDuty, yawThresh)  ###
 
-        runtime = datetime.now() - start
-        fps = round(1/runtime.total_seconds(), 1)
-
-        #color = [0, 255, 0]
-        #cv2.putText(img, str(fps) + "FPS", (0, 30), font, fontSize, color)
+	
         if DISPLAY:
+	    
+	    # display fps in top left corner
+	    runtime = datetime.now() - start
+            fps = round(1/runtime.total_seconds(), 1)
+            cv2.putText(img, str(fps) + "FPS", (0, 30), font, fontSize, [0, 255, 0])	
+	    
             cv2.line(image,(0,450),(800,450), red, 2)
-        cv2.imshow('Main Frame', image)
-        key = cv2.waitKey(1) & 0xFF
+	
+            cv2.imshow('Main Frame', image)
+            key = cv2.waitKey(1) & 0xFF
 
-        # if the `q` key was pressed, break from the loop
-	#if key == ord("q"):
-	#    break
+            # if the `q` key was pressed, break from the loop
+	    if key == ord("q"):
+	        break
 
         #  clear the stream in preparation for the next frame
         rawCapture.truncate(0)
