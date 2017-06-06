@@ -37,8 +37,8 @@ def motor_setup():
 	pi.set_mode(motorR4A, pigpio.OUTPUT)
 	pi.set_mode(motorLEN, pigpio.OUTPUT)
 	pi.set_mode(motorREN, pigpio.OUTPUT)
-	pi.set_PWM_frequency(motorLEN, 100) # 100 Hz frequency
-	pi.set_PWM_frequency(motorREN, 100)
+	pi.set_PWM_frequency(motorLEN, 1000) # 100 Hz frequency
+	pi.set_PWM_frequency(motorREN, 1000)
 #	GPIO.setup(motorL1A, GPIO.OUT)
 #	GPIO.setup(motorL2A, GPIO.OUT)
 #	GPIO.setup(motorR3A, GPIO.OUT)
@@ -48,7 +48,7 @@ def motor_setup():
 def calibrate_motors(dcL):
 	MAX_DUTY = 255
 	MIN_DUTY = 48
-	dcR = dcL - 0.3
+	dcR = 90
 
         print "Adjust right duty <p> <i>. When finished <q>" 
 	
