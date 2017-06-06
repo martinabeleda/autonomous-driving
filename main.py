@@ -45,15 +45,11 @@ RED = 1
 NOT_RED = 0
 
 # Display defines
-DISPLAY = 1
+DISPLAY = 0
 font = cv2.FONT_HERSHEY_PLAIN
 fontSize = 2
 green = [0,255,0]
 red = [0,0,255]
-
-# Camera calibration
-#topDispCalibrate, angleCalibrate = calibrate_camera(camera)
-#print "topDispCalibrate = %f, angleCalibrate = %f" % (topDispCalibrate, angleCalibrate)
 
 # Motor Calibration
 leftDuty = 100
@@ -61,11 +57,12 @@ rightDuty = calibrate_motors(leftDuty)
 lastMove = 'centre'
 
 # Camera Calibration
-topDispThresh = 50
-topDispCalibrate=33
-#topDispMax = 50
-angleThresh = 2
+topDispCalibrate = 33
 angleCalibrate = 0
+#topDispCalibrate, angleCalibrate = calibrate_camera(camera)
+#print "topDispCalibrate = %f, angleCalibrate = %f" % (topDispCalibrate, angleCalibrate)
+topDispThresh = 50
+angleThresh = 2
 
 motor_setup()
 
@@ -73,7 +70,6 @@ motor_setup()
 time.sleep(1)
 
 # main loop
-
 for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
     try:
@@ -101,23 +97,22 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	    print("Move Forwards")
 		
             if DISPLAY:
-	        cv2.putText(image,'Red Line 20cm Away',(25,25), font, fontSize, green,2)
-	        cv2.putText(image,'Barcode = '+ str(turnCode),(25,100), font, fontSize, green ,2)
-		cv2.drawContours(image,barcode_contours,-1,(0,255,0),2)
+	        cv2.putText(image, 'Red Line 20cm Away', (25,25), font, fontSize, green,2)
+	        cv2.putText(image, 'Barcode = '+ str(turnCode), (25,100), font, fontSize, green ,2)
+		cv2.drawContours(image, barcode_contours, -1, (0,255,0), 2)
 		
         else:
             # detect lanes in the image
             (image, angle, topDisp, bottomDisp) = lane_detect(blur)
 
             topDisp = topDisp - topDispCalibrate
-
+            angle = angle - angleCalibrate
+		
             # execute lane following algorithm
-            drive_feedback(topDisp, rightDuty, leftDuty, yawThresh)  ###
+            drive_feedback(rightDuty, leftDuty, topDisp, topDispThresh, angle, angleThresh)  ###
 
 	
         if DISPLAY:
-	    
-	    # display fps in top left corner
 	    runtime = datetime.now() - start
             fps = round(1/runtime.total_seconds(), 1)
             cv2.putText(img, str(fps) + "FPS", (0, 30), font, fontSize, [0, 255, 0])	
