@@ -45,7 +45,7 @@ RED = 1
 NOT_RED = 0
 
 # Display defines
-DISPLAY = 1
+DISPLAY = 0
 font = cv2.FONT_HERSHEY_PLAIN
 fontSize = 2
 green = [0,255,0]
@@ -99,7 +99,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
             print("RED LINE!!!")
             stop()
-	    turnCode,barcode_contours = read_barcode(maskedImage)
+            #change back to tuple with just 2 return values
+	    turnCode,barcode_contours,all_contours,thresh = read_barcode(maskedImage)
 	    print("Turn Code", turnCode)
 	    #Move forwards
 
@@ -107,11 +108,13 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             if DISPLAY:
 	        cv2.putText(image,'Red Line 20cm Away',(25,25), font, fontSize, green,2)
 	        cv2.putText(image,'Barcode = '+ str(turnCode),(25,100), font, fontSize, green ,2)
-		cv2.drawContours(image,barcode_contours,-1,(0,255,0),2)
+	        #change back to image and only plot barcode contours
+                cv2.drawContours(maskedImage,all_contours,-1,(0,255,255),2)
+                cv2.drawContours(maskedImage,barcode_contours,-1,(0,255,0),2)
         else:
             # detect lanes in the image
             (img, angle, topDisp, bottomDisp) = lane_detect(blur)
-
+            print angle
             topDisp = topDisp - topDispCalibrate
 
             # execute lane following algorithm
@@ -122,9 +125,11 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
         #color = [0, 255, 0]
         #cv2.putText(img, str(fps) + "FPS", (0, 30), font, fontSize, color)
+        
         if DISPLAY:
             cv2.line(image,(0,450),(800,450), red, 2)
-        cv2.imshow('Main Frame', image)
+        if line is RED:
+            cv2.imshow('Main Frame', thresh)
         key = cv2.waitKey(1) & 0xFF
 
         # if the `q` key was pressed, break from the loop

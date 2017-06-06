@@ -24,16 +24,25 @@ def is_red_line(image):
 	#note OpenCV represents images as NumPy arrays in reverse order - BGR
 	#set limits for what is considered "red"
 	#0 0 100 --> to always get all red --> or lower threshold
-	red_bound_low = np.array([50,50,170])
-	#148 148 255
+        #30 25 170
+        #15 10 170
+	red_bound_low = np.array([30,25,170])
+	#230 160 255
 	red_bound_high = np.array([230,160,255])
+        #min G = 45
+	#min B = 96
+	#min R  = 150 
+	#max G = 88
+	#max B = 115
+	#max R = 250
+	
 
 	#find red areas and apply mask
 	mask = cv2.inRange(crop, red_bound_low, red_bound_high)
 	red_img_crop = cv2.bitwise_and(crop,crop,mask=mask)
 
 	#smooth the smooth
-	red_img_crop = cv2.GaussianBlur(red_img_crop, (7,7), 0)
+	red_img_crop = cv2.GaussianBlur(red_img_crop, (5,5), 0)
 
 	#calculate histogram with red channel mask --> so we can see only when red is high and blue and green are low
 	#range- only high levels of red
@@ -54,7 +63,7 @@ def is_red_line(image):
 	areaHist = trapz(redH_trans, dx=1)
         print(areaHist)
         #changed 
-	if areaHist[0] > 6000:
+	if areaHist[0] > 7000:
                 red_flag = 1
 	else:
                 red_flag = 0
@@ -71,7 +80,6 @@ def read_barcode(cropImage):
         #grayT1 = datetime.now()
 	grayImage = cv2.cvtColor(cropImage, cv2.COLOR_BGR2GRAY)
         #grayT2 = datetime.now()
-        #print("gray time = " + str(grayT2 - grayT1))
 
         #threshT1 = datetime.now()
 	ret,thresh1 = cv2.threshold(grayImage,100,255,cv2.THRESH_BINARY_INV)
@@ -92,7 +100,7 @@ def read_barcode(cropImage):
 		area = cv2.contourArea(cnt)
 		#comment out area print
 		print("contour areas = " + str(area))
-		if area > 40 and area < 3000:
+		if area > 80 and area < 500:
 			code = code+1
 			actual_contours.append(cnt)
 	#findCT2 = datetime.now()
@@ -102,11 +110,12 @@ def read_barcode(cropImage):
 	#add crop value to all contours (500)		
 	for j in range(0,len(actual_contours)):
 		for k in range(0,len(actual_contours[j])):
-			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] + 450
+                        #add offset back in 
+			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] #+ 450
         #moveCT2 = datetime.now()
         #print("move drawn contour time = " + str(moveCT2 - moveCT1))
-	#change back to actual_contours		
-	return code, actual_contours
+	#change back to actual_contours	only	
+	return code, actual_contours, contours, grayImage
 
 def check_light():
 	print("checking light")
