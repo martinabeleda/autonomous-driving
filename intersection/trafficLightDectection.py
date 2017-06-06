@@ -6,65 +6,77 @@ import copy
 import math
 from datetime import datetime
 
-def main(imageName):
-	img = cv2.imread(imageName)
+def region_of_interest(img, vertices):
+    """
+    Applies an image mask.
+    Only keeps the region of the image defined by the polygon
+    formed from `vertices`. The rest of the image is set to black.
+    """
+
+    #defining a blank mask to start with
+    mask = np.zeros_like(img)
+
+    #defining a 3 channel or 1 channel color to fill the mask with depending on the input image
+    if len(img.shape) > 2:
+        channel_count = img.shape[2]  # i.e. 3 or 4 depending on your image
+        ignore_mask_color = (255,) * channel_count
+    else:
+        ignore_mask_color = 255
+
+    #filling pixels inside the polygon defined by "vertices" with the fill color
+    cv2.fillPoly(mask, vertices, ignore_mask_color)
+
+    #returning the image only where mask pixels are nonzero
+    masked_image = cv2.bitwise_and(img, mask)
+    return masked_image
+
+	
+def get_trafficlights(imageName):
+	return_val = 0;
+
+	#reshape
 	height, width = img.shape[:2]
+	I = copy.deepcopy(img[1:600, 1000:width])
 
-	I = copy.deepcopy(img[1:1000, 1000:width]) # Crop from x, y, w, h -> 100, 200, 300, 400
-	u = copy.deepcopy(img[1:1000, 1000:width])
-	# NOTE: its img[y: y + h, x: x + w] and *not* img[x: x + w, y: y + h]
+	#mask to find black
+	black_bound_low = np.array([0,0,0])
+	black_bound_high = np.array([100,100,100])
+	mask = cv2.inRange(I, black_bound_low, black_bound_high)
+	
+	contours,_ = cv2.findContours(mask, cv2.RETR_LIST,cv2.CHAIN_APPROX_NONE)
+	for i in range(0,len(contours)):
+		cnt = contours[i]
+		peri = cv2.arcLength(cnt, True)
+		approx = cv2.approxPolyDP(cnt, 0.04 * peri, True)
+		if len(approx) == 4:
+			(x, y, w, h) = cv2.boundingRect(approx)
+			rect_area = h*w;
+			if(rect_area > 2000 and rect_area < 15000):
+				rect = cv2.boundingRect(approx)
+				cv2.rectangle(I,(x,y),(x+w,y+h),(255,0,0),3)
+				lowerLeftPoint = [x,y+h]
+				upperLeftPoint = [x,y]
+				upperRightPoint = [x+w,y]
+				lowerRightPoint = [x+w,y+h]
+				pts = np.array([[lowerLeftPoint, upperLeftPoint,upperRightPoint, lowerRightPoint]], dtype=np.int32)
+				masked = region_of_interest(I,pts)
+			
+	cimg = cv2.cvtColor(masked,cv2.COLOR_BGR2GRAY)
+	ret,thresh1 = cv2.threshold(cimg,200,255,cv2.THRESH_BINARY)
 
-	height, width = I.shape[:2]
+	circles = cv2.HoughCircles(thresh1, cv2.cv.CV_HOUGH_GRADIENT, 1.2, 100, param1=10,param2=10,minRadius=4,maxRadius=32)
+	if circles is not None:
+		# convert the (x, y) coordinates and radius of the circles to integers
+		circles = np.round(circles[0, :]).astype("int")
 
-	#Only leave black (very inefficient - to change)
-	for i in range(0,height-1):
-	    for j in range(0,width-1):
-		if I[i,j,0] < 70 and I[i,j,1] < 70   and I[i,j,2] < 70:
-		    I[i,j,0] = 0;
-		    I[i,j,1] = 0;
-		    I[i,j,2] = 0;
-		else:
-		    I[i,j,0] = 255;
-		    I[i,j,1] = 255;
-		    I[i,j,2] = 255;
-
-	blurred = cv2.GaussianBlur(I, (5, 5), 0)
-	thresh = cv2.threshold(blurred, 60, 255, cv2.THRESH_BINARY)[1]
-
-	img_grey = cv2.cvtColor(thresh, cv2.COLOR_BGR2GRAY);
-
-	circles = cv2.HoughCircles(img_grey,cv.CV_HOUGH_GRADIENT,5,20,param1=50,param2=100,minRadius=10,maxRadius=40);
-
-	# Create a blank 300x300 black image
-	image = np.zeros((height, width, 3), np.uint8)
-	# Fill image with red color(set each pixel to red)
-	image[:] = (0, 0, 0)
-
-	circles = np.uint16(np.around(circles,decimals=0))
-	for i in circles[0,:]:
-	    #total = 0;
-	    #count = 0;
-	    mask = copy.deepcopy(np.zeros(u.shape, np.uint8));
-	    center = (i[0], i[1]);
-	    radius = i[2];
-
-	    cv2.circle(mask, center, radius, 255, -1)
-	    where = np.where(mask == 255)
-	    intensity_values_from_original = img[where[1], where[0]]
-	    if np.median(intensity_values_from_original) > 120:
-		cv2.circle(u,(i[0],i[1]),i[2],(255,255,255),2);
-		print(1)
-		return(1)
-	    else:
-		print(0)
-		return(0)
-
-	print datetime.now() - startTime
-	cv2.imwrite('./output.png',u) 
-
-
-if __name__ == "__main__":
-	imageName = sys.argv[1];
-	main(imageName)
-
-
+		# loop over the (x, y) coordinates and radius of the circles
+		for (a, b, r) in circles:
+			(x, y, w, h) = rect;
+			if(x < a < x+w and y < b < y+h):
+				print("Light is On")
+				return_val = 1;
+				cv2.circle(I,(a,b),r,(0,0,255),2);
+	
+	return return_val;
+	#cv2.imwrite('./output.png',thresh1) 
+	#cv2.imwrite('./output1.png',I ) 

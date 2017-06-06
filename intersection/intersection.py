@@ -111,7 +111,7 @@ def read_barcode(cropImage):
 	for j in range(0,len(actual_contours)):
 		for k in range(0,len(actual_contours[j])):
                         #add offset back in 
-			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] #+ 450
+			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] + 450
         #moveCT2 = datetime.now()
         #print("move drawn contour time = " + str(moveCT2 - moveCT1))
 	#change back to actual_contours	only	

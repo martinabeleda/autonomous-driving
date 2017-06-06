@@ -19,6 +19,7 @@ from motor_control.motors import motor_setup, calibrate_motors, stop
 from lane_follow.lane_detect import lane_detect
 from lane_follow.calibrate_camera import calibrate_camera
 from intersection.intersection import is_red_line, read_barcode, check_light, turn_decide
+from trafficLightDectection import get_trafficlights, region_of_interest
 
 pi = pigpio.pi()
 
@@ -45,7 +46,7 @@ RED = 1
 NOT_RED = 0
 
 # Display defines
-DISPLAY = 0
+DISPLAY = 1
 font = cv2.FONT_HERSHEY_PLAIN
 fontSize = 2
 green = [0,255,0]
@@ -109,8 +110,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	        cv2.putText(image,'Red Line 20cm Away',(25,25), font, fontSize, green,2)
 	        cv2.putText(image,'Barcode = '+ str(turnCode),(25,100), font, fontSize, green ,2)
 	        #change back to image and only plot barcode contours
-                cv2.drawContours(maskedImage,all_contours,-1,(0,255,255),2)
-                cv2.drawContours(maskedImage,barcode_contours,-1,(0,255,0),2)
+                #cv2.drawContours(image,all_contours,-1,(0,255,255),2)
+                cv2.drawContours(image,barcode_contours,-1,(0,255,0),2)
         else:
             # detect lanes in the image
             (img, angle, topDisp, bottomDisp) = lane_detect(blur)
@@ -128,8 +129,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         
         if DISPLAY:
             cv2.line(image,(0,450),(800,450), red, 2)
-        if line is RED:
-            cv2.imshow('Main Frame', thresh)
+            cv2.imshow('Main Frame', image)
         key = cv2.waitKey(1) & 0xFF
 
         # if the `q` key was pressed, break from the loop
