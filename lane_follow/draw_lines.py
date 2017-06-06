@@ -22,7 +22,9 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
             angle and horizontal position of the robot so is not a good indicator
             of either.
     """
-
+    # Display center line
+    cv2.line(img, (400, 0), (400, 600), (255, 0, 0), thickness=2)
+    
     angle = 0
     topDisplacement = 0
     bottomDisplacement = 0
@@ -61,16 +63,11 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
                     all_right_x += [x1, x2]
                     cv2.line(img, (x1, y1), (x2, y2), [255, 0, 255], thickness=2)
 
-        #print 'max left grad = ' + str(max(all_left_grad)) + ' min' + str(min(all_left_grad))
-        #print 'max right grad = ' + str(max(all_right_grad)) + ' min' + str(min(all_right_grad))
-
     except:
         pass
 
     # Make sure we have some points in each lane line category
     if ((len(all_left_grad) > 0) and (len(all_right_grad) > 0)):
-
-
 
         left_mean_grad = np.mean(all_left_grad)
         left_y_mean = np.mean(all_left_y)
@@ -119,7 +116,7 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
     # if we only have the left lane
     elif ((len(all_left_grad) == 0) and (len(all_right_grad) > 0)):
 
-        # draw the right line
+        # draw the left line
         right_mean_grad = np.mean(all_right_grad)
         right_y_mean = np.mean(all_right_y)
         right_x_mean = np.mean(all_right_x)
@@ -138,7 +135,7 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
     # if we only have the right lane
     elif ((len(all_left_grad) > 0) and (len(all_right_grad) == 0)):
 
-        # draw the left line
+        # draw the right line
         left_mean_grad = np.mean(all_left_grad)
         left_y_mean = np.mean(all_left_y)
         left_x_mean = np.mean(all_left_x)
@@ -152,13 +149,6 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
         print 'right lane only'
         angle = 0
         topDisplacement = 100
-        bottomDisplacement = 0
-
-    # No lanes found
-    else:
-
-        angle = 0
-        topDisplacement = 0
         bottomDisplacement = 0
 
     return angle, topDisplacement, bottomDisplacement
