@@ -54,7 +54,7 @@ THROUGH_INTERSECTION = 3
 state = LANE_FOLLOW
 
 # Display defines
-DISPLAY = 1
+DISPLAY = 0
 font = cv2.FONT_HERSHEY_PLAIN
 fontSize = 2
 green = [0,255,0]
@@ -70,8 +70,8 @@ angleThresh = 2
 KERNEL_SIZE = 5
 
 # Motor Calibration
-leftDuty = 170
-rightDutyInit = 182
+leftDuty = 150
+rightDutyInit = 162
 rightDuty = calibrate_motors(leftDuty, rightDutyInit)
 lastMove = 'centre'
 SPEED = 193 # mm/s
