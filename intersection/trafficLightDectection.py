@@ -31,19 +31,21 @@ def region_of_interest(img, vertices):
     return masked_image
 
 	
-def get_trafficlights(imageName):
+def get_trafficlights(img):
 	return_val = 0;
 
 	#reshape
 	height, width = img.shape[:2]
-	I = copy.deepcopy(img[1:600, 1000:width])
-
+	I = copy.deepcopy(img[1:200, 0:width])
+        masked = I
 	#mask to find black
 	black_bound_low = np.array([0,0,0])
 	black_bound_high = np.array([100,100,100])
 	mask = cv2.inRange(I, black_bound_low, black_bound_high)
 	
 	contours,_ = cv2.findContours(mask, cv2.RETR_LIST,cv2.CHAIN_APPROX_NONE)
+        counter = 0;
+        rect = []
 	for i in range(0,len(contours)):
 		cnt = contours[i]
 		peri = cv2.arcLength(cnt, True)
@@ -51,8 +53,8 @@ def get_trafficlights(imageName):
 		if len(approx) == 4:
 			(x, y, w, h) = cv2.boundingRect(approx)
 			rect_area = h*w;
-			if(rect_area > 2000 and rect_area < 15000):
-				rect = cv2.boundingRect(approx)
+			if(rect_area > 700 and rect_area < 2000):
+				rect.append(cv2.boundingRect(approx))
 				cv2.rectangle(I,(x,y),(x+w,y+h),(255,0,0),3)
 				lowerLeftPoint = [x,y+h]
 				upperLeftPoint = [x,y]
@@ -60,23 +62,26 @@ def get_trafficlights(imageName):
 				lowerRightPoint = [x+w,y+h]
 				pts = np.array([[lowerLeftPoint, upperLeftPoint,upperRightPoint, lowerRightPoint]], dtype=np.int32)
 				masked = region_of_interest(I,pts)
+				counter = counter +1
 			
 	cimg = cv2.cvtColor(masked,cv2.COLOR_BGR2GRAY)
 	ret,thresh1 = cv2.threshold(cimg,200,255,cv2.THRESH_BINARY)
-
+        cirles_draw = []
 	circles = cv2.HoughCircles(thresh1, cv2.cv.CV_HOUGH_GRADIENT, 1.2, 100, param1=10,param2=10,minRadius=4,maxRadius=32)
-	if circles is not None:
+	if circles is not None and counter > 0:
 		# convert the (x, y) coordinates and radius of the circles to integers
 		circles = np.round(circles[0, :]).astype("int")
 
 		# loop over the (x, y) coordinates and radius of the circles
 		for (a, b, r) in circles:
-			(x, y, w, h) = rect;
-			if(x < a < x+w and y < b < y+h):
-				print("Light is On")
-				return_val = 1;
-				cv2.circle(I,(a,b),r,(0,0,255),2);
+                        for j in range(0,counter):
+                            (x, y, w, h) = rect[j];
+                            if(x < a < x+w and y < b < y+h):
+                                    print("Ligh t is On")
+                                    return_val = return_val + 1;
+                                    cv2.circle(I,(a,b),r,(0,0,255),2);
+                                    cirles_draw.append((a, b, r))
 	
-	return return_val;
+	return I,rect,cirles_draw,return_val;
 	#cv2.imwrite('./output.png',thresh1) 
 	#cv2.imwrite('./output1.png',I ) 

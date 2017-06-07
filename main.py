@@ -6,10 +6,15 @@ import time
 import cv2
 import numpy as np
 import os
+import cv2.cv as cv
 cmd = 'sudo pigpiod'
 os.system(cmd)
 import warnings
 import pigpio
+import sys
+import copy
+import math
+from datetime import datetime
 
 from picamera.array import PiRGBArray
 from picamera import PiCamera
@@ -19,7 +24,7 @@ from motor_control.motors import motor_setup, calibrate_motors, stop
 from lane_follow.lane_detect import lane_detect
 from lane_follow.calibrate_camera import calibrate_camera
 from intersection.intersection import is_red_line, read_barcode, check_light, turn_decide
-from trafficLightDectection import get_trafficlights, region_of_interest
+from intersection.trafficLightDectection import get_trafficlights, region_of_interest
 
 pi = pigpio.pi()
 
@@ -87,6 +92,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # grab the raw NumPy array representing the image, then initialize the timestamp
         # and occupied/unoccupied text
         image = frame.array
+        trafficlight_image = image
         start = datetime.now()
 
         # gaussian blur
@@ -103,6 +109,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             #change back to tuple with just 2 return values
 	    turnCode,barcode_contours,all_contours,thresh = read_barcode(maskedImage)
 	    print("Turn Code", turnCode)
+	    trafficlight_image,rect,cirles_draw, traffic_code, = get_trafficlights(image)
+	    print("Traffic Code", traffic_code)
 	    #Move forwards
 
 	    print("Move Forwards")
@@ -112,6 +120,12 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	        #change back to image and only plot barcode contours
                 #cv2.drawContours(image,all_contours,-1,(0,255,255),2)
                 cv2.drawContours(image,barcode_contours,-1,(0,255,0),2)
+                for k in range (0,len(rect)):
+                    (x, y, w, h) = rect[k];
+                    cv2.rectangle(image,(x,y),(x+w,y+h),(255,0,0),3)
+                for k in range (0,len(cirles_draw)):
+                    (a, b, r) = cirles_draw[k];
+                    cv2.circle(image,(a,b),r,(0,0,255),2);
         else:
             # detect lanes in the image
             (img, angle, topDisp, bottomDisp) = lane_detect(blur)
