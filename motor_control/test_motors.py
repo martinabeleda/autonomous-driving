@@ -1,27 +1,17 @@
-import RPi.GPIO as GPIO
-from motors import *
-from time import sleep
+import os
+cmd = 'sudo pigpiod'
+os.system(cmd)
+import pigpio
 
-#GPIO.setmode(GPIO.BOARD)
-GPIO.setwarnings(False)
+from motors import motors_setup, turn_clockwise, turn_anti_clockwise
 
-#Motor1A = 16
-#Motor2A = 18
+pi = pigpio.pi()
 
-#Motor3A = 11
-#Motor4A = 13
-
-#MotorEN = 12
-
-motor_setup()
-
-leftDuty = 160
+# Motor Calibration
+leftDuty = 100
 rightDuty = calibrate_motors(leftDuty)
+SPEED = 100 # mm/s
+TURN_RATE = 200 # degs/s
 
-#pwm = GPIO.PWM(MotorEN,100) # 100 Hz frequency
-#pwm.start(0) # 0% duty cycle
-
-sleep(1)
-
+turn_anti_clockwise(TURN_RATE,3600)
 stop()
-GPIO.cleanup()

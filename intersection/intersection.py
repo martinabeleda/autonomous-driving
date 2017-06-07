@@ -134,23 +134,4 @@ def turn_decide(barcode):
 
     result = choices.get(barcode, default);
 
-    if result is 'right':
-        #right_turn();
-        print("Choice = Right")
-    elif result is 'left':
-        #left_turn();
-        print("Choice = Left")
-    else:
-        # make a random choice
-        choice = random.choice(result)
-
-    	if choice is 'right': 
-    	    #right_turn()
-    	    print("Choice = Right")
-
-	elif choice is 'left': 
-	    #left_turn()
-	    print("Choice = Left")
-	elif choice is 'forwards': 
-	    #forwards(200) 
-	    print("Choice = Straight")
+    return result
