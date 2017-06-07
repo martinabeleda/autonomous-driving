@@ -45,10 +45,10 @@ def motor_setup():
 #	GPIO.setup(motorR4A, GPIO.OUT)
 #	GPIO.setup(motorEN, GPIO.OUT)
 
-def calibrate_motors(dcL):
+def calibrate_motors(dcL, dcR):
 	MAX_DUTY = 255
 	MIN_DUTY = 48
-	dcR = 90
+	
 
         print "Adjust right duty <p> <i>. When finished <q>" 
 	

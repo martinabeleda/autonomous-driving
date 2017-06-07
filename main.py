@@ -1,6 +1,4 @@
-# Lane detection using OpenCV on Raspberry Pi
-# Author: Martin Abeleda
-# Date: 19/05/2017
+# Lane detection using OpenCV on Raspberry Pi Author: Martin Abeleda Date: 19/05/2017
 import atexit
 import time
 import cv2
@@ -51,18 +49,24 @@ fontSize = 2
 green = [0,255,0]
 red = [0,0,255]
 
-# Motor Calibration
-leftDuty = 100
-rightDuty = calibrate_motors(leftDuty)
-lastMove = 'centre'
-
 # Camera Calibration
-topDispCalibrate = 33
+topDispCalibrate = 40
 angleCalibrate = 0
 #topDispCalibrate, angleCalibrate = calibrate_camera(camera)
 #print "topDispCalibrate = %f, angleCalibrate = %f" % (topDispCalibrate, angleCalibrate)
-topDispThresh = 50
+topDispThresh = 30
 angleThresh = 2
+
+# Motor Calibration
+leftDuty = 170
+rightDutyInit = 182
+rightDuty = calibrate_motors(leftDuty, rightDutyInit)
+lastMove = 'centre'
+sleepAngleLeft = 0.1
+sleepTopDispLeft = 0.17
+sleepAngleRight = 0.05
+sleepTopDispRight = 0.20
+sleepStraight = 0.05
 
 motor_setup()
 
@@ -109,7 +113,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             angle = angle - angleCalibrate
 		
             # execute lane following algorithm
-            drive_feedback(rightDuty, leftDuty, topDisp, topDispThresh, angle, angleThresh)  ###
+            drive_feedback(rightDuty, leftDuty, topDisp, topDispThresh, angle, angleThresh,
+                           sleepAngleLeft, sleepTopDispLeft, sleepAngleRight, sleepTopDispRight, sleepStraight)  ###
 
 	
         if DISPLAY:
