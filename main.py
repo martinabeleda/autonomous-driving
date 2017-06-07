@@ -69,8 +69,8 @@ leftDuty = 170
 rightDutyInit = 182
 rightDuty = calibrate_motors(leftDuty, rightDutyInit)
 lastMove = 'centre'
-SPEED = 100 # mm/s
-TURN_RATE = 200 # degs/s
+SPEED = 193 # mm/s
+TURN_RATE = 150 # degs/s
 sleepAngleLeft = 0.1
 sleepTopDispLeft = 0.17
 sleepAngleRight = 0.05
@@ -188,13 +188,13 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 			elif action is 'left':
 			    print "Left turn"
 			    forwards(leftDuty, rightDuty, SPEED, 190)
-				turn_anti_clockwise(TURN_RATE, 90)
+				turn_anti_clockwise(TURN_RATE, 90.)
 				state = LANE_FOLLOW
 			
 			elif action is 'right':
 			    print "Right turn"
 			    forwards(leftDuty, rightDuty, SPEED, 350)
-				turn_clockwise(TURN_RATE, 90)
+				turn_clockwise(TURN_RATE, 90.)
 				state = LANE_FOLLOW
 	
         if DISPLAY:

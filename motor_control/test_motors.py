@@ -3,15 +3,27 @@ cmd = 'sudo pigpiod'
 os.system(cmd)
 import pigpio
 
-from motors import motors_setup, turn_clockwise, turn_anti_clockwise
+from motors import motor_setup, turn_clockwise, turn_anti_clockwise, calibrate_motors, forwards, stop
 
 pi = pigpio.pi()
 
 # Motor Calibration
-leftDuty = 100
-rightDuty = calibrate_motors(leftDuty)
-SPEED = 100 # mm/s
-TURN_RATE = 200 # degs/s
+SPEED = 193 # mm/s
+TURN_RATE = 150 # degs/s
+leftDuty = 170
+rightDutyInit = 204
+rightDuty = calibrate_motors(leftDuty, rightDutyInit)
+#rightDuty = rightDutyInit
 
-turn_anti_clockwise(TURN_RATE,3600)
-stop()
+print "waiting for you to press g"
+while 1:
+    inkey = raw_input()
+    if inkey is "g": break
+
+try:
+    forwards(leftDuty,rightDuty,SPEED,455.)
+    turn_clockwise(TURN_RATE,90.)
+    stop()
+
+except KeyboardInterrupt:
+    stop()

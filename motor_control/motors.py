@@ -35,7 +35,7 @@ def calibrate_motors(dcL, dcR):
         print "Adjust right duty <p> <i>. When finished <q>" 
 	
 	while 1:
-		forwards_lane_follow(dcL,dcR)
+		straight(dcL,dcR)
 		inkey = raw_input()
 		if inkey is "i" and dcR < MAX_DUTY:
 			dcR += 0.1
@@ -56,15 +56,6 @@ def forwards(dcL,dcR,speed,distance):
 	time = distance/speed
 	sleep(time)
 	
-# def forwards_lane_follow(dcL,dcR):
-	# pi.write(motorL1A, True)
-	# pi.write(motorL2A, False)
-	# pi.write(motorR3A, True)
-	# pi.write(motorR4A, False)
-	# pi.set_PWM_dutycycle(motorLEN,dcL)
-	# pi.set_PWM_dutycycle(motorREN,dcR)
-	# # maybe set sleep time ay
-
 # def reverse(distance):
 	# # fix
 	# print "Reverse"
