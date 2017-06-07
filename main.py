@@ -4,16 +4,20 @@ import time
 import cv2
 import numpy as np
 import os
+import cv2.cv as cv
 cmd = 'sudo pigpiod'
 os.system(cmd)
 import warnings
 import pigpio
+import sys
+import copy
+import math
 
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 from datetime import datetime
 from motor_control.drive import drive_feedback, turn_decide
-from motor_control.motors import motor_setup, calibrate_motors, forwards, turn_clockwise, turn_anti_clockwise, stop
+from motor_control.motors import motor_setup, calibrate_motors, forwards, turn_clockwise, turn_anti_clockwise, stop, forwards_inf
 from lane_follow.lane_detect import lane_detect
 from lane_follow.calibrate_camera import calibrate_camera
 from intersection.intersection import is_red_line, read_barcode, check_light, turn_decide
@@ -39,8 +43,8 @@ camera.vflip = True
 camera.hflip = True
 
 # Red and green flags
-RED = 0
-GREEN = 0
+RED = 1
+GREEN = 1
 
 # robot states
 LANE_FOLLOW = 0
@@ -50,7 +54,7 @@ THROUGH_INTERSECTION = 3
 state = LANE_FOLLOW
 
 # Display defines
-DISPLAY = 0
+DISPLAY = 1
 font = cv2.FONT_HERSHEY_PLAIN
 fontSize = 2
 green = [0,255,0]
@@ -63,6 +67,7 @@ angleCalibrate = 0
 #print "topDispCalibrate = %f, angleCalibrate = %f" % (topDispCalibrate, angleCalibrate)
 topDispThresh = 30
 angleThresh = 2
+KERNEL_SIZE = 5
 
 # Motor Calibration
 leftDuty = 170
@@ -93,8 +98,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         start = datetime.now()
 
         # gaussian blur
-        kernelSize = 5
-        blur = cv2.GaussianBlur(image, (kernelSize,kernelSize), 0)
+        blur = cv2.GaussianBlur(image, (KERNEL_SIZE,KERNEL_SIZE), 0)
 		
 		# if lane following
 		if state is LANE_FOLLOW:
@@ -125,6 +129,13 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 				
 	            print("Turn Code", turnCode)
 				
+				if DISPLAY:
+	                cv2.putText(image,'Red Line 20cm Away',(25,80), font, fontSize, green,2)
+	                cv2.putText(image,'Barcode = '+ str(turnCode),(25,120), font, fontSize, green ,2)
+	                #change back to image and only plot barcode contours
+                    #cv2.drawContours(image,all_contours,-1,(0,255,255),2)
+                    cv2.drawContours(image,barcode_contours,-1,(0,255,0),2)
+				
 			    # Change state: Drive to the intersection
 				state = TO_INTERSECTION
 		
@@ -135,32 +146,31 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 			# lane follow for 150 mm
 		    driveTime = datetime.now() - t1
             if driveTime.total_seconds() < 150 / SPEED:
-			    # detect lanes in the image
-                (image, angle, topDisp, bottomDisp) = lane_detect(blur)
-
-			    # apply camera calibration to output
-                topDisp = topDisp - topDispCalibrate
-                angle = angle - angleCalibrate
-
-                # execute lane following algorithm
-                drive_feedback(rightDuty, leftDuty, topDisp, topDispThresh, angle, angleThresh)
+			    forwards_inf(leftDuty,rightDuty)
 			
 			# then change state to check the light if there is a light else execute manoeuvre
 		    else:
-			    if turnCode < 2:
+			    if turnCode is 1 or turnCode is 2:
 				    state = THROUGH_INTERSECTION
 			    else:
 				    stop()
-			        state = CHECKING_LIGHT
-			else:
-			    
+			        state = CHECKING_LIGHT			    
 		
 		elif state is CHECKING_LIGHT:
 		    
 			print "Checking light"
 		    
 			# check the light
-		    trafficlight_image,rect,cirles_draw, traffic_code, = get_trafficlights(image)
+			# Riley, brah, should this take blur instead of image???? plz respond.
+		    trafficlight_image,rect,cirles_draw, traffic_code, = check_light(image)
+			
+			if DISPLAY:
+			    for k in range (0,len(rect)):
+                    (x, y, w, h) = rect[k];
+                    cv2.rectangle(image,(x,y),(x+w,y+h),(255,0,0),3)
+                for k in range (0,len(cirles_draw)):
+                    (a, b, r) = cirles_draw[k];
+                    cv2.circle(image,(a,b),r,(0,0,255),2);
 			
 			# if it's green, change state to execute manoeuvre
 		    if traffic_code is GREEN:
@@ -171,11 +181,13 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 				
 			    state = THROUGH_INTERSECTION
 								
-			# otherwise, stay still
+			# otherwise, stay still, car
 			else:
 			    stop()
 		
-		elif state is DRIVING_INTERSECTION:
+		elif state is THROUGH_INTERSECTION:
+		
+		    print "Driving through intersection."
 		    driveTime = datetime.now() - t1
 			
             action = turn_decide(turnCode)
@@ -196,9 +208,9 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 			    forwards(leftDuty, rightDuty, SPEED, 350)
 				turn_clockwise(TURN_RATE, 90.)
 				state = LANE_FOLLOW
-	
+
         if DISPLAY:
-	    runtime = datetime.now() - start
+	        runtime = datetime.now() - start
             fps = round(1/runtime.total_seconds(), 1)
             cv2.putText(img, str(fps) + "FPS", (0, 30), font, fontSize, [0, 255, 0])	
 	    
@@ -208,8 +220,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             key = cv2.waitKey(1) & 0xFF
 
             # if the `q` key was pressed, break from the loop
-	    if key == ord("q"):
-	        break
+	        if key == ord("q"):
+	            break
 
         #  clear the stream in preparation for the next frame
         rawCapture.truncate(0)

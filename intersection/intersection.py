@@ -12,28 +12,28 @@ def is_red_line(image):
 	#crop to region of interest --> save time?? - rather than mask
         crop = image[450:600, 0:800]
 
-        #add contrast - jks takes 10 seconds
-        '''
-        contT1 = datetime.now()
-        crop = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
-        crop[:,:,2] = [[max(pixel - 25,0) if pixel < 190 else min (pixel + 25,255) for pixel in row] for row in crop[:,:,2]]
-        crop = cv2.cvtColor(crop, cv2.COLOR_HSV2BGR)
-        contT2 = datetime.now()
-        print("contrast time =" + str(contT2 - contT1))
-        '''
 	#note OpenCV represents images as NumPy arrays in reverse order - BGR
 	#set limits for what is considered "red"
 	#0 0 100 --> to always get all red --> or lower threshold
-	red_bound_low = np.array([50,50,170])
-	#148 148 255
+        #30 25 170
+        #15 10 170
+	red_bound_low = np.array([30,25,170])
+	#230 160 255
 	red_bound_high = np.array([230,160,255])
+        #min G = 45
+	#min B = 96
+	#min R  = 150 
+	#max G = 88
+	#max B = 115
+	#max R = 250
+	
 
 	#find red areas and apply mask
 	mask = cv2.inRange(crop, red_bound_low, red_bound_high)
 	red_img_crop = cv2.bitwise_and(crop,crop,mask=mask)
 
 	#smooth the smooth
-	red_img_crop = cv2.GaussianBlur(red_img_crop, (7,7), 0)
+	red_img_crop = cv2.GaussianBlur(red_img_crop, (5,5), 0)
 
 	#calculate histogram with red channel mask --> so we can see only when red is high and blue and green are low
 	#range- only high levels of red
@@ -54,7 +54,7 @@ def is_red_line(image):
 	areaHist = trapz(redH_trans, dx=1)
         print(areaHist)
         #changed 
-	if areaHist[0] > 6000:
+	if areaHist[0] > 7000:
                 red_flag = 1
 	else:
                 red_flag = 0
@@ -71,7 +71,6 @@ def read_barcode(cropImage):
         #grayT1 = datetime.now()
 	grayImage = cv2.cvtColor(cropImage, cv2.COLOR_BGR2GRAY)
         #grayT2 = datetime.now()
-        #print("gray time = " + str(grayT2 - grayT1))
 
         #threshT1 = datetime.now()
 	ret,thresh1 = cv2.threshold(grayImage,100,255,cv2.THRESH_BINARY_INV)
@@ -92,7 +91,7 @@ def read_barcode(cropImage):
 		area = cv2.contourArea(cnt)
 		#comment out area print
 		print("contour areas = " + str(area))
-		if area > 40 and area < 3000:
+		if area > 80 and area < 500:
 			code = code+1
 			actual_contours.append(cnt)
 	#findCT2 = datetime.now()
@@ -102,16 +101,14 @@ def read_barcode(cropImage):
 	#add crop value to all contours (500)		
 	for j in range(0,len(actual_contours)):
 		for k in range(0,len(actual_contours[j])):
+                        #add offset back in 
 			actual_contours[j][k][0][1] = actual_contours[j][k][0][1] + 450
         #moveCT2 = datetime.now()
         #print("move drawn contour time = " + str(moveCT2 - moveCT1))
-	#change back to actual_contours		
-	return code, actual_contours
+	#change back to actual_contours	only	
+	return code, actual_contours, contours, grayImage
 
-def check_light():
-	print("checking light")
 
-	
 def turn_decide(barcode):
     print("turn decide");
     '''
@@ -135,3 +132,86 @@ def turn_decide(barcode):
     result = choices.get(barcode, default);
 
     return result
+
+def region_of_interest2(img, vertices):
+    """
+    Applies an image mask.
+    Only keeps the region of the image defined by the polygon
+    formed from `vertices`. The rest of the image is set to black.
+    """
+
+    #defining a blank mask to start with
+    mask = np.zeros_like(img)
+
+    #defining a 3 channel or 1 channel color to fill the mask with depending on the input image
+    if len(img.shape) > 2:
+        channel_count = img.shape[2]  # i.e. 3 or 4 depending on your image
+        ignore_mask_color = (255,) * channel_count
+    else:
+        ignore_mask_color = 255
+
+    #filling pixels inside the polygon defined by "vertices" with the fill color
+    cv2.fillPoly(mask, vertices, ignore_mask_color)
+
+    #returning the image only where mask pixels are nonzero
+    masked_image = cv2.bitwise_and(img, mask)
+    return masked_image
+
+
+#check light function that keeps looping till light is green 
+def check_light():
+    print("checking light")
+    return_val = 0;
+
+    #reshape
+    height, width = img.shape[:2]
+    I = copy.deepcopy(img[1:200, 0:width])
+    masked = I
+    #mask to find black
+    black_bound_low = np.array([0,0,0])
+    black_bound_high = np.array([100,100,100])
+    mask = cv2.inRange(I, black_bound_low, black_bound_high)
+	
+    contours,_ = cv2.findContours(mask, cv2.RETR_LIST,cv2.CHAIN_APPROX_NONE)
+    counter = 0;
+    rect = []
+    for i in range(0,len(contours)):
+	cnt = contours[i]
+	peri = cv2.arcLength(cnt, True)
+	approx = cv2.approxPolyDP(cnt, 0.04 * peri, True)
+	if len(approx) == 4:
+                (x, y, w, h) = cv2.boundingRect(approx)
+		rect_area = h*w;
+		if(rect_area > 700 and rect_area < 2000):
+			rect.append(cv2.boundingRect(approx))
+			cv2.rectangle(I,(x,y),(x+w,y+h),(255,0,0),3)
+			lowerLeftPoint = [x,y+h]
+			upperLeftPoint = [x,y]
+			upperRightPoint = [x+w,y]
+			lowerRightPoint = [x+w,y+h]
+			pts = np.array([[lowerLeftPoint, upperLeftPoint,upperRightPoint, lowerRightPoint]], dtype=np.int32)
+			masked = region_of_interest2(I,pts)
+			counter = counter +1
+			
+    cimg = cv2.cvtColor(masked,cv2.COLOR_BGR2GRAY)
+    ret,thresh1 = cv2.threshold(cimg,200,255,cv2.THRESH_BINARY)
+    cirles_draw = []
+    circles = cv2.HoughCircles(thresh1, cv2.cv.CV_HOUGH_GRADIENT, 1.2, 100, param1=10,param2=10,minRadius=4,maxRadius=32)
+
+    while (return_val = 0):
+    if circles is not None and counter > 0:
+            # convert the (x, y) coordinates and radius of the circles to integers
+            circles = np.round(circles[0, :]).astype("int")
+
+            # loop over the (x, y) coordinates and radius of the circles
+            for (a, b, r) in circles:
+                for j in range(0,counter):
+                    (x, y, w, h) = rect[j];
+                    if(x < a < x+w and y < b < y+h):
+                            print("Ligh t is On")
+                            # should it just be return_val = 1?
+                            return_val = return_val + 1;
+                            cv2.circle(I,(a,b),r,(0,0,255),2);
+                            cirles_draw.append((a, b, r))
+	
+    return I,rect,cirles_draw,return_val; 

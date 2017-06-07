@@ -56,6 +56,14 @@ def forwards(dcL,dcR,speed,distance):
 	time = distance/speed
 	sleep(time)
 	
+def forwards_inf(dcL,dcR):
+    pi.write(motorL1A, True)
+	pi.write(motorL2A, False)
+	pi.write(motorR3A, True)
+	pi.write(motorR4A, False)
+	pi.set_PWM_dutycycle(motorLEN,dcL)
+	pi.set_PWM_dutycycle(motorREN,dcR)
+	
 # def reverse(distance):
 	# # fix
 	# print "Reverse"
