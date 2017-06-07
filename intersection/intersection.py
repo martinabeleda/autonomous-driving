@@ -12,15 +12,6 @@ def is_red_line(image):
 	#crop to region of interest --> save time?? - rather than mask
         crop = image[450:600, 0:800]
 
-        #add contrast - jks takes 10 seconds
-        '''
-        contT1 = datetime.now()
-        crop = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
-        crop[:,:,2] = [[max(pixel - 25,0) if pixel < 190 else min (pixel + 25,255) for pixel in row] for row in crop[:,:,2]]
-        crop = cv2.cvtColor(crop, cv2.COLOR_HSV2BGR)
-        contT2 = datetime.now()
-        print("contrast time =" + str(contT2 - contT1))
-        '''
 	#note OpenCV represents images as NumPy arrays in reverse order - BGR
 	#set limits for what is considered "red"
 	#0 0 100 --> to always get all red --> or lower threshold

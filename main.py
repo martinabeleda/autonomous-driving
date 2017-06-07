@@ -115,8 +115,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 
 	    print("Move Forwards")
             if DISPLAY:
-	        cv2.putText(image,'Red Line 20cm Away',(25,25), font, fontSize, green,2)
-	        cv2.putText(image,'Barcode = '+ str(turnCode),(25,100), font, fontSize, green ,2)
+	        cv2.putText(image,'Red Line 20cm Away',(25,80), font, fontSize, green,2)
+	        cv2.putText(image,'Barcode = '+ str(turnCode),(25,120), font, fontSize, green ,2)
 	        #change back to image and only plot barcode contours
                 #cv2.drawContours(image,all_contours,-1,(0,255,255),2)
                 cv2.drawContours(image,barcode_contours,-1,(0,255,0),2)
@@ -138,8 +138,8 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         runtime = datetime.now() - start
         fps = round(1/runtime.total_seconds(), 1)
 
-        #color = [0, 255, 0]
-        #cv2.putText(img, str(fps) + "FPS", (0, 30), font, fontSize, color)
+        #if DISPLAY:
+            #cv2.putText(image, str(fps) + "FPS", (0, 30), font, fontSize, green)
         
         if DISPLAY:
             cv2.line(image,(0,450),(800,450), red, 2)
