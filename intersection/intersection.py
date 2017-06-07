@@ -4,6 +4,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from numpy import trapz
 import random
+import cv2.cv as cv
+import sys
+import copy
+import math
+
 
 from datetime import datetime
 
@@ -106,8 +111,7 @@ def read_barcode(cropImage):
         #moveCT2 = datetime.now()
         #print("move drawn contour time = " + str(moveCT2 - moveCT1))
 	#change back to actual_contours	only	
-	return code, actual_contours, contours, grayImage
-
+	return code, actual_contours
 
 def turn_decide(barcode):
     print("turn decide");
@@ -159,7 +163,7 @@ def region_of_interest2(img, vertices):
 
 
 #check light function that keeps looping till light is green 
-def check_light():
+def check_light(img):
     print("checking light")
     return_val = 0;
 
@@ -198,7 +202,6 @@ def check_light():
     cirles_draw = []
     circles = cv2.HoughCircles(thresh1, cv2.cv.CV_HOUGH_GRADIENT, 1.2, 100, param1=10,param2=10,minRadius=4,maxRadius=32)
 
-    while (return_val = 0):
     if circles is not None and counter > 0:
             # convert the (x, y) coordinates and radius of the circles to integers
             circles = np.round(circles[0, :]).astype("int")
