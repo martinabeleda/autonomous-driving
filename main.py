@@ -105,7 +105,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         if line is RED:
 
             print("RED LINE!!!")
-            stop()
+            #stop()
             #change back to tuple with just 2 return values
 	    turnCode,barcode_contours,all_contours,thresh = read_barcode(maskedImage)
 	    print("Turn Code", turnCode)
@@ -114,6 +114,13 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	    #Move forwards
 
 	    print("Move Forwards")
+
+            check_light()
+            print("light is green")
+
+            turn_decide(turnCode)
+
+
             if DISPLAY:
 	        cv2.putText(image,'Red Line 20cm Away',(25,80), font, fontSize, green,2)
 	        cv2.putText(image,'Barcode = '+ str(turnCode),(25,120), font, fontSize, green ,2)

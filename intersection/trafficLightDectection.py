@@ -6,7 +6,7 @@ import copy
 import math
 from datetime import datetime
 
-def region_of_interest(img, vertices):
+def region_of_interest2(img, vertices):
     """
     Applies an image mask.
     Only keeps the region of the image defined by the polygon
@@ -61,7 +61,7 @@ def get_trafficlights(img):
 				upperRightPoint = [x+w,y]
 				lowerRightPoint = [x+w,y+h]
 				pts = np.array([[lowerLeftPoint, upperLeftPoint,upperRightPoint, lowerRightPoint]], dtype=np.int32)
-				masked = region_of_interest(I,pts)
+				masked = region_of_interest2(I,pts)
 				counter = counter +1
 			
 	cimg = cv2.cvtColor(masked,cv2.COLOR_BGR2GRAY)
