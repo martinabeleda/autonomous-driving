@@ -35,7 +35,7 @@ def turn_decide(dcL, barcode):
 	elif choice is 'forwards': forwards_hard(leftDuty, rightDuty, 210)
 
 def drive_feedback(rightDuty, leftDuty, topDisp, topDispThresh, angle, angleThresh, 
-                   sleepAngle=0.075 , sleepTopDisp=0.15, sleepStraight=0.15):
+                   sleepAngleLeft, sleepTopDispLeft, sleepAngleRight, sleepTopDispRight, sleepStraight):
     """
     Drive function.
 
@@ -47,7 +47,7 @@ def drive_feedback(rightDuty, leftDuty, topDisp, topDispThresh, angle, angleThre
 
         # robot is on the right
         left(rightDuty)
-        sleep(sleepTopDisp)
+        sleep(sleepTopDispLeft)
         straight(leftDuty,rightDuty)
         sleep(sleepStraight)
         print "Turn Left topDisp"
@@ -56,7 +56,7 @@ def drive_feedback(rightDuty, leftDuty, topDisp, topDispThresh, angle, angleThre
         # robot is on the left
 
         right(leftDuty)
-        sleep(sleepTopDisp)
+        sleep(sleepTopDispRight)
         straight(leftDuty,rightDuty)
         sleep(sleepStraight)
         print "Turn Right topDisp"
@@ -65,7 +65,7 @@ def drive_feedback(rightDuty, leftDuty, topDisp, topDispThresh, angle, angleThre
         
             # robot is angled to the left
             right(leftDuty)
-            sleep(sleepAngle)
+            sleep(sleepAngleRight)
             straight(leftDuty,rightDuty)
             sleep(sleepStraight)
             print "Turn Right angle"
@@ -73,7 +73,7 @@ def drive_feedback(rightDuty, leftDuty, topDisp, topDispThresh, angle, angleThre
         
 	    # robot is angled to the right
             left(rightDuty)
-            sleep(sleepAngle)
+            sleep(sleepAngleLeft)
             straight(leftDuty,rightDuty)
             sleep(sleepStraight)
             print "Turn Left angle"

@@ -27,10 +27,10 @@ def motor_setup():
 	pi.set_PWM_frequency(motorLEN, 1000) # 100 Hz frequency
 	pi.set_PWM_frequency(motorREN, 1000)
 
-def calibrate_motors(dcL):
+def calibrate_motors(dcL, dcR):
 	MAX_DUTY = 255
 	MIN_DUTY = 48
-	dcR = 90
+	
 
         print "Adjust right duty <p> <i>. When finished <q>" 
 	
