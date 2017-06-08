@@ -25,7 +25,7 @@ MIN_BARCODE_AREA = 75
 MAX_BARCODE_AREA = 400
 # should be 6000
 MIN_RED_AREA = 5000
-DAYTIME = 0
+DAYTIME = 1
 
 def is_red_line(image):
 
@@ -37,7 +37,7 @@ def is_red_line(image):
         # jokes maybe try saturate image instead ---> intensify colour    
         if CHANGE_SAT:
             hsv = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
-            hsv[:,:,1] += 20
+            hsv[:,:,1] += 10
         
 
         #try using hue to mask
@@ -60,12 +60,12 @@ def is_red_line(image):
 	    #note OpenCV represents images as NumPy arrays in reverse order - BGR
 	    #set limits for what is considered "red"
 	    #0 0 100 --> to always get all red --> or lower threshold
-            #30 25 170
-            #15 10 170
+            #0 0 160
+            #180 120 255
             if DAYTIME:
-                red_bound_low = np.array([0,0,150])
+                red_bound_low = np.array([0,0,160])
 	        #230 160 255
-	        red_bound_high = np.array([170,110,255])
+	        red_bound_high = np.array([185,125,255])
             #night time    
 	    else:
                 #30 25 170    
@@ -238,7 +238,7 @@ def check_light(img):
     masked = I
     #mask to find black
     black_bound_low = np.array([0,0,0])
-    black_bound_high = np.array([100,100,100])
+    black_bound_high = np.array([120,120,120])
     mask = cv2.inRange(I, black_bound_low, black_bound_high)
 	
     contours,_ = cv2.findContours(mask, cv2.RETR_LIST,cv2.CHAIN_APPROX_NONE)
@@ -252,7 +252,7 @@ def check_light(img):
                 (x, y, w, h) = cv2.boundingRect(approx)
 		rect_area = h*w;
 		#maybs change from 700 to 400 from riley 
-		if(rect_area > 300 and rect_area < 2000):
+		if(rect_area > 700 and rect_area < 3500):
 			rect.append(cv2.boundingRect(approx))
 			cv2.rectangle(I,(x,y),(x+w,y+h),(255,0,0),3)
 			lowerLeftPoint = [x,y+h]
@@ -264,9 +264,9 @@ def check_light(img):
 			counter = counter +1
 			
     cimg = cv2.cvtColor(masked,cv2.COLOR_BGR2GRAY)
-    ret,thresh1 = cv2.threshold(cimg,200,255,cv2.THRESH_BINARY)
+    ret,thresh1 = cv2.threshold(cimg,100,255,cv2.THRESH_BINARY)
     cirles_draw = []
-    circles = cv2.HoughCircles(thresh1, cv2.cv.CV_HOUGH_GRADIENT, 1.2, 100, param1=10,param2=10,minRadius=3,maxRadius=32)
+    circles = cv2.HoughCircles(thresh1, cv2.cv.CV_HOUGH_GRADIENT, 1.2, 100, param1=10,param2=13,minRadius=4,maxRadius=10)
 
     if circles is not None and counter > 0:
             # convert the (x, y) coordinates and radius of the circles to integers

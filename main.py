@@ -56,7 +56,7 @@ THROUGH_INTERSECTION = 3
 state = LANE_FOLLOW
 
 # Display defines
-DISPLAY = 0
+DISPLAY = 1
 font = cv2.FONT_HERSHEY_PLAIN
 fontSize = 2
 green = [0,255,0]
@@ -87,9 +87,9 @@ sleepTopDispLeft = 0.14
 sleepAngleRight = 0.05
 sleepTopDispRight = 0.16
 sleepStraight = 0.02
-
+#baseStation_Commands()
 motor_setup()
-baseStation_Commands()
+
 # allow the camera to warmup
 time.sleep(1)
 
