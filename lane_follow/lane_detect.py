@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from region_of_interest import region_of_interest
 from draw_lines import draw_lines
 
-def lane_detect(img):
+def lane_detect(img,displayImage):
     """
     Detects lanes in an image.
 
@@ -63,6 +63,6 @@ def lane_detect(img):
                           minLineLength, maxLineGap)
 
     # Display hough lines
-    (angle, topDisplacement, bottomDisplacement) = draw_lines(img, lines)
+    (angle, topDisplacement, bottomDisplacement, displayImage) = draw_lines(img, displayImage, lines)
 
-    return img, angle, topDisplacement, bottomDisplacement
+    return displayImage, angle, topDisplacement, bottomDisplacement

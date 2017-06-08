@@ -53,7 +53,7 @@ def get_trafficlights(img):
 		if len(approx) == 4:
 			(x, y, w, h) = cv2.boundingRect(approx)
 			rect_area = h*w;
-			if(rect_area > 700 and rect_area < 2000):
+			if(rect_area > 200 and rect_area < 2000):
 				rect.append(cv2.boundingRect(approx))
 				cv2.rectangle(I,(x,y),(x+w,y+h),(255,0,0),3)
 				lowerLeftPoint = [x,y+h]

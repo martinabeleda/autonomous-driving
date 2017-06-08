@@ -54,11 +54,15 @@ THROUGH_INTERSECTION = 3
 state = LANE_FOLLOW
 
 # Display defines
-DISPLAY = 0
+DISPLAY = 1
 font = cv2.FONT_HERSHEY_PLAIN
 fontSize = 2
 green = [0,255,0]
 red = [0,0,255]
+
+# Debug defines
+DEBUG_REDLINE = 1
+
 
 # Camera Calibration
 topDispCalibrate = 40
@@ -95,6 +99,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         # grab the raw NumPy array representing the image, then initialize the timestamp
         # and occupied/unoccupied text
         image = frame.array
+        displayImage = image
         start = datetime.now()
 
         # gaussian blur
@@ -106,7 +111,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	    print "Lane following."
 		
 	    # detect lanes in the image
-            (image, angle, topDisp, bottomDisp) = lane_detect(blur)
+            (displayImage, angle, topDisp, bottomDisp) = lane_detect(blur, displayImage)
 
 	    # apply camera calibration to output
             topDisp = topDisp - topDispCalibrate
@@ -125,16 +130,19 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 				
 		print "Red line detected."
 				
-	        turnCode,barcode_contours = read_barcode(maskedImage)
+	        turnCode,barcode_contours, all_contours = read_barcode(maskedImage)
 				
 	        print("Turn Code", turnCode)
 				
 		if DISPLAY:
-	            cv2.putText(image,'Red Line 20cm Away',(25,80), font, fontSize, green,2)
-	            cv2.putText(image,'Barcode = '+ str(turnCode),(25,120), font, fontSize, green ,2)
-	            #change back to image and only plot barcode contours
-                    #cv2.drawContours(image,all_contours,-1,(0,255,255),2)
-                    cv2.drawContours(image,barcode_contours,-1,(0,255,0),2)
+	            cv2.putText(displayImage,'Red Line 20cm Away',(25,80), font, fontSize, green,2)
+	            cv2.putText(displayImage,'Barcode = '+ str(turnCode),(25,120), font, fontSize, green ,2)
+	            cv2.drawContours(displayImage,barcode_contours,-1,(0,255,0),2)
+	            #testing display 
+	            if DEBUG_REDLINE:
+                        #wont be able to see all contours anyway
+                        cv2.drawContours(maskedImage,all_contours,-1,(0,255,255),2)
+                        cv2.drawContours(maskedImage,barcode_contours,-1,(0,255,0),2)
 				
 		# Change state: Drive to the intersection
 		state = TO_INTERSECTION
@@ -161,6 +169,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         elif state is CHECKING_LIGHT:
 		    
 	    print "Checking light"
+
 		    
 	    # check the light
 	    # Riley, brah, should this take blur instead of image???? plz respond.
@@ -169,11 +178,14 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	    if DISPLAY:
 	        for k in range (0,len(rect)):
                     (x, y, w, h) = rect[k];
-                    cv2.rectangle(image,(x,y),(x+w,y+h),(255,0,0),3)
+                    cv2.rectangle(displayImage,(x,y),(x+w,y+h),(255,0,0),3)
                 for k in range (0,len(cirles_draw)):
                     (a, b, r) = cirles_draw[k];
-                    cv2.circle(image,(a,b),r,(0,0,255),2);
-			
+                    cv2.circle(displayImage,(a,b),r,(0,0,255),2);
+            
+            #for testing 
+            if DEBUG_REDLINE:
+                traffic_code = GREEN		
 	    # if it's green, change state to execute manoeuvre
 	    if traffic_code is GREEN:
 			
@@ -214,11 +226,14 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         if DISPLAY:
 	    runtime = datetime.now() - start
             fps = round(1/runtime.total_seconds(), 1)
-            cv2.putText(image, str(fps) + "FPS", (0, 30), font, fontSize, [0, 255, 0])	
+            cv2.putText(displayImage, str(fps) + "FPS", (0, 30), font, fontSize, [0, 255, 0])	
 	    
-            cv2.line(image,(0,450),(800,450), red, 2)
-	
-            cv2.imshow('Main Frame', image)
+            cv2.line(displayImage,(0,450),(800,450), red, 2)
+
+            if DEBUG_REDLINE:
+                cv2.imshow('Main Frame', maskedImage)
+            else:
+                cv2.imshow('Main Frame', displayImage)
             key = cv2.waitKey(1) & 0xFF
 
             # if the `q` key was pressed, break from the loop

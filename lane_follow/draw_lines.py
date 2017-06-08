@@ -3,7 +3,9 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, vertThresh=1000):
+
+
+def draw_lines(img, displayImage, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, vertThresh=1000, DISPLAY=1):
     """
     This function connects the two `lines` with `color` and `thickness`.
     It ignores `lines` that are close to 0 gradient. It then draws a centre
@@ -23,8 +25,12 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
             of either.
     """
     # Display center line
-    cv2.line(img, (400, 0), (400, 600), (255, 0, 0), thickness=2)
+
+
     
+    if DISPLAY:
+        cv2.line(displayImage, (400, 0), (400, 600), (255, 0, 0), thickness=2)
+            
     angle = 0
     topDisplacement = 0
     bottomDisplacement = 0
@@ -55,13 +61,15 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
                     all_left_grad += [gradient]
                     all_left_y += [y1, y2]
                     all_left_x += [x1, x2]
-                    cv2.line(img, (x1, y1), (x2, y2), [0, 255, 255], thickness=2)
+                    if DISPLAY:
+                        cv2.line(displayImage, (x1, y1), (x2, y2), [0, 255, 255], thickness=2)
 
                 elif gradient < -horizThresh and gradient > -vertThresh:
                     all_right_grad += [gradient]
                     all_right_y += [y1, y2]
                     all_right_x += [x1, x2]
-                    cv2.line(img, (x1, y1), (x2, y2), [255, 0, 255], thickness=2)
+                    if DISPLAY:
+                        cv2.line(displayImage, (x1, y1), (x2, y2), [255, 0, 255], thickness=2)
 
     except:
         pass
@@ -85,16 +93,18 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
         lower_right_x = int((ymax_global - right_intercept) / right_mean_grad)
 
         # Draw the lane lines
-        cv2.line(img, (upper_left_x, ymin_global), (lower_left_x, ymax_global),
+        if DISPLAY:
+            cv2.line(displayImage, (upper_left_x, ymin_global), (lower_left_x, ymax_global),
                  color, thickness)
-        cv2.line(img, (upper_right_x, ymin_global), (lower_right_x, ymax_global),
+            cv2.line(displayImage, (upper_right_x, ymin_global), (lower_right_x, ymax_global),
                  color, thickness)
 
         # Draw the centre lane line
         top_x = int(np.mean((upper_left_x, upper_right_x)))
         bottom_x = int(np.mean((lower_left_x, lower_right_x)))
+        if DISPLAY:
 
-        cv2.line(img, (top_x, ymin_global), (bottom_x, ymax_global),
+            cv2.line(displayImage, (top_x, ymin_global), (bottom_x, ymax_global),
                  [0, 255, 0], thickness)
 
         # Calculate angle and displacement of robot in relation to centre line
@@ -103,14 +113,15 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
         bottomDisplacement = img.shape[1]/2 - bottom_x
 
         # Display angle and displacement of robot in relation to centre line
-        font = cv2.FONT_HERSHEY_PLAIN
-        fontSize = 1
-        color = [0, 255, 0]
-        cv2.putText(img, 'd_bot = ' + str(bottomDisplacement), (bottom_x + 10, ymax_global - 10),
+        if DISPLAY:
+            font = cv2.FONT_HERSHEY_PLAIN
+            fontSize = 1
+            color = [0, 255, 0]
+            cv2.putText(displayImage, 'd_bot = ' + str(bottomDisplacement), (bottom_x + 10, ymax_global - 10),
                     font, fontSize, color)
-        cv2.putText(img, 'd_top = ' + str(topDisplacement), (top_x + 10, ymin_global + 10),
+            cv2.putText(displayImage, 'd_top = ' + str(topDisplacement), (top_x + 10, ymin_global + 10),
                     font, fontSize, color)
-        cv2.putText(img, 'alpha = ' + "{0:.2f}".format(angle), (top_x + 10, ymin_global),
+            cv2.putText(displayImage, 'alpha = ' + "{0:.2f}".format(angle), (top_x + 10, ymin_global),
                     font, fontSize, color)
 
     # if we only have the left lane
@@ -125,7 +136,8 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
         upper_right_x = int((ymin_global - right_intercept) / right_mean_grad)
         lower_right_x = int((ymax_global - right_intercept) / right_mean_grad)
 
-        cv2.line(img, (upper_right_x, ymin_global), (lower_right_x, ymax_global),
+        if DISPLAY:
+            cv2.line(displayImage, (upper_right_x, ymin_global), (lower_right_x, ymax_global),
                  color, thickness)
         print 'left lane only'
         angle = 0
@@ -143,12 +155,12 @@ def draw_lines(img, lines, color=[255, 255, 0], thickness=4, horizThresh=0.5, ve
 
         upper_left_x = int((ymin_global - left_intercept) / left_mean_grad)
         lower_left_x = int((ymax_global - left_intercept) / left_mean_grad)
-
-        cv2.line(img, (upper_left_x, ymin_global), (lower_left_x, ymax_global),
+        if DISPLAY:
+            cv2.line(displayImage, (upper_left_x, ymin_global), (lower_left_x, ymax_global),
                  color, thickness)
         print 'right lane only'
         angle = 0
         topDisplacement = 100
         bottomDisplacement = 0
 
-    return angle, topDisplacement, bottomDisplacement
+    return angle, topDisplacement, bottomDisplacement, displayImage
