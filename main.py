@@ -89,7 +89,7 @@ sleepTopDispRight = 0.16
 sleepStraight = 0.02
 
 motor_setup()
-
+baseStation_Commands()
 # allow the camera to warmup
 time.sleep(1)
 
