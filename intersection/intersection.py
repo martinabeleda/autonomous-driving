@@ -252,7 +252,7 @@ def check_light(img):
                 (x, y, w, h) = cv2.boundingRect(approx)
 		rect_area = h*w;
 		#maybs change from 700 to 400 from riley 
-		if(rect_area > 400 and rect_area < 2000):
+		if(rect_area > 300 and rect_area < 2000):
 			rect.append(cv2.boundingRect(approx))
 			cv2.rectangle(I,(x,y),(x+w,y+h),(255,0,0),3)
 			lowerLeftPoint = [x,y+h]
@@ -266,7 +266,7 @@ def check_light(img):
     cimg = cv2.cvtColor(masked,cv2.COLOR_BGR2GRAY)
     ret,thresh1 = cv2.threshold(cimg,200,255,cv2.THRESH_BINARY)
     cirles_draw = []
-    circles = cv2.HoughCircles(thresh1, cv2.cv.CV_HOUGH_GRADIENT, 1.2, 100, param1=10,param2=10,minRadius=4,maxRadius=32)
+    circles = cv2.HoughCircles(thresh1, cv2.cv.CV_HOUGH_GRADIENT, 1.2, 100, param1=10,param2=10,minRadius=3,maxRadius=32)
 
     if circles is not None and counter > 0:
             # convert the (x, y) coordinates and radius of the circles to integers
