@@ -194,7 +194,11 @@ def turn_decide(barcode):
     if barcode > 5:
         barcode = 5
 
-    result = choices.get(barcode, default);
+    result = choices.get(barcode, default)
+
+    if result is not 'right' and result is not 'left':
+        # make a random choice
+        result = random.choice(result)
 
     return result
 
