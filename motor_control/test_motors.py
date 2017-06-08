@@ -8,11 +8,11 @@ from motors import motor_setup, turn_clockwise, turn_anti_clockwise, calibrate_m
 pi = pigpio.pi()
 
 # Motor Calibration
-SPEED = 193 # mm/s
-TURN_RATE = 150 # degs/s
-leftDuty = 170
-rightDutyInit = 204
-rightDuty = calibrate_motors(leftDuty, rightDutyInit)
+SPEED = 215 # mm/s
+TURN_RATE = 180 # degs/s
+leftDuty = 120
+rightDutyInit = 147.2
+#rightDuty = calibrate_motors(leftDuty, rightDutyInit)
 #rightDuty = rightDutyInit
 
 print "waiting for you to press g"
@@ -21,7 +21,7 @@ while 1:
     if inkey is "g": break
 
 try:
-    forwards(leftDuty,rightDuty,SPEED,455.)
+    #forwards(leftDuty,rightDuty,SPEED,455.)
     turn_clockwise(TURN_RATE,90.)
     stop()
 

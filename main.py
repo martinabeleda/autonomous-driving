@@ -13,6 +13,7 @@ import sys
 import copy
 import math
 
+from time import sleep
 from picamera.array import PiRGBArray
 from picamera import PiCamera
 from datetime import datetime
@@ -54,15 +55,15 @@ THROUGH_INTERSECTION = 3
 state = LANE_FOLLOW
 
 # Display defines
-DISPLAY = 1
+DISPLAY = 0
 font = cv2.FONT_HERSHEY_PLAIN
 fontSize = 2
 green = [0,255,0]
 red = [0,0,255]
 
 # Debug defines
-DEBUG_REDLINE = 1
-
+DEBUG_REDLINE = 0
+STOP_AT_RED = 1
 
 # Camera Calibration
 topDispCalibrate = 40
@@ -74,17 +75,17 @@ angleThresh = 2
 KERNEL_SIZE = 5
 
 # Motor Calibration
-leftDuty = 150
-rightDutyInit = 162
+leftDuty = 120
+rightDutyInit = 177.2
 rightDuty = calibrate_motors(leftDuty, rightDutyInit)
 lastMove = 'centre'
-SPEED = 193 # mm/s
-TURN_RATE = 150 # degs/s
+SPEED = 200 # mm/s
+TURN_RATE = 800 # degs/s
 sleepAngleLeft = 0.1
-sleepTopDispLeft = 0.17
+sleepTopDispLeft = 0.14
 sleepAngleRight = 0.05
-sleepTopDispRight = 0.20
-sleepStraight = 0.05
+sleepTopDispRight = 0.16
+sleepStraight = 0.02
 
 motor_setup()
 
@@ -124,6 +125,14 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	    # check if we see the red line
             maskedImage, line = is_red_line(blur)
 	    if line is RED:
+                
+                if STOP_AT_RED == 1:
+                    stop()
+
+                    while 1:
+                        key = raw_input("Stop at red. Press Q")
+                        if key is "q":
+                            break
 
 		# check the time
 		t1 = datetime.now()
@@ -169,8 +178,6 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
         elif state is CHECKING_LIGHT:
 		    
 	    print "Checking light"
-
-		    
 	    # check the light
 	    # Riley, brah, should this take blur instead of image???? plz respond.
 	    trafficlight_image,rect,cirles_draw, traffic_code, = check_light(image)
@@ -208,18 +215,22 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 			
 	    if action is 'forwards':
 	        print "Forwards"
-	        forwards(leftDuty, rightDuty, SPEED, 250)
+	        forwards(leftDuty, rightDuty, SPEED, 400.)
 	 	state = LANE_FOLLOW
 			
 	    elif action is 'left':
 	        print "Left turn"
-	        forwards(leftDuty, rightDuty, SPEED, 190)
-		turn_anti_clockwise(TURN_RATE, 90.)
+	        forwards(leftDuty, rightDuty, SPEED, 210.)
+		stop()
+                sleep(0.5)
+                turn_anti_clockwise(TURN_RATE, 90.)
 		state = LANE_FOLLOW
 			
 	    elif action is 'right':
 	        print "Right turn"
-	        forwards(leftDuty, rightDuty, SPEED, 350)
+	        forwards(leftDuty, rightDuty, SPEED, 370.)
+                stop()
+                sleep(0.5)
 		turn_clockwise(TURN_RATE, 90.)
 	    state = LANE_FOLLOW
 

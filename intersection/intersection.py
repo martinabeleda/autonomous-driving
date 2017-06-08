@@ -24,7 +24,7 @@ CROP = 450
 MIN_BARCODE_AREA = 75 
 MAX_BARCODE_AREA = 400
 # should be 6000
-MIN_RED_AREA = 7000
+MIN_RED_AREA = 5000
 DAYTIME = 0
 
 def is_red_line(image):
@@ -248,7 +248,7 @@ def check_light(img):
                 (x, y, w, h) = cv2.boundingRect(approx)
 		rect_area = h*w;
 		#maybs change from 700 to 400 from riley 
-		if(rect_area > 700 and rect_area < 2000):
+		if(rect_area > 400 and rect_area < 2000):
 			rect.append(cv2.boundingRect(approx))
 			cv2.rectangle(I,(x,y),(x+w,y+h),(255,0,0),3)
 			lowerLeftPoint = [x,y+h]

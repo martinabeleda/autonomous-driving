@@ -27,14 +27,16 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 	# and occupied/unoccupied text
 	image = frame.array
 
+	displayImage = image
+
         # gaussian blur
 	kernelSize = 5
 	blur = cv2.GaussianBlur(image, (kernelSize,kernelSize), 0)
         
-	(img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur)
+	(img, angle, topDisplacement, bottomDisplacement) = lane_detect(blur, displayImage)
 
 	# show the frame
-	cv2.imshow("Frame", img)
+	cv2.imshow("Frame", displayImage)
 	#cv2.imshow("Masked", masked)
 	key = cv2.waitKey(1) & 0xFF
 
