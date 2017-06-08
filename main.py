@@ -185,7 +185,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             
             #for testing 
             if DEBUG_REDLINE:
-                traffic_code = GREEN		
+                traffic_code = GREEN
 	    # if it's green, change state to execute manoeuvre
 	    if traffic_code is GREEN:
 			
@@ -231,6 +231,7 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
             cv2.line(displayImage,(0,450),(800,450), red, 2)
 
             if DEBUG_REDLINE:
+                # should be maskedImage
                 cv2.imshow('Main Frame', maskedImage)
             else:
                 cv2.imshow('Main Frame', displayImage)

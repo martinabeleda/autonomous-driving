@@ -17,14 +17,15 @@ DEBUG_REDLINE = 1
 DEBUG_HISTOGRAM = 0
 DEBUG_HUE = 0
 HUE_MASK = 0
+CHANGE_SAT = 0
 
 #other defines
 CROP = 450
-MIN_BARCODE_AREA = 80 
+MIN_BARCODE_AREA = 75 
 MAX_BARCODE_AREA = 400
 # should be 6000
-MIN_RED_AREA = 5000
-DAYTIME = 1
+MIN_RED_AREA = 7000
+DAYTIME = 0
 
 def is_red_line(image):
 
@@ -33,9 +34,10 @@ def is_red_line(image):
 
        
         #adjust brightness
-        # jokes maybe try staurdate image instead ---> intensify colour    
-        hsv = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
-        hsv[:,:,1] += 20
+        # jokes maybe try saturate image instead ---> intensify colour    
+        if CHANGE_SAT:
+            hsv = cv2.cvtColor(crop, cv2.COLOR_BGR2HSV)
+            hsv[:,:,1] += 20
         
 
         #try using hue to mask
@@ -43,27 +45,30 @@ def is_red_line(image):
         # s - colour intensity - 0 -100
         # v - brightness - 0 -100
         if HUE_MASK:
-            crop = hsv    
-            red_bound_low = np.array([0,0,0])
+            if CHANGE_SAT:    
+                crop = hsv    
+                red_bound_low = np.array([0,0,0])
 	    #230 160 255
-	    red_bound_high = np.array([360,100,100])         
+	        red_bound_high = np.array([360,100,100])         
                 
         #using RGB mask instead
         else:
 
-            #convert image back to RGB 
-            crop = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
+            #convert image back to RGB
+            if CHANGE_SAT:    
+                crop = cv2.cvtColor(hsv, cv2.COLOR_HSV2BGR)
 	    #note OpenCV represents images as NumPy arrays in reverse order - BGR
 	    #set limits for what is considered "red"
 	    #0 0 100 --> to always get all red --> or lower threshold
             #30 25 170
             #15 10 170
             if DAYTIME:
-                red_bound_low = np.array([0,0,130])
+                red_bound_low = np.array([0,0,150])
 	        #230 160 255
 	        red_bound_high = np.array([170,110,255])
             #night time    
-	    else:   
+	    else:
+                #30 25 170    
                 red_bound_low = np.array([30,25,170])
 	        #230 160 255
 	        red_bound_high = np.array([230,160,255])    
